@@ -1,29 +1,25 @@
 import { getUserSession } from "@/lib/core/session";
 import { 
   LayoutSideContentLeft, 
-  Bell, 
-  Briefcase, 
-  Envelope, 
-  Gear, 
   House, 
-  Magnifier, 
   Person, 
   Bookmark, 
   FileText, 
   CreditCard, 
   Persons,
-  Plus,          // Add Prompt-এর জন্য
-  CircleCheck,   // Reviews বা Approved-এর জন্য
-  Shield         // ShieldDanger এর বদলে এটি ব্যবহার করো (Reported Prompts-এর জন্য)
+  Plus,          
+  CircleCheck,   
+  Shield,
+  ArrowRightToSquare
 } from "@gravity-ui/icons";
-import { Button, Drawer } from "@heroui/react";
+import { Button, Drawer, Avatar } from "@heroui/react";
 import Link from "next/link";
+import React from "react";
 
 export async function DashboardSidebar() {
-
     const user = await getUserSession();
 
-    // ১. Creator Dashboard Links (রিকোয়ারমেন্ট অনুযায়ী)
+    // 1. Creator Dashboard Links
     const creatorNavLinks = [
         { icon: House, href: "/dashboard/creator", label: "Dashboard Home" },
         { icon: Plus, href: "/dashboard/creator/add-prompt", label: "Add Prompt" },
@@ -31,7 +27,7 @@ export async function DashboardSidebar() {
         { icon: Person, href: "/dashboard/creator/profile", label: "Profile" },
     ];
 
-    // ২. Regular User Dashboard Links (রিকোয়ারমেন্ট অনুযায়ী)
+    // 2. Regular User Dashboard Links
     const userNavLinks = [
         { icon: Plus, href: "/dashboard/user/add-prompt", label: "Add Prompt" },
         { icon: FileText, href: "/dashboard/user/my-prompts", label: "My Prompts" },
@@ -40,80 +36,127 @@ export async function DashboardSidebar() {
         { icon: Person, href: "/dashboard/creator/profile", label: "Profile" },
     ];
 
-    // ৩. Admin Dashboard Links (রিকোয়ারমেন্ট অনুযায়ী)
-    // ৩. Admin Dashboard Links
-const adminNavLinks = [
-    { icon: House, href: "/dashboard/admin/analytics", label: "Analytics" },
-    { icon: Persons, href: "/dashboard/admin/users", label: "All Users" },
-    { icon: FileText, href: "/dashboard/admin/prompts", label: "All Prompts" },
-    { icon: CreditCard, href: "/dashboard/admin/payments", label: "All Payments" },
-    { icon: Shield, href: "/dashboard/admin/reported", label: "Reported Prompts" }, // এখানে Shield বসালাম
-];
+    // 3. Admin Dashboard Links
+    const adminNavLinks = [
+        { icon: House, href: "/dashboard/admin/analytics", label: "Analytics" },
+        { icon: Persons, href: "/dashboard/admin/users", label: "All Users" },
+        { icon: FileText, href: "/dashboard/admin/prompts", label: "All Prompts" },
+        { icon: CreditCard, href: "/dashboard/admin/payments", label: "All Payments" },
+        { icon: Shield, href: "/dashboard/admin/reported", label: "Reported Prompts" },
+    ];
 
-    // রোল ম্যাপিং (Default: user বা রিকোয়ারমেন্ট শিট অনুযায়ী 'user')
+    // Role Mapping
     const navLinksMap = {
         user: userNavLinks,
         creator: creatorNavLinks,
         admin: adminNavLinks
     };
 
-    // ইউজারের রোলের ওপর ভিত্তি করে মেনু আইটেম সিলেক্ট করা হচ্ছে (ডিফল্ট: user)
-    const navItems = navLinksMap[user?.role || 'user'];
+    const role = user?.role || 'user';
+    const navItems = navLinksMap[role];
 
     const navContent = (
-        <nav className="flex flex-col gap-1">
-            {/* সাইডবার হেডার / ব্র্যান্ডিং */}
-            <div className="mb-4 px-3 py-2">
-                <h2 className="text-xl font-bold text-primary">PromptForge</h2>
-                <p className="text-xs text-muted capitalize">{user?.role || 'user'} Panel</p>
+        <div className="flex flex-col justify-between h-full py-4 text-white">
+            <div className="space-y-8">
+                {/* Branding Block */}
+                <div className="px-3">
+                    <Link href="/" className="group flex items-center gap-2.5">
+                        <div className="p-1 bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] rounded-xl shadow-[0_0_15px_rgba(124,58,237,0.25)]">
+                            <span className="text-sm font-black text-white px-1">PF</span>
+                        </div>
+                        <div className="flex flex-col gap-0">
+                            <span className="font-extrabold text-lg tracking-wide bg-gradient-to-r from-white via-white to-purple-400 bg-clip-text text-transparent">
+                                PromptForge
+                            </span>
+                            <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-none">
+                                {role} panel
+                            </span>
+                        </div>
+                    </Link>
+                </div>
+
+                {/* Nav Menu Items */}
+                <nav className="flex flex-col gap-1.5">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.label}
+                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-wider text-zinc-400 transition-all hover:text-white hover:bg-white/5 border border-transparent"
+                            href={item.href}
+                        >
+                            <item.icon className="size-4 text-zinc-500 group-hover:text-white" />
+                            <span>{item.label}</span>
+                        </Link>
+                    ))}
+                </nav>
             </div>
 
-            {navItems.map((item) => (
+            {/* Bottom Actions and User Profile card */}
+            <div className="space-y-4">
+                <div className="border-t border-white/5 my-2"></div>
+                
                 <Link
-                    key={item.label}
-                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-default"
-                    href={item.href}
+                    className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#7C3AED] hover:text-purple-400 transition-all hover:bg-white/5 border border-transparent"
+                    href="/"
                 >
-                    <item.icon className="size-5 text-muted" />
-                    {item.label}
+                    <House className="size-4" />
+                    <span>Back to Home</span>
                 </Link>
-            ))}
 
-            <div className="border-t border-default my-4"></div>
-            <Link
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-primary transition-colors hover:bg-default font-semibold"
-                href="/"
-            >
-                <House className="size-5" />
-                Back to Home
-            </Link>
-        </nav>
+                {/* User card profile */}
+                {user && (
+                    <div className="p-3.5 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center gap-3">
+                        <div className="p-[1.5px] bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] rounded-full">
+                            <Avatar size="sm" className="bg-transparent border-0">
+                                <Avatar.Image src={user.image} alt={user.name} />
+                                <Avatar.Fallback className="bg-zinc-950 text-white font-bold text-xs">
+                                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                                </Avatar.Fallback>
+                            </Avatar>
+                        </div>
+                        <div className="flex flex-col gap-0.5 overflow-hidden">
+                            <p className="text-xs font-bold truncate leading-tight text-white">
+                                {user.name}
+                            </p>
+                            <p className="text-[10px] text-zinc-500 truncate leading-none">
+                                {user.email}
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 
     return (
         <>
-            <aside className="hidden w-64 shrink-0 border-r border-default p-4 lg:block bg-background">
+            {/* Desktop layout Sidebar */}
+            <aside className="hidden w-64 shrink-0 border-r border-white/5 p-5 lg:block bg-[#090a16]/60 backdrop-blur-md sticky top-0 h-screen">
                 {navContent}
             </aside>
-            <Drawer>
-                <Button className="lg:hidden m-4" variant="secondary">
-                    <LayoutSideContentLeft />
-                    Menu
-                </Button>
-                <Drawer.Backdrop>
-                    <Drawer.Content placement="left">
-                        <Drawer.Dialog>
-                            <Drawer.CloseTrigger />
-                            <Drawer.Header>
-                                <Drawer.Heading>Navigation</Drawer.Heading>
-                            </Drawer.Header>
-                            <Drawer.Body>
-                                {navContent}
-                            </Drawer.Body>
-                        </Drawer.Dialog>
-                    </Drawer.Content>
-                </Drawer.Backdrop>
-            </Drawer>
+
+            {/* Mobile layout Sidebar Menu Trigger */}
+            <div className="lg:hidden w-full flex items-center justify-between p-4 bg-[#090a16]/80 border-b border-white/5 absolute top-0 left-0 z-30">
+                <Link href="/" className="font-extrabold tracking-wide text-white">PromptForge</Link>
+                <Drawer>
+                    <Button className="bg-white/5 border border-white/10 text-white flex items-center gap-2 py-1 px-3 rounded-lg text-xs font-bold cursor-pointer" variant="secondary">
+                        <LayoutSideContentLeft className="w-4 h-4" />
+                        <span>Menu</span>
+                    </Button>
+                    <Drawer.Backdrop>
+                        <Drawer.Content placement="left" className="bg-[#030014] border-r border-white/10 p-5 w-64">
+                            <Drawer.Dialog>
+                                <Drawer.CloseTrigger className="absolute top-4 right-4 text-zinc-400 hover:text-white" />
+                                <Drawer.Header className="pb-4">
+                                    <Drawer.Heading className="text-white text-base font-extrabold">Navigation</Drawer.Heading>
+                                </Drawer.Header>
+                                <Drawer.Body className="h-full">
+                                    {navContent}
+                                </Drawer.Body>
+                            </Drawer.Dialog>
+                        </Drawer.Content>
+                    </Drawer.Backdrop>
+                </Drawer>
+            </div>
         </>
     );
 }

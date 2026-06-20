@@ -24,24 +24,35 @@ export async function POST(req) {
         }
 
         // Attach server-side user id if available
+        console.log('[POST /api/prompts] Before session resolve:', { userId: body.userId, creatorId: body.creatorId });
+
         try {
             const user = await getUserSession();
+            console.log('[POST /api/prompts] Server session user:', user);
+
             const resolvedUserId = user ? (user.id || user._id || user.userId) : null;
+            console.log('[POST /api/prompts] Resolved userId from session:', resolvedUserId);
+
             if (resolvedUserId) {
                 body.userId = body.userId || body.creatorId || resolvedUserId;
                 body.creatorId = body.creatorId || body.userId;
+                console.log('[POST /api/prompts] After session resolve:', { userId: body.userId, creatorId: body.creatorId });
             } else if (body.creatorId) {
                 body.userId = body.userId || body.creatorId;
+                console.log('[POST /api/prompts] Using fallback creatorId:', { userId: body.userId, creatorId: body.creatorId });
             }
         } catch (err) {
-            console.error('prompts POST: getUserSession failed', err);
+            console.error('[POST /api/prompts] getUserSession failed', err);
         }
+
 
         // defaults
         body.createdAt = body.createdAt ? new Date(body.createdAt) : new Date();
         body.copyCount = body.copyCount ?? 0;
         body.bookmarkCount = body.bookmarkCount ?? 0;
         body.status = body.status || 'pending';
+
+        console.log('[POST /api/prompts] Final body before insert:', { userId: body.userId, creatorId: body.creatorId, title: body.title });
 
         const res = await db.collection('prompts').insertOne(body);
         const inserted = await db.collection('prompts').findOne({ _id: res.insertedId });

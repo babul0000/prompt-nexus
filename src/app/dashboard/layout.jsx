@@ -2,7 +2,7 @@ import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="flex min-h-screen bg-base-200">
+    <div className="flex min-h-screen bg-[#030014] text-white">
       {/* বামপাশের রেসপনসিভ সাইডবার */}
       <DashboardSidebar />
 

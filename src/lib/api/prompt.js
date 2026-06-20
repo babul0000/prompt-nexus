@@ -11,3 +11,14 @@ export const getMyPrompts = async (userId) => {
 export const getPrompts = async () => {
     return serverFetch(`/api/prompts`);
 }
+
+// export const getTotalPrompts = async (queryString = "") => {
+//     return serverFetch(`/api/prompts${queryString}`);
+// }
+
+// lib/api/prompt.js
+
+export const getMyPrompt = async (userId) => {
+    // এখানে আপনার ব্যাকএন্ডের রাউটটি কল করা হচ্ছে
+    return await serverFetch(`/api/my-prompts?userId=${userId}`);
+};

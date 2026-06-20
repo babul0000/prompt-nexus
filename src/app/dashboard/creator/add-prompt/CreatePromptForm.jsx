@@ -99,11 +99,6 @@ export default function CreatePromptPage() {
         let thumbnailUrl = "";
         const thumbnailFile = formData.get("thumbnail");
         if (thumbnailFile && thumbnailFile.size > 0) {
-            const MAX_BYTES = 200 * 1024; // 200KB
-            if (thumbnailFile.size > MAX_BYTES) {
-                toast.error("Thumbnail too large. Please upload an image under 200KB.");
-                return;
-            }
             try {
                 thumbnailUrl = await fileToBase64(thumbnailFile);
             } catch (err) {
@@ -144,7 +139,7 @@ export default function CreatePromptPage() {
 
         try {
             const res = await createPrompt(promptData);
-            if (res?.insertedId || res?._id) {
+            if (res.insertedId) {
                 toast.success("Prompt created successfully");
                 e.target.reset();
                 setThumbnail(null);
