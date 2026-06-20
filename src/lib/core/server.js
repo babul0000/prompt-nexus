@@ -1,105 +1,36 @@
-import { redirect } from "next/navigation";
-// import { getSessionToken } from "./session"; // আপাতত কমেন্ট করে রাখা হলো
-
-const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || '';
-const isServer = typeof window === 'undefined';
-const internalApiHost = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
 const resolveUrl = (path) => {
-    if (typeof path !== 'string') {
-        throw new Error('Invalid URL path');
-    }
-
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-        return path;
-    }
-
-    if (isServer && path.startsWith('/api')) {
-        return new URL(path, internalApiHost).toString();
-    }
-
-    if (isServer) {
-        const host = baseUrl || internalApiHost;
-        return new URL(path, host).toString();
-    }
-
-    return path;
+    if (path.startsWith("http")) return path;
+    return `${baseUrl}${path}`;
 };
 
-/* =========================================================
-   TEMPORARILY COMMENTED OUT METHODS
-   ========================================================= */
-/*
-export const authHeader = async () => {
-    const token = await getSessionToken()
-    const header = token ? {
-        authorization: `Bearer ${token}`
-    } : {};
-    return header;
-}
-
+// -------------------- FETCH --------------------
 export const serverFetch = async (path) => {
-    const url = resolveUrl(path);
-    const res = await fetch(url);
+    const res = await fetch(resolveUrl(path));
 
     if (!res.ok) {
         const text = await res.text();
-        throw new Error(`serverFetch failed: ${res.status} ${res.statusText} - ${text}`);
+        throw new Error(`serverFetch failed: ${res.status} - ${text}`);
     }
 
     return res.json();
-}
+};
 
-export const protectedFetch = async (path) => {
-    const res = await fetch(resolveUrl(path),
-        {
-            headers: await authHeader()
-        })
-
-    return handleStatus(res);
-}
-
-const handleStatus = res => {
-    if (res.status === 401) {
-        redirect('/unauthorize')
-    }
-    else if (res.status === 403) {
-        redirect('/signin')
-    }
-    return res.json()
-}
-*/
-
-/* =========================================================
-   ACTIVE SIMPLE MUTATION METHOD FOR BACKEND SUBMISSION
-   ========================================================= */
-export const serverMutation = async (path, data, method = 'POST') => {
-    const url = resolveUrl(path);
-    const res = await fetch(url, {
-        method: method,
+// -------------------- MUTATION --------------------
+export const serverMutation = async (path, data, method = "POST") => {
+    const res = await fetch(resolveUrl(path), {
+        method,
         headers: {
-            'Content-Type': 'application/json'
-            // ...await authHeader() // টোকেন ভেরিফিকেশন পরে অন করার জন্য কমেন্ট রাখা হলো
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
 
     if (!res.ok) {
         const text = await res.text();
-        throw new Error(`serverMutation failed: ${res.status} ${res.statusText} - ${text}`);
+        throw new Error(`serverMutation failed: ${res.status} - ${text}`);
     }
 
     return res.json();
 };
-
-export const serverFetch = async (path) => {
-    const url = resolveUrl(path);
-    const res = await fetch(url);
-
-    if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`serverFetch failed: ${res.status} ${res.statusText} - ${text}`);
-    }
-
-    return res.json();
-}
