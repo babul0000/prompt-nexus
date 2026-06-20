@@ -28,7 +28,7 @@ export async function DashboardSidebar() {
         { icon: House, href: "/dashboard/creator", label: "Dashboard Home" },
         { icon: Plus, href: "/dashboard/creator/add-prompt", label: "Add Prompt" },
         { icon: FileText, href: "/dashboard/creator/my-prompts", label: "My Prompts" },
-        { icon: Person, href: "/profile", label: "Profile" },
+        { icon: Person, href: "/dashboard/creator/profile", label: "Profile" },
     ];
 
     // ২. Regular User Dashboard Links (রিকোয়ারমেন্ট অনুযায়ী)
@@ -37,7 +37,7 @@ export async function DashboardSidebar() {
         { icon: FileText, href: "/dashboard/user/my-prompts", label: "My Prompts" },
         { icon: Bookmark, href: "/dashboard/user/saved-prompts", label: "Saved Prompts" },
         { icon: CircleCheck, href: "/dashboard/user/my-reviews", label: "My Reviews" },
-        { icon: Person, href: "/profile", label: "Profile" },
+        { icon: Person, href: "/dashboard/creator/profile", label: "Profile" },
     ];
 
     // ৩. Admin Dashboard Links (রিকোয়ারমেন্ট অনুযায়ী)

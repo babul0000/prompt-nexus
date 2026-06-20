@@ -1,30 +1,30 @@
 import { headers } from "next/headers"
 import { auth } from "../auth"
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
-export const getUserSession = async() => {
+export const getUserSession = async () => {
     const session = await auth.api.getSession({
-    headers: await headers() // some endpoints might require headers
-})
-console.log(session);
-
-return session?.user || null;
-}
-
-export const getSessionToken = async()=> {
-    const session = await auth.api.getSession({
-        headers: await headers()
+        headers: await headers() // some endpoints might require headers
     })
-    return session?.session?.token || null;
+    console.log(session);
+
+    return session?.user || null;
 }
 
-export const requireRole = async(role) => {
+// export const getSessionToken = async()=> {
+//     const session = await auth.api.getSession({
+//         headers: await headers()
+//     })
+//     return session?.session?.token || null;
+// }
+
+export const requireRole = async (role) => {
     const user = await getUserSession()
-    if(!user){
+    if (!user) {
         redirect('/signin')
     }
-    if(user.role !== role){
+    if (user.role !== role) {
         redirect('/unauthorize')
     }
-        return user;
+    return user;
 }

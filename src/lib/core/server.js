@@ -2,6 +2,29 @@ import { redirect } from "next/navigation";
 // import { getSessionToken } from "./session"; // আপাতত কমেন্ট করে রাখা হলো
 
 const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || '';
+const isServer = typeof window === 'undefined';
+const internalApiHost = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+const resolveUrl = (path) => {
+    if (typeof path !== 'string') {
+        throw new Error('Invalid URL path');
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+        return path;
+    }
+
+    if (isServer && path.startsWith('/api')) {
+        return new URL(path, internalApiHost).toString();
+    }
+
+    if (isServer) {
+        const host = baseUrl || internalApiHost;
+        return new URL(path, host).toString();
+    }
+
+    return path;
+};
 
 /* =========================================================
    TEMPORARILY COMMENTED OUT METHODS
@@ -16,7 +39,7 @@ export const authHeader = async () => {
 }
 
 export const serverFetch = async (path) => {
-    const url = `${baseUrl}${path}`;
+    const url = resolveUrl(path);
     const res = await fetch(url);
 
     if (!res.ok) {
@@ -28,7 +51,7 @@ export const serverFetch = async (path) => {
 }
 
 export const protectedFetch = async (path) => {
-    const res = await fetch(`${baseUrl}${path}`,
+    const res = await fetch(resolveUrl(path),
         {
             headers: await authHeader()
         })
@@ -51,7 +74,7 @@ const handleStatus = res => {
    ACTIVE SIMPLE MUTATION METHOD FOR BACKEND SUBMISSION
    ========================================================= */
 export const serverMutation = async (path, data, method = 'POST') => {
-    const url = `${baseUrl}${path}`;
+    const url = resolveUrl(path);
     const res = await fetch(url, {
         method: method,
         headers: {
@@ -68,3 +91,15 @@ export const serverMutation = async (path, data, method = 'POST') => {
 
     return res.json();
 };
+
+export const serverFetch = async (path) => {
+    const url = resolveUrl(path);
+    const res = await fetch(url);
+
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`serverFetch failed: ${res.status} ${res.statusText} - ${text}`);
+    }
+
+    return res.json();
+}
