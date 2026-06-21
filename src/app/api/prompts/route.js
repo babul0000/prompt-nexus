@@ -50,7 +50,7 @@ export async function POST(req) {
         body.createdAt = body.createdAt ? new Date(body.createdAt) : new Date();
         body.copyCount = body.copyCount ?? 0;
         body.bookmarkCount = body.bookmarkCount ?? 0;
-        body.status = body.status || 'pending';
+        body.status = body.status || 'approved';
 
         console.log('[POST /api/prompts] Final body before insert:', { userId: body.userId, creatorId: body.creatorId, title: body.title });
 

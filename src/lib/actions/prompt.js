@@ -31,3 +31,11 @@ export const createPrompt = async (newPromptData) => {
 
     return serverMutation('/api/prompts', newPromptData);
 }
+
+export const updatePrompt = async (id, updatedPromptData) => {
+    return serverMutation(`/api/prompts/${id}`, updatedPromptData, "PUT");
+}
+
+export const deletePrompt = async (id) => {
+    return serverMutation(`/api/prompts/${id}`, {}, "DELETE");
+}

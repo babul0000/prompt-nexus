@@ -46,11 +46,19 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
     const [selectedDifficulty, setSelectedDifficulty] = useState('All');
     const [sortBy, setSortBy] = useState('Latest');
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+
     // Dynamic prompts state fetched from Express Backend
     const [prompts, setPrompts] = useState(() => 
         initialPrompts.filter(p => p.status?.toLowerCase() === 'approved')
     );
     const [loading, setLoading] = useState(false);
+
+    // Reset pagination to page 1 when any filter or sorting change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedEngine, selectedCategory, selectedDifficulty, sortBy]);
 
     // Selected prompt state for Details Modal
     const [selectedPrompt, setSelectedPrompt] = useState(null);
@@ -157,6 +165,13 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
+
+    // Pagination calculations
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(prompts.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedPrompts = prompts.slice(startIndex, endIndex);
 
     return (
         <section className="relative min-h-screen bg-slate-50 text-zinc-950 dark:bg-[#030014] dark:text-white pt-28 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden transition-colors duration-200">
@@ -339,14 +354,54 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {prompts.map((prompt) => (
-                                    <PromptCard 
-                                        key={prompt.id || prompt._id} 
-                                        prompt={prompt} 
-                                        onViewDetails={(p) => setSelectedPrompt(p)}
-                                    />
-                                ))}
+                            <div className="space-y-8">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {paginatedPrompts.map((prompt) => (
+                                        <PromptCard 
+                                            key={prompt.id || prompt._id} 
+                                            prompt={prompt} 
+                                            onViewDetails={(p) => setSelectedPrompt(p)}
+                                        />
+                                    ))}
+                                </div>
+
+                                {/* Pagination Controls */}
+                                {totalPages > 1 && (
+                                    <div className="flex items-center justify-center gap-2 pt-4 select-none">
+                                        <button
+                                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                            disabled={currentPage === 1}
+                                            className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] text-zinc-600 dark:text-slate-300 hover:bg-zinc-100 dark:hover:bg-[#131735]/40 hover:text-purple-650 dark:hover:text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold transition-all cursor-pointer"
+                                        >
+                                            Previous
+                                        </button>
+
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                                            const isActive = currentPage === pageNum;
+                                            return (
+                                                <button
+                                                    key={pageNum}
+                                                    onClick={() => setCurrentPage(pageNum)}
+                                                    className={`w-9 h-9 rounded-xl text-xs font-bold flex items-center justify-center border transition-all cursor-pointer ${
+                                                        isActive
+                                                            ? 'bg-gradient-to-r from-[#7C3AED] to-[#9333EA] text-white border-transparent shadow-[0_4px_12px_rgba(124,58,237,0.2)]'
+                                                            : 'bg-white dark:bg-[#0a0d26] border-zinc-200 dark:border-[#13193e] text-zinc-650 dark:text-slate-350 hover:bg-zinc-100 dark:hover:bg-[#131735]/40 hover:text-purple-650 dark:hover:text-white'
+                                                    }`}
+                                                >
+                                                    {pageNum}
+                                                </button>
+                                            );
+                                        })}
+
+                                        <button
+                                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                            disabled={currentPage === totalPages}
+                                            className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] text-zinc-650 dark:text-slate-300 hover:bg-zinc-100 dark:hover:bg-[#131735]/40 hover:text-purple-650 dark:hover:text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold transition-all cursor-pointer"
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

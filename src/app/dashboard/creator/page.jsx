@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { getMyPrompts } from '@/lib/api/prompt';
 import Link from 'next/link';
 import { FileText, Copy, Bookmark, CircleCheck, Plus, Sparkles, LayoutGrid } from 'lucide-react';
+import { CreatorAnalytics } from '@/components/dashboard/CreatorAnalytics';
 
 const CreatorPage = async () => {
     const { user } = await auth.api.getSession({ headers: await headers() });
@@ -97,6 +98,9 @@ const CreatorPage = async () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Analytics Charts */}
+                <CreatorAnalytics prompts={prompts} />
 
                 {/* Table block for Activity */}
                 <div className="bg-[#090a16]/50 border border-white/[0.06] p-6 rounded-2xl flex flex-col gap-6 backdrop-blur-md">
