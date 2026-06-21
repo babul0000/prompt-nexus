@@ -15,6 +15,7 @@ import {
 import { Button, Drawer, Avatar } from "@heroui/react";
 import Link from "next/link";
 import React from "react";
+import { BarChart3 } from "lucide-react";
 
 export async function DashboardSidebar() {
     const user = await getUserSession();
@@ -24,6 +25,7 @@ export async function DashboardSidebar() {
         { icon: House, href: "/dashboard/creator", label: "Dashboard Home" },
         { icon: Plus, href: "/dashboard/creator/add-prompt", label: "Add Prompt" },
         { icon: FileText, href: "/dashboard/creator/my-prompts", label: "My Prompts" },
+        { icon: BarChart3, href: "/dashboard/creator/analytics", label: "Analytics/Stats" },
         { icon: Person, href: "/dashboard/creator/profile", label: "Profile" },
     ];
 

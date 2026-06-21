@@ -167,7 +167,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
     }, []);
 
     // Pagination calculations
-    const itemsPerPage = 10;
+    const itemsPerPage = 12;
     const totalPages = Math.ceil(prompts.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;

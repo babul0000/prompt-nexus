@@ -15,7 +15,7 @@ import {
 import { TrendingUp, BarChart3, LineChart } from "lucide-react";
 
 export function CreatorAnalytics({ prompts = [] }) {
-    // 1. Process copies data (Top prompts by copy count)
+    // 1. Process copies & views data (Top prompts by copy count)
     const copiesData = useMemo(() => {
         if (!prompts || prompts.length === 0) return [];
         return [...prompts]
@@ -23,8 +23,9 @@ export function CreatorAnalytics({ prompts = [] }) {
                 name: p.title.length > 20 ? p.title.slice(0, 20) + "..." : p.title,
                 fullName: p.title,
                 copies: parseInt(p.copyCount) || 0,
+                views: parseInt(p.viewCount) || 0,
             }))
-            .sort((a, b) => b.copies - a.copies)
+            .sort((a, b) => b.copies - a.copies || b.views - a.views)
             .slice(0, 8); // Display top 8 prompts
     }, [prompts]);
 
@@ -77,7 +78,7 @@ export function CreatorAnalytics({ prompts = [] }) {
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Chart 1: Total Copies */}
+            {/* Chart 1: Total Copies & Views Tracking */}
             <div className="bg-[#090a16]/50 border border-white/[0.06] p-6 rounded-2xl flex flex-col gap-4 backdrop-blur-md relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-[200px] h-[100px] bg-purple-600/5 blur-[50px] rounded-full pointer-events-none" />
                 
@@ -85,7 +86,7 @@ export function CreatorAnalytics({ prompts = [] }) {
                     <div className="flex items-center gap-2">
                         <BarChart3 className="w-4 h-4 text-purple-400" />
                         <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                            Total Copies Distribution
+                            Copies & Views Tracking
                         </h3>
                     </div>
                     <span className="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded-full border border-purple-500/20 font-bold uppercase tracking-wider">
@@ -100,6 +101,10 @@ export function CreatorAnalytics({ prompts = [] }) {
                                 <linearGradient id="copiesGrad" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="0%" stopColor="#7C3AED" stopOpacity={0.8} />
                                     <stop offset="100%" stopColor="#C084FC" stopOpacity={0.1} />
+                                </linearGradient>
+                                <linearGradient id="viewsGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#38BDF8" stopOpacity={0.8} />
+                                    <stop offset="100%" stopColor="#0EA5E9" stopOpacity={0.1} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid stroke="#ffffff" strokeOpacity={0.03} vertical={false} />
@@ -129,7 +134,8 @@ export function CreatorAnalytics({ prompts = [] }) {
                                 }}
                                 labelStyle={{ color: '#94a3b8', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em' }}
                             />
-                            <Bar dataKey="copies" fill="url(#copiesGrad)" stroke="#7C3AED" strokeWidth={1} radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="copies" name="Copies" fill="url(#copiesGrad)" stroke="#7C3AED" strokeWidth={1} radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="views" name="Views" fill="url(#viewsGrad)" stroke="#38BDF8" strokeWidth={1} radius={[4, 4, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

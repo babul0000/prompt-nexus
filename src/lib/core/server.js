@@ -7,7 +7,9 @@ const resolveUrl = (path) => {
 
 // -------------------- FETCH --------------------
 export const serverFetch = async (path) => {
-    const res = await fetch(resolveUrl(path));
+    const res = await fetch(resolveUrl(path), {
+        cache: 'no-store'
+    });
 
     if (!res.ok) {
         const text = await res.text();

@@ -17,6 +17,7 @@ const PromptCard = ({ prompt, onViewDetails }) => {
         category = "General",
         aiTool = "Other",
         difficulty = "Beginner",
+        visibility = "Public",
         thumbnail = "",
         copyCount = 0,
         bookmarkCount = 0,
@@ -49,8 +50,10 @@ const PromptCard = ({ prompt, onViewDetails }) => {
     // Map difficulty: "Advanced" to "PRO"
     const displayDifficulty = difficulty.toLowerCase() === 'advanced' ? 'PRO' : difficulty;
 
-    // Check if the prompt is premium based on title
-    const isPremium = title.toLowerCase().includes('premium');
+    // Check if the prompt is premium based on title OR visibility
+    const isPremium = 
+        (prompt.visibility && prompt.visibility.toLowerCase() === 'private') || 
+        title.toLowerCase().includes('premium');
 
     // Make creator name look like Mr.Creator if it is "creator" or default to creatorEmail prefix
     const getDisplayName = () => {
@@ -111,15 +114,22 @@ const PromptCard = ({ prompt, onViewDetails }) => {
 
             {/* Badges / Tags */}
             <div className="flex flex-wrap gap-2 items-center">
-                <span className={`text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md uppercase ${getEngineStyles(aiTool)}`}>
+                <span className={`text-[10px] font-bold tracking-wider px-3 py-1 rounded-full uppercase ${getEngineStyles(aiTool)}`}>
                     {aiTool}
                 </span>
-                <span className="text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md uppercase bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-white/10">
+                <span className="text-[10px] font-bold tracking-wider px-3 py-1 rounded-full uppercase bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-white/10">
                     {displayDifficulty}
                 </span>
+                <span className={`text-[10px] font-bold tracking-wider px-3 py-1 rounded-full uppercase ${
+                    visibility.toLowerCase() === 'private'
+                        ? 'bg-rose-500/10 text-rose-550 border border-rose-500/20'
+                        : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                }`}>
+                    {visibility}
+                </span>
                 {isPremium && (
-                    <span className="text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md uppercase bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-500/20 flex items-center gap-1">
-                        <Lock className="w-2.5 h-2.5" />
+                    <span className="text-[10px] font-bold tracking-wider px-3 py-1 rounded-full uppercase bg-rose-500/10 text-rose-500 dark:text-rose-450 border border-rose-500/20 flex items-center gap-1.5">
+                        <Lock className="w-3 h-3" />
                         <span>PREMIUM</span>
                     </span>
                 )}
@@ -136,8 +146,8 @@ const PromptCard = ({ prompt, onViewDetails }) => {
             </div>
 
             {/* Category tag */}
-            <div className="flex items-center gap-1 text-xs font-bold text-[#38bdf8] uppercase select-none">
-                <span className="text-cyan-500/60 font-medium">#</span>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#38bdf8] uppercase select-none">
+                <Sparkles className="w-3.5 h-3.5 text-[#38bdf8] animate-pulse" />
                 <span>{category}</span>
             </div>
 
