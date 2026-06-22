@@ -15,7 +15,7 @@ import {
 import { Button, Drawer, Avatar } from "@heroui/react";
 import Link from "next/link";
 import React from "react";
-import { BarChart3 } from "lucide-react";
+import { LayoutDashboard, Users, FileCheck, AlertTriangle, BarChart3 } from "lucide-react";
 
 export async function DashboardSidebar() {
     const user = await getUserSession();
@@ -40,12 +40,37 @@ export async function DashboardSidebar() {
 
     // 3. Admin Dashboard Links
     const adminNavLinks = [
-        { icon: House, href: "/dashboard/admin/analytics", label: "Analytics" },
-        { icon: Persons, href: "/dashboard/admin/users", label: "All Users" },
-        { icon: FileText, href: "/dashboard/admin/prompts", label: "All Prompts" },
-        { icon: CreditCard, href: "/dashboard/admin/payments", label: "All Payments" },
-        { icon: Shield, href: "/dashboard/admin/reported", label: "Reported Prompts" },
-    ];
+    { 
+        label: "Dashboard Overview", 
+        href: "/dashboard/admin", 
+        icon: LayoutDashboard 
+    },
+    { 
+        label: "User Management", 
+        href: "/dashboard/admin/users", 
+        icon: Users 
+    },
+    { 
+        label: "Prompt Moderation", 
+        href: "/dashboard/admin/prompts", 
+        icon: FileCheck 
+    },
+    { 
+        label: "Subscription & Payments", 
+        href: "/dashboard/admin/payments", 
+        icon: CreditCard 
+    },
+    { 
+        label: "Reported Content", 
+        href: "/dashboard/admin/reported", 
+        icon: AlertTriangle 
+    },
+    { 
+        label: "System Analytics", 
+        href: "/dashboard/admin/analytics", 
+        icon: BarChart3 
+    },
+];
 
     // Role Mapping
     const navLinksMap = {
@@ -54,8 +79,8 @@ export async function DashboardSidebar() {
         admin: adminNavLinks
     };
 
-    const role = user?.role || 'user';
-    const navItems = navLinksMap[role];
+    const role = (user?.role || 'user').toLowerCase();
+    const navItems = navLinksMap[role] || userNavLinks;
 
     const navContent = (
         <div className="flex flex-col justify-between h-full py-4 text-white">

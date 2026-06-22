@@ -21,7 +21,7 @@ export default async function CreatorAnalyticsPage() {
     const totalPrompts = prompts.length;
     const totalCopies = prompts.reduce((sum, p) => sum + (parseInt(p.copyCount) || 0), 0);
     const totalViews = prompts.reduce((sum, p) => sum + (parseInt(p.viewCount) || 0), 0);
-    
+
     // Copy-through Rate (Conversion rate)
     const copyRate = totalViews > 0 ? ((totalCopies / totalViews) * 100).toFixed(1) : "0.0";
 
@@ -43,14 +43,13 @@ export default async function CreatorAnalyticsPage() {
                             <span className="text-[10px] font-bold tracking-wider uppercase">Analytics Center</span>
                         </div>
                     </div>
-                    
+
                     <div className="space-y-1">
                         <h1 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
                             Analytics & Performance Stats
                         </h1>
                         <p className="text-sm text-zinc-400 font-medium">
-                            তোমার প্রম্পটগুলো কতবার কপি বা দেখা হয়েছে তার ট্র্যাকিং এবং সামগ্রিক কর্মক্ষমতা বিশ্লেষণ।
-                        </p>
+                            Tracking and overall performance analysis of how many times your prompts have been copied or viewed.                        </p>
                     </div>
                 </div>
 

@@ -39,3 +39,11 @@ export const updatePrompt = async (id, updatedPromptData) => {
 export const deletePrompt = async (id) => {
     return serverMutation(`/api/prompts/${id}`, {}, "DELETE");
 }
+
+export const updatePromptStatus = async (id, status, feedback = "") => {
+    return serverMutation(`/api/prompts/${id}/status`, { status, feedback }, "PATCH");
+}
+
+export const togglePromptFeatured = async (id, featured) => {
+    return serverMutation(`/api/prompts/${id}/featured`, { featured }, "PATCH");
+}

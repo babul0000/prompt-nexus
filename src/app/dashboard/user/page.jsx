@@ -126,7 +126,7 @@ const UserPage = async () => {
                         </div>
 
                         <div className="pt-6">
-                            <Link href="/pricing" className="w-full">
+                            <Link href="/payment" className="w-full">
                                 <button className="w-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] hover:from-[#6D28D9] hover:to-[#820AD1] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(124,58,237,0.25)] cursor-pointer">
                                     Upgrade to Pro
                                 </button>

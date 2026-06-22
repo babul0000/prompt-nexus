@@ -13,6 +13,7 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       className="h-full antialiased"
+      suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{
@@ -28,7 +29,7 @@ export default function RootLayout({ children }) {
           `
         }} />
       </head>
-      <body className="min-h-full flex flex-col bg-slate-50 text-zinc-950 dark:bg-[#030014] dark:text-white">
+      <body className="min-h-full flex flex-col bg-slate-50 text-zinc-950 dark:bg-[#030014] dark:text-white" suppressHydrationWarning>
         <Navbar/>
         {children}
         <ToastContainer />
