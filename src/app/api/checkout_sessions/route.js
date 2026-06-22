@@ -30,11 +30,11 @@ export async function POST() {
                     quantity: 1,
                 },
             ],
-            mode: 'subscription',
+            mode: 'subscription', // Matching their subscription setting
             success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/payment`,
         });
-        
+
         return NextResponse.json({ url: session.url });
     } catch (err) {
         console.error("Stripe checkout session creation error:", err);

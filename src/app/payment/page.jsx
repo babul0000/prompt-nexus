@@ -33,45 +33,72 @@ export default function PaymentPage() {
     const handleCheckout = async (type = "live") => {
         if (!user) {
             toast.error("Please login to proceed with upgrading your plan.", { theme: "dark" });
-            router.push("/api/checkout_sessions");
-            return;
-        }
-
-        if (type === "live" && !cardNumber.trim()) {
-            toast.warning("Please enter a card number or use Autofill.", { theme: "dark" });
+            router.push("/auth/signin");
             return;
         }
 
         setIsUpgrading(true);
         try {
-            toast.loading(type === "live" ? "Processing Stripe payment..." : "Initializing Sandbox upgrade...", {
-                toastId: "payment-toast",
-                theme: "dark"
-            });
-
-            // Simulate network delay
-            await new Promise((resolve) => setTimeout(resolve, 1800));
-
-            const result = await upgradeToPro();
-
-            toast.dismiss("payment-toast");
-
-            if (result?.error) {
-                toast.error(result.error, { theme: "dark" });
-            } else {
-                toast.success("Successfully upgraded to Aiverse Pro Access! 🎉", {
-                    position: "top-center",
-                    autoClose: 3000,
+            if (type === "live") {
+                toast.loading("Redirecting to Stripe Checkout...", {
+                    toastId: "payment-toast",
                     theme: "dark"
                 });
-                // Redirect user to the dashboard so they can check their plan
-                setTimeout(() => {
-                    window.location.href = "/dashboard/user";
-                }, 1000);
+
+                // Request checkout session from backend
+                const response = await fetch('/api/checkout_sessions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                toast.dismiss("payment-toast");
+
+                if (data.error) {
+                    toast.error(data.error, { theme: "dark" });
+                    setIsUpgrading(false);
+                    return;
+                }
+
+                if (data.url) {
+                    // Redirect browser to Stripe Checkout Page
+                    window.location.href = data.url;
+                } else {
+                    toast.error("Failed to generate payment session.", { theme: "dark" });
+                    setIsUpgrading(false);
+                }
+            } else {
+                // Sandbox simulation
+                toast.loading("Initializing Sandbox upgrade...", {
+                    toastId: "payment-toast",
+                    theme: "dark"
+                });
+
+                // Simulate network delay
+                await new Promise((resolve) => setTimeout(resolve, 1500));
+
+                const result = await upgradeToPro();
+                toast.dismiss("payment-toast");
+
+                if (result?.error) {
+                    toast.error(result.error, { theme: "dark" });
+                } else {
+                    toast.success("Sandbox upgrade successful! plan: 'pro' 🎉", {
+                        position: "top-center",
+                        autoClose: 3000,
+                        theme: "dark"
+                    });
+                    
+                    setTimeout(() => {
+                        window.location.href = "/dashboard/user";
+                    }, 1000);
+                }
             }
         } catch (error) {
             toast.dismiss("payment-toast");
-            console.error("Payment submission failed:", error);
+            console.error("Payment checkout error:", error);
             toast.error("Upgrade checkout failed. Please try again.", { theme: "dark" });
         } finally {
             setIsUpgrading(false);

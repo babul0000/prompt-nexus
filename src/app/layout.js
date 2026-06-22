@@ -1,4 +1,5 @@
 import "./globals.css";
+import ThemeInitializer from "@/components/ThemeInitializer";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { ToastContainer } from "react-toastify";
@@ -16,18 +17,7 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              const savedTheme = localStorage.getItem('theme') || 'dark';
-              if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-              } else {
-                document.documentElement.classList.remove('dark');
-              }
-            })()
-          `
-        }} />
+        <ThemeInitializer />
       </head>
       <body className="min-h-full flex flex-col bg-slate-50 text-zinc-950 dark:bg-[#030014] dark:text-white" suppressHydrationWarning>
         <Navbar/>
