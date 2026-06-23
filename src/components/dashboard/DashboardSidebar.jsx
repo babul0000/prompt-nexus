@@ -35,14 +35,14 @@ export async function DashboardSidebar() {
         { icon: FileText, href: "/dashboard/user/my-prompts", label: "My Prompts" },
         { icon: Bookmark, href: "/dashboard/user/saved-prompts", label: "Saved Prompts" },
         { icon: CircleCheck, href: "/dashboard/user/my-reviews", label: "My Reviews" },
-        { icon: Person, href: "/dashboard/creator/profile", label: "Profile" },
+        { icon: Person, href: "/dashboard/user/profile", label: "Profile" },
     ];
 
     // 3. Admin Dashboard Links
     const adminNavLinks = [
     { 
         label: "Dashboard Overview", 
-        href: "/dashboard/admin", 
+        href: "/dashboard/admin/overview", 
         icon: LayoutDashboard 
     },
     { 

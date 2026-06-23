@@ -1,11 +1,13 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { useSession, authClient } from "@/lib/auth-client";
 import { getMyPrompts } from "@/lib/api/prompt";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Mail, FileText, CheckCircle2, Gem } from "lucide-react";
+import { Mail, FileText, CheckCircle2, Gem, Lock, X } from "lucide-react";
 import Link from "next/link";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProfilePage() {
   const { data: session, isPending: sessionPending } = useSession();
@@ -13,6 +15,24 @@ export default function ProfilePage() {
 
   const [promptsCount, setPromptsCount] = useState(0);
   const [loadingPrompts, setLoadingPrompts] = useState(true);
+
+  // User plan check (lowercase e convert kore check kora safe)
+  const isPro = user?.plan?.toLowerCase() === "pro";
+
+  // Modal and Edit Profile states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setNameInput(user.name || "");
+      setImagePreview(user.image || "");
+      setSelectedFile(null);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user?.id) {
@@ -30,161 +50,214 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  if (sessionPending) {
-    return (
-      <div className="flex flex-col items-center justify-center p-20 text-center space-y-4">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-        <p className="text-sm text-zinc-400 font-medium">Loading profile details...</p>
-      </div>
-    );
-  }
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center p-20 text-center space-y-4">
-        <p className="text-sm text-zinc-400 font-medium">No session found. Please sign in.</p>
-        <Link href="/auth/signin">
-          <button className="px-4 py-2 bg-purple-600 rounded-lg text-xs font-bold text-white hover:bg-purple-500 transition">
-            Sign In
-          </button>
-        </Link>
-      </div>
-    );
-  }
+  const uploadImageToImgbb = async (file) => {
+    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+    if (!apiKey) {
+      throw new Error("ImgBB API Key is not configured in .env file.");
+    }
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) {
+      throw new Error("Failed to upload image to ImgBB");
+    }
+    const data = await res.json();
+    return data.data.url;
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    if (!nameInput.trim()) {
+      toast.error("Name cannot be empty!");
+      return;
+    }
+    setSaving(true);
+    try {
+      let imageUrl = user.image || "";
+      if (selectedFile) {
+        toast.info("Uploading profile picture to ImgBB...", { autoClose: 1500 });
+        imageUrl = await uploadImageToImgbb(selectedFile);
+      }
+
+      const { data, error } = await authClient.user.update({
+        name: nameInput,
+        image: imageUrl,
+      });
+
+      if (error) {
+        throw new Error(error.message || "Failed to update profile");
+      }
+
+      toast.success("Profile updated successfully!");
+      setIsModalOpen(false);
+      
+      // Force reload session data
+      window.location.reload();
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      toast.error(err.message || "An error occurred while updating profile");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (sessionPending) return <div className="p-20 text-center text-white">Loading...</div>;
+  if (!user) return <div className="p-20 text-center text-white">Please sign in.</div>;
 
   const avatarFallback = user.name ? user.name.charAt(0).toUpperCase() : "U";
 
   return (
     <div className="relative min-h-screen bg-[#030014] text-white pt-6 pb-20 px-4 sm:px-6">
-      {/* Background glowing rings */}
-      <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[350px] h-[200px] bg-purple-650/5 blur-[90px] rounded-full pointer-events-none" />
-      <div className="absolute top-[25%] right-1/4 translate-x-1/2 w-[350px] h-[200px] bg-blue-650/5 blur-[90px] rounded-full pointer-events-none" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="max-w-4xl mx-auto relative z-10 space-y-8"
-      >
-        {/* Header Block */}
-        <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-none">
-            User Account Profile
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-400 font-medium">
-            Manage your plan, credentials, and published prompt details.
-          </p>
-        </div>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-8">
 
         {/* Profile Card */}
-        <div className="bg-[#0a0d26] border border-[#13193e] rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
-          {/* Accent glow corner */}
-          <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-600/5 rounded-full blur-[80px] pointer-events-none" />
-          
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 relative z-10">
-            {/* Avatar Circle with Custom Purple Glow */}
-            <div className="relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] p-[3px] shadow-[0_0_20px_rgba(124,58,237,0.35)]">
-              <div className="w-full h-full bg-[#040614] rounded-full flex items-center justify-center overflow-hidden">
-                {user.image ? (
-                  <img
-                    src={user.image}
-                    alt={user.name}
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                ) : (
-                  <span className="text-3xl font-black text-white tracking-wide">
-                    {avatarFallback}
-                  </span>
-                )}
-              </div>
+        <div className="bg-[#0a0d26] border border-[#13193e] rounded-2xl p-8">
+          <div className="flex flex-col sm:flex-row items-center gap-8">
+            <div className={`relative w-24 h-24 rounded-full overflow-hidden border-2 ${isPro ? "border-yellow-500" : "border-purple-500"} shrink-0`}>
+              {user.image ? (
+                <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-zinc-800 flex items-center justify-center font-bold text-2xl">{avatarFallback}</div>
+              )}
             </div>
 
-            {/* Profile Info Details */}
-            <div className="flex-1 text-center sm:text-left space-y-4 mt-2">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-bold text-white tracking-tight">
-                  {user.name}
-                </h2>
-                <div className="flex items-center justify-center sm:justify-start gap-2 text-zinc-400 text-sm">
-                  <Mail className="w-4 h-4 text-zinc-500" />
-                  <span className="font-medium text-xs sm:text-sm">{user.email}</span>
-                </div>
+            <div className="text-center sm:text-left space-y-2 flex-1 w-full">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+                <h2 className="text-2xl font-bold">{user.name}</h2>
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-4 py-1.5 text-xs font-bold text-white bg-purple-650 hover:bg-purple-500 rounded-lg transition duration-200 cursor-pointer shadow-md inline-flex items-center gap-1.5 self-center sm:self-auto"
+                >
+                  Edit Profile
+                </button>
               </div>
-
-              {/* Badges Container */}
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1">
-                <span className="bg-purple-950/40 text-purple-400 border border-purple-500/20 px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded-md">
-                  ROLE: {user.role || "USER"}
-                </span>
-                <span className="bg-amber-950/40 text-amber-400 border border-amber-500/20 px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded-md">
-                  PLAN: {user.plan?.toUpperCase() || "FREE"}
-                </span>
+              <p className="text-sm text-zinc-400 flex items-center gap-2 justify-center sm:justify-start"><Mail size={14} /> {user.email}</p>
+              <div className="flex gap-2 justify-center sm:justify-start">
+                <span className="bg-purple-900 px-2 py-0.5 rounded text-[10px] uppercase">Role: {user.role}</span>
+                <span className="bg-amber-900 px-2 py-0.5 rounded text-[10px] uppercase">Plan: {user.plan || "FREE"}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Grid Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-          {/* Card 1: Prompts Published */}
-          <div className="bg-[#0a0d26] border border-[#13193e] p-6 sm:p-7 rounded-2xl flex flex-col justify-between gap-4 shadow-lg min-h-[130px]">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2 text-[#7C3AED]">
-                <FileText className="w-4 h-4" />
-                <span className="text-[10px] font-bold text-zinc-500 tracking-wider uppercase">
-                  Prompts Published
-                </span>
-              </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-[#0a0d26] border border-[#13193e] p-6 rounded-2xl">
+            <div className="flex items-center gap-2 text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">
+              <FileText size={14} /> Prompts Published
             </div>
-            <div className="text-3xl sm:text-4xl font-black text-white">
-              {loadingPrompts ? "..." : promptsCount}
-            </div>
+            <div className="text-3xl font-black">{loadingPrompts ? "..." : promptsCount}</div>
           </div>
-
-          {/* Card 2: Account Status */}
-          <div className="bg-[#0a0d26] border border-[#13193e] p-6 sm:p-7 rounded-2xl flex flex-col justify-between gap-4 shadow-lg min-h-[130px]">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2 text-cyan-400">
-                <CheckCircle2 className="w-4 h-4" />
-                <span className="text-[10px] font-bold text-zinc-500 tracking-wider uppercase">
-                  Account Status
-                </span>
-              </div>
+          <div className="bg-[#0a0d26] border border-[#13193e] p-6 rounded-2xl">
+            <div className="flex items-center gap-2 text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">
+              <CheckCircle2 size={14} /> Account Status
             </div>
-            <div className="text-base sm:text-lg font-extrabold text-emerald-400">
-              Verified Member
-            </div>
+            <div className="text-lg font-bold text-emerald-400">Verified Member</div>
           </div>
         </div>
 
-        {/* Upgrade Banner Container */}
-        <div className="border border-dashed border-[#1e2554] bg-[#090a16]/30 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative overflow-hidden backdrop-blur-md">
-          {/* Cyan Glow ring underneath banner */}
-          <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-cyan-500/5 rounded-full blur-[60px] pointer-events-none" />
-
-          {/* Left Description info */}
-          <div className="flex items-start gap-4 max-w-xl">
-            <div className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-zinc-300">
-              <Gem className="w-5 h-5" />
-            </div>
-            <div className="space-y-1 mt-0.5 text-left">
-              <h4 className="text-sm sm:text-base font-bold text-white">
-                Upgrade to Pro Lifetime
-              </h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Unlock access to all private prompt templates, parameter sets, and community reviews for a single one-time contribution of $5.
-              </p>
-            </div>
+        {/* Upgrade Banner - Blur if Pro */}
+        <div className={`border border-dashed border-[#1e2554] bg-[#090a16]/30 rounded-2xl p-8 flex items-center justify-between transition-all duration-300 ${isPro ? "blur-[2px] opacity-70 pointer-events-none grayscale" : ""}`}>
+          <div>
+            <h4 className="font-bold flex items-center gap-2"><Gem className="text-cyan-500" /> Upgrade to Pro Lifetime</h4>
+            <p className="text-xs text-zinc-400 mt-1">Unlock all private templates for $5 only.</p>
           </div>
-
-          {/* Right Action Button */}
-          <Link href="/payment" className="shrink-0">
-            <button className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black text-xs font-extrabold px-6 py-3.5 rounded-xl transition duration-300 cursor-pointer shadow-[0_0_18px_rgba(6,182,212,0.25)]">
+          <Link href="/payment" className={isPro ? "pointer-events-none" : ""}>
+            <button
+              disabled={isPro}
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 text-black text-xs font-bold px-6 py-3 rounded-xl disabled:opacity-50"
+            >
               Upgrade Now ($5)
             </button>
           </Link>
         </div>
+
+        {/* Edit Profile Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
+            <div className="bg-[#0a0d26] border border-[#13193e] rounded-2xl w-full max-w-md relative p-6 sm:p-8 space-y-6 text-left shadow-2xl">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white">Edit Profile Details</h3>
+                  <p className="text-xs text-zinc-400">Update your name and profile picture.</p>
+                </div>
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-1.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-lg transition cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Modal Form */}
+              <form onSubmit={handleUpdateProfile} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-zinc-400 tracking-wider uppercase block">
+                    Display Name
+                  </label>
+                  <input
+                    type="text"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                    className="w-full p-3 rounded-lg border border-[#13183d] bg-[#040614] text-sm text-white focus:outline-none focus:border-purple-500/50"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-3.5 flex flex-col items-center">
+                  <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-purple-500/30 bg-[#040614] flex items-center justify-center shadow-lg">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xl font-bold text-zinc-500">{avatarFallback}</span>
+                    )}
+                  </div>
+                  <label className="cursor-pointer text-xs font-bold text-purple-400 hover:text-purple-300 transition-colors bg-purple-500/10 border border-purple-500/20 px-4 py-2 rounded-xl">
+                    Choose Profile Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-200 cursor-pointer disabled:opacity-50"
+                  >
+                    {saving ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-200 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </motion.div>
+      <ToastContainer position="top-center" hideProgressBar newestOnTop />
     </div>
   );
 }
