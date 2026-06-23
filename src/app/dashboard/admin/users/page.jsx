@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Users, 
   UserCheck, 
@@ -9,46 +9,102 @@ import {
   Search, 
   ShieldAlert 
 } from "lucide-react";
-import { Button, Input, Table, Badge, Avatar } from "@heroui/react";
-
-// Mock User Data
-const initialUsers = [
-  { id: "1", name: "Admin User", email: "admin@gmail.com", role: "admin", status: "active", joined: "2026-01-10", image: "" },
-  { id: "2", name: "Creator Jane", email: "creator@gmail.com", role: "creator", status: "active", joined: "2026-02-15", image: "" },
-  { id: "3", name: "Regular Joe", email: "joe@gmail.com", role: "user", status: "active", joined: "2026-03-01", image: "" },
-  { id: "4", name: "Suspect User", email: "spammy@gmail.com", role: "user", status: "suspended", joined: "2026-05-12", image: "" },
-];
+import { Button, Input, Chip, Avatar } from "@heroui/react";
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
+  // Edit Modal States
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [newRole, setNewRole] = useState("user");
+
+  // Fetch Users on mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("/api/admin/users");
+        if (res.ok) {
+          const data = await res.json();
+          setUsers(data);
+        } else {
+          console.error("Failed to load user list");
+        }
+      } catch (err) {
+        console.error("Failed to fetch users:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(search.toLowerCase()) || 
     user.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const toggleUserStatus = (id) => {
-    setUsers(users.map(u => {
-      if (u.id === id) {
-        return { ...u, status: u.status === "active" ? "suspended" : "active" };
+  const toggleUserStatus = async (id) => {
+    const userToUpdate = users.find(u => u.id === id);
+    if (!userToUpdate) return;
+    const currentStatus = (userToUpdate.status || "active").toLowerCase();
+    const nextStatus = currentStatus === "active" ? "suspended" : "active";
+
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: nextStatus })
+      });
+      if (res.ok) {
+        setUsers(users.map(u => u.id === id ? { ...u, status: nextStatus } : u));
+      } else {
+        console.error("Failed to update user status");
       }
-      return u;
-    }));
+    } catch (err) {
+      console.error("Error updating user status:", err);
+    }
   };
 
-  const changeUserRole = (id) => {
-    setUsers(users.map(u => {
-      if (u.id === id) {
-        const nextRole = u.role === "user" ? "creator" : u.role === "creator" ? "admin" : "user";
-        return { ...u, role: nextRole };
-      }
-      return u;
-    }));
+  const openEditModal = (user) => {
+    setSelectedUser(user);
+    setNewRole((user.role || "user").toLowerCase());
+    setIsEditModalOpen(true);
   };
+
+  const handleSaveRole = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selectedUser.id, role: newRole })
+      });
+      if (res.ok) {
+        setUsers(users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u));
+        setIsEditModalOpen(false);
+        setSelectedUser(null);
+      } else {
+        console.error("Failed to update user role");
+      }
+    } catch (err) {
+      console.error("Error updating user role:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-[#030014]">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8 p-6 text-white min-h-screen bg-[#030014]">
+    <div className="space-y-8 p-6 text-white min-h-screen bg-[#030014] relative">
       {/* Header section */}
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between border-b border-white/10 pb-5">
         <div>
@@ -76,7 +132,7 @@ export default function AdminUsersPage() {
           <div>
             <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Active Accounts</p>
             <h3 className="text-2xl font-black mt-1 text-emerald-400">
-              {users.filter(u => u.status === "active").length}
+              {users.filter(u => (u.status || "active").toLowerCase() === "active").length}
             </h3>
           </div>
           <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
@@ -87,7 +143,7 @@ export default function AdminUsersPage() {
           <div>
             <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Suspended</p>
             <h3 className="text-2xl font-black mt-1 text-rose-500">
-              {users.filter(u => u.status === "suspended").length}
+              {users.filter(u => (u.status || "").toLowerCase() === "suspended").length}
             </h3>
           </div>
           <div className="p-3 bg-rose-500/10 rounded-xl text-rose-400">
@@ -98,7 +154,10 @@ export default function AdminUsersPage() {
           <div>
             <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Admins / Creators</p>
             <h3 className="text-2xl font-black mt-1 text-purple-400">
-              {users.filter(u => u.role === "admin" || u.role === "creator").length}
+              {users.filter(u => {
+                const r = (u.role || "").toLowerCase();
+                return r === "admin" || r === "creator";
+              }).length}
             </h3>
           </div>
           <div className="p-3 bg-purple-500/10 rounded-xl text-purple-400">
@@ -138,7 +197,7 @@ export default function AdminUsersPage() {
               <tr key={user.id} className="hover:bg-white/[0.01] transition-colors">
                 <td className="p-4">
                   <div className="flex items-center gap-3">
-                    <Avatar size="sm" className="bg-purple-900 text-white font-bold">
+                    <Avatar src={user.image || null} size="sm" className="bg-purple-900 text-white font-bold">
                       {user.name.charAt(0).toUpperCase()}
                     </Avatar>
                     <div>
@@ -148,22 +207,22 @@ export default function AdminUsersPage() {
                   </div>
                 </td>
                 <td className="p-4">
-                  <Badge 
-                    className="capitalize text-[10px] font-extrabold px-2 py-0.5" 
+                  <Chip 
+                    className="capitalize text-[10px] font-extrabold px-2.5 py-1" 
                     color={user.role === "admin" ? "danger" : user.role === "creator" ? "secondary" : "default"}
                     variant="flat"
                   >
                     {user.role}
-                  </Badge>
+                  </Chip>
                 </td>
                 <td className="p-4">
-                  <Badge 
-                    className="capitalize text-[10px] font-extrabold px-2 py-0.5" 
+                  <Chip 
+                    className="capitalize text-[10px] font-extrabold px-2.5 py-1" 
                     color={user.status === "active" ? "success" : "warning"}
                     variant="flat"
                   >
                     {user.status}
-                  </Badge>
+                  </Chip>
                 </td>
                 <td className="p-4 text-xs text-zinc-400">{user.joined}</td>
                 <td className="p-4 text-right">
@@ -172,10 +231,10 @@ export default function AdminUsersPage() {
                       size="sm" 
                       variant="flat" 
                       color="secondary"
-                      className="text-xs font-bold cursor-pointer rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400"
-                      onClick={() => changeUserRole(user.id)}
+                      className="text-xs font-bold cursor-pointer rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 animate-none"
+                      onClick={() => openEditModal(user)}
                     >
-                      Cycle Role
+                      Edit
                     </Button>
                     <Button 
                       size="sm" 
@@ -204,6 +263,52 @@ export default function AdminUsersPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Edit Role Modal */}
+      {isEditModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-[#0a0d26] border border-[#13193e] rounded-2xl p-6 shadow-2xl relative space-y-4">
+            <h3 className="text-xl font-bold text-white">Edit User Role</h3>
+            <p className="text-xs text-zinc-400">
+              Assign a new system permission level to <span className="text-purple-400 font-semibold">{selectedUser.name}</span> ({selectedUser.email}).
+            </p>
+            
+            <div className="space-y-2">
+              <label className="text-xs text-zinc-500 font-bold uppercase tracking-wider block">Select Role</label>
+              <select
+                className="w-full bg-zinc-950/80 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors"
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value)}
+              >
+                <option value="user">User</option>
+                <option value="creator">Creator</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/5">
+              <Button
+                size="sm"
+                variant="flat"
+                className="rounded-xl font-bold bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+                onClick={() => {
+                  setIsEditModalOpen(false);
+                  setSelectedUser(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                className="rounded-xl font-bold bg-gradient-to-r from-purple-500 to-indigo-650 text-white shadow-lg"
+                onClick={handleSaveRole}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
