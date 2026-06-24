@@ -134,7 +134,7 @@ const TopCreators = () => {
     };
 
     return (
-        <section className="relative w-full bg-[#030014] pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center">
+        <section className="relative w-full bg-slate-50 dark:bg-[#030014] pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center transition-colors duration-300">
             {/* Background mesh glowing */}
             <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-purple-650/5 blur-[130px] rounded-full pointer-events-none" />
 
@@ -145,9 +145,9 @@ const TopCreators = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default"
+                        className="inline-flex items-center gap-2 bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-650 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default"
                     >
-                        <Award className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                        <Award className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 animate-pulse" />
                         <span>Showcase</span>
                     </motion.div>
                     
@@ -155,7 +155,7 @@ const TopCreators = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight"
+                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight"
                     >
                         Top Prompt <span className="bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#38BDF8] bg-clip-text text-transparent">Creators</span>
                     </motion.h2>
@@ -164,7 +164,7 @@ const TopCreators = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
+                        className="text-zinc-650 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
                     >
                         Engage with community leaders pioneering advanced prompt structures.
                     </motion.p>
@@ -187,7 +187,7 @@ const TopCreators = () => {
                             <motion.div 
                                 key={idx}
                                 variants={cardVariants}
-                                className="group relative flex flex-col items-center text-center bg-[#090a16]/40 border border-white/[0.05] hover:border-purple-500/30 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-md hover:-translate-y-1.5 hover:shadow-[0_15px_40px_rgba(124,58,237,0.06)]"
+                                className="group relative flex flex-col items-center text-center bg-white dark:bg-[#090a16]/40 border border-zinc-200 dark:border-white/[0.05] hover:border-purple-500/30 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-md hover:-translate-y-1.5 hover:shadow-lg dark:hover:shadow-[0_15px_40px_rgba(124,58,237,0.06)]"
                             >
                                 {/* Creator Avatar with purple glow ring */}
                                 <div className="relative mb-6">
@@ -207,14 +207,14 @@ const TopCreators = () => {
                                         </div>
                                     </div>
                                     {/* Small verified badge style decoration */}
-                                    <div className="absolute -bottom-1 -right-1 bg-[#7C3AED] border-2 border-[#090a16] p-1.5 rounded-full flex items-center justify-center">
+                                    <div className="absolute -bottom-1 -right-1 bg-[#7C3AED] border-2 border-white dark:border-[#090a16] p-1.5 rounded-full flex items-center justify-center">
                                         <Award className="w-3 h-3 text-white" />
                                     </div>
                                 </div>
 
                                 {/* Creator details */}
                                 <div className="space-y-1.5 mb-8">
-                                    <h3 className="text-lg font-bold text-white group-hover:text-purple-450 transition-colors">
+                                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white group-hover:text-purple-600 group-hover:dark:text-purple-400 transition-colors">
                                         {creator.name}
                                     </h3>
                                     <p className="text-xs text-zinc-500 font-semibold uppercase tracking-wider">
@@ -223,24 +223,24 @@ const TopCreators = () => {
                                 </div>
 
                                 {/* Divider */}
-                                <div className="w-full border-t border-white/5 mb-6" />
+                                <div className="w-full border-t border-zinc-200 dark:border-white/5 mb-6" />
 
                                 {/* Stats row */}
                                 <div className="flex justify-around items-center w-full">
                                     <div className="flex flex-col gap-1 items-center">
                                         <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase">Prompts</span>
-                                        <span className="text-base font-black text-white flex items-center gap-1.5">
-                                            <FileText className="w-4 h-4 text-purple-400 shrink-0" />
+                                        <span className="text-base font-black text-zinc-900 dark:text-white flex items-center gap-1.5">
+                                            <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
                                             {creator.promptCount}
                                         </span>
                                     </div>
                                     
-                                    <div className="w-px h-8 bg-white/10" />
+                                    <div className="w-px h-8 bg-zinc-200 dark:bg-white/10" />
 
                                     <div className="flex flex-col gap-1 items-center">
                                         <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase">Copies</span>
-                                        <span className="text-base font-black text-white flex items-center gap-1.5">
-                                            <Copy className="w-4 h-4 text-blue-400 shrink-0" />
+                                        <span className="text-base font-black text-zinc-900 dark:text-white flex items-center gap-1.5">
+                                            <Copy className="w-4 h-4 text-blue-650 dark:text-blue-400 shrink-0" />
                                             {creator.copyCount}
                                         </span>
                                     </div>

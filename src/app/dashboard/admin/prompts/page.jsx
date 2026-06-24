@@ -119,45 +119,45 @@ export default function AdminPromptsPage() {
 
     if (sessionPending || loading) {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4">
+            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4 text-zinc-900 dark:text-white bg-transparent">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-                <p className="text-sm text-zinc-400 font-medium">Loading templates...</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Loading templates...</p>
             </div>
         );
     }
 
     if (!user || user.role?.toLowerCase() !== "admin") {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4 text-white">
+            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4 text-zinc-900 dark:text-white bg-transparent">
                 <Shield className="w-10 h-10 text-rose-500" />
                 <h3 className="text-lg font-bold">Access Denied</h3>
-                <p className="text-sm text-zinc-400 font-medium">This page is restricted to administrators only.</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">This page is restricted to administrators only.</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#030014] text-white p-4 sm:p-6 md:p-8 relative">
+        <div className="min-h-screen bg-transparent text-zinc-900 dark:text-white p-4 sm:p-6 md:p-8 relative">
             {/* Background decorative glows */}
-            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-600/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-650/5 blur-[100px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto relative z-10 space-y-8">
                 {/* Header section */}
                 <div className="space-y-1 text-left">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-white">
+                    <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
                         Prompt Template Submissions Moderation
                     </h1>
-                    <p className="text-sm text-zinc-400 font-medium">
+                    <p className="text-sm text-zinc-550 dark:text-zinc-400 font-medium">
                         Approve templates, reject with feedback, or tag featured highlights.
                     </p>
                 </div>
 
                 {/* Table Container */}
-                <div className="w-full border border-white/5 rounded-2xl overflow-hidden bg-[#090a16]/80 backdrop-blur-md">
+                <div className="w-full border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden bg-white dark:bg-[#090a16]/80 backdrop-blur-md shadow-sm dark:shadow-none">
                     <div className="overflow-x-auto w-full">
-                        <table className="w-full border-collapse text-left text-sm text-zinc-300">
+                        <table className="w-full border-collapse text-left text-sm text-zinc-700 dark:text-zinc-300">
                             <thead>
-                                <tr className="border-b border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-950/50">
+                                <tr className="border-b border-zinc-200 dark:border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-950/50">
                                     <th className="py-4 px-6 min-w-[220px]">Template Title</th>
                                     <th className="py-4 px-6 min-w-[180px]">Creator</th>
                                     <th className="py-4 px-4">AI Engine</th>
@@ -168,10 +168,10 @@ export default function AdminPromptsPage() {
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-white/5">
+                            <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
                                 {prompts.length === 0 ? (
                                     <tr>
-                                        <td colSpan="7" className="py-12 px-6 text-center text-zinc-550 font-medium">
+                                        <td colSpan="7" className="py-12 px-6 text-center text-zinc-500 font-medium">
                                             No templates found in database!
                                         </td>
                                     </tr>
@@ -183,10 +183,10 @@ export default function AdminPromptsPage() {
                                         const currentStatus = (p.status || "pending").toLowerCase();
 
                                         return (
-                                            <tr key={p._id} className="hover:bg-white/[0.01] transition-colors duration-200">
+                                            <tr key={p._id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors duration-200">
                                                 {/* Title & Category */}
                                                 <td className="py-4 px-6 text-left">
-                                                    <div className="font-bold text-sm text-white max-w-[200px] truncate" title={p.title}>
+                                                    <div className="font-bold text-sm text-zinc-900 dark:text-white max-w-[200px] truncate" title={p.title}>
                                                         {p.title}
                                                     </div>
                                                     <div className="text-[10px] text-zinc-500 mt-0.5 uppercase tracking-wide font-medium">
@@ -196,7 +196,7 @@ export default function AdminPromptsPage() {
 
                                                 {/* Creator Info */}
                                                 <td className="py-4 px-6 text-left">
-                                                    <div className="font-bold text-sm text-purple-400 truncate max-w-[160px]">
+                                                    <div className="font-bold text-sm text-purple-600 dark:text-purple-400 truncate max-w-[160px]">
                                                         {creatorName}
                                                     </div>
                                                     <div className="text-[10px] text-zinc-500 mt-0.5 font-medium">
@@ -212,7 +212,7 @@ export default function AdminPromptsPage() {
                                                 </td>
 
                                                 {/* Visibility */}
-                                                <td className="py-4 px-4 text-xs font-semibold capitalize text-zinc-300">
+                                                <td className="py-4 px-4 text-xs font-semibold capitalize text-zinc-650 dark:text-zinc-300">
                                                     {p.visibility || "Public"}
                                                 </td>
 
@@ -223,7 +223,7 @@ export default function AdminPromptsPage() {
                                                         className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition cursor-pointer select-none ${
                                                             isFeatured
                                                                 ? "bg-amber-500/10 text-amber-500 border border-amber-500/25"
-                                                                : "bg-transparent text-zinc-400 border border-white/10 hover:border-white/20 hover:text-white"
+                                                                : "bg-transparent text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 hover:text-zinc-900 dark:hover:text-white"
                                                         }`}
                                                     >
                                                         <Star className={`w-3.5 h-3.5 ${isFeatured ? "fill-amber-500" : ""}`} />
@@ -235,10 +235,10 @@ export default function AdminPromptsPage() {
                                                 <td className="py-4 px-4">
                                                     <span className={`text-[10px] font-black tracking-wider px-2.5 py-1 rounded-full uppercase border ${
                                                         currentStatus === "approved"
-                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25"
+                                                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25"
                                                             : currentStatus === "rejected"
-                                                            ? "bg-rose-500/10 text-rose-450 border-rose-500/25"
-                                                            : "bg-amber-500/10 text-amber-500 border-amber-500/25"
+                                                            ? "bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/25"
+                                                            : "bg-amber-500/10 text-amber-600 dark:text-amber-500 border-amber-500/25"
                                                     }`}>
                                                         {currentStatus}
                                                     </span>
@@ -246,12 +246,12 @@ export default function AdminPromptsPage() {
 
                                                 {/* Action Buttons */}
                                                 <td className="py-4 px-6 text-right">
-                                                    <div className="flex gap-2 justify-end items-center">
+                                                    <div className="flex gap-2 justify-end items-center text-zinc-500 dark:text-zinc-400">
                                                         {/* Eye: View Detail Page */}
                                                         <Link 
                                                             href={`/all-prompts/${p._id}`}
                                                             target="_blank"
-                                                            className="p-2 bg-white/5 border border-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-lg transition"
+                                                            className="p-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-white/5 border border-zinc-200 dark:border-white/5 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white rounded-lg transition"
                                                             title="View Details"
                                                         >
                                                             <Eye size={14} />
@@ -261,7 +261,7 @@ export default function AdminPromptsPage() {
                                                         {currentStatus === "pending" && (
                                                             <button
                                                                 onClick={() => handleApprove(p._id)}
-                                                                className="p-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-600 hover:text-white rounded-lg transition cursor-pointer"
+                                                                className="p-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-lg transition cursor-pointer"
                                                                 title="Approve"
                                                             >
                                                                 <Check size={14} />
@@ -277,7 +277,7 @@ export default function AdminPromptsPage() {
                                                                     setReasonInput("");
                                                                     setActionModalOpen(true);
                                                                 }}
-                                                                className="p-2 bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition cursor-pointer"
+                                                                className="p-2 bg-rose-500/10 border border-rose-500/20 text-rose-600 hover:bg-rose-600 hover:text-white rounded-lg transition cursor-pointer"
                                                                 title="Reject/Suspend"
                                                             >
                                                                 <X size={14} />
@@ -292,7 +292,7 @@ export default function AdminPromptsPage() {
                                                                 setReasonInput("");
                                                                 setActionModalOpen(true);
                                                             }}
-                                                            className="p-2 bg-white/5 border border-white/5 text-rose-550 hover:bg-rose-600 hover:text-white rounded-lg transition cursor-pointer"
+                                                            className="p-2 bg-rose-500/10 border border-rose-500/20 text-rose-600 hover:bg-rose-600 hover:text-white rounded-lg transition cursor-pointer"
                                                             title="Delete Permanently"
                                                         >
                                                             <Trash2 size={14} />
@@ -312,11 +312,11 @@ export default function AdminPromptsPage() {
             {/* Action Confirmation Modal with Reason Input */}
             {actionModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
-                    <div className="bg-[#0a0d26] border border-[#13193e] rounded-2xl w-full max-w-md relative p-6 sm:p-8 space-y-6 text-left">
+                    <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] rounded-2xl w-full max-w-md relative p-6 sm:p-8 space-y-6 text-left shadow-2xl text-zinc-900 dark:text-white">
                         {/* Modal Header */}
-                        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/5 pb-4">
                             <div>
-                                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                                <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2">
                                     {actionType === "reject" ? (
                                         <>
                                             <X className="w-5 h-5 text-rose-500" />
@@ -324,12 +324,12 @@ export default function AdminPromptsPage() {
                                         </>
                                     ) : (
                                         <>
-                                            <Trash2 className="w-5 h-5 text-rose-550" />
+                                            <Trash2 className="w-5 h-5 text-rose-600" />
                                             <span>Delete Prompt Template</span>
                                         </>
                                     )}
                                 </h3>
-                                <p className="text-xs text-zinc-400 font-medium mt-1">
+                                <p className="text-xs text-zinc-550 dark:text-zinc-400 font-medium mt-1">
                                     {actionType === "reject"
                                         ? "Provide feedback explaining why this prompt is rejected."
                                         : "This action cannot be undone. Enter the deletion reason."}
@@ -337,7 +337,7 @@ export default function AdminPromptsPage() {
                             </div>
                             <button
                                 onClick={() => setActionModalOpen(false)}
-                                className="p-1.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-lg transition cursor-pointer"
+                                className="p-1.5 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -346,7 +346,7 @@ export default function AdminPromptsPage() {
                         {/* Modal Form */}
                         <form onSubmit={handleConfirmAction} className="space-y-4">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Reason / Feedback *
                                 </label>
                                 <textarea
@@ -358,17 +358,17 @@ export default function AdminPromptsPage() {
                                             ? "Explain why the prompt template violates community guidelines or has errors..."
                                             : "Reason for deleting this prompt template permanently..."
                                     }
-                                    className="w-full p-3.5 rounded-lg border border-[#151b3d] bg-[#040614] text-sm text-white focus:outline-none focus:border-purple-500/40 placeholder-zinc-650 leading-relaxed"
+                                    className="w-full p-3.5 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-purple-500/40 placeholder-zinc-400 dark:placeholder-zinc-650 leading-relaxed"
                                     required
                                 />
                             </div>
 
                             {/* Modal Footer buttons */}
-                            <div className="pt-4 flex gap-3 justify-end border-t border-white/5">
+                            <div className="pt-4 flex gap-3 justify-end border-t border-zinc-200 dark:border-white/5">
                                 <button
                                     type="button"
                                     onClick={() => setActionModalOpen(false)}
-                                    className="px-4 py-2 bg-transparent hover:bg-white/5 text-zinc-400 hover:text-white rounded-lg text-xs font-bold transition cursor-pointer"
+                                    className="px-4 py-2 bg-transparent hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white rounded-lg text-xs font-bold transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>

@@ -95,9 +95,9 @@ const Banner = () => {
     };
 
     return (
-        <section className="relative w-full bg-[#030014] pt-36 pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center justify-center min-h-[90vh]">
+        <section className="relative w-full bg-slate-50 dark:bg-[#030014] pt-36 pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center justify-center min-h-[90vh] transition-colors duration-300">
             {/* Glowing background mesh gradients */}
-            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-purple-650/10 blur-[130px] rounded-full pointer-events-none" />
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-purple-650/10 dark:bg-purple-650/10 blur-[130px] rounded-full pointer-events-none" />
             <div className="absolute bottom-[5%] left-[20%] w-[350px] h-[350px] bg-blue-650/5 blur-[120px] rounded-full pointer-events-none" />
 
             <div className="max-w-4xl w-full mx-auto text-center space-y-10 relative z-10">
@@ -112,11 +112,11 @@ const Banner = () => {
                         <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
                         <span>Elevate Your AI Productivity</span>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-[1.15]">
                         Discover & Share Premium <br />
                         <span className="bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#38BDF8] bg-clip-text text-transparent">AI Prompts</span> Ecosystem
                     </h1>
-                    <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto font-medium">
+                    <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base max-w-xl mx-auto font-medium">
                         Accelerate your workflow with tested, high-quality prompt templates curated for creators, developers, and writers.
                     </p>
                 </motion.div>
@@ -128,10 +128,10 @@ const Banner = () => {
                         initial={{ opacity: 0, y: 20 }} 
                         animate={{ opacity: 1, y: 0 }} 
                         transition={{ duration: 0.6, delay: 0.2 }} 
-                        className="w-full bg-[#09090b]/80 border border-white/10 p-2.5 rounded-2xl flex items-center gap-3 backdrop-blur-md focus-within:border-purple-500/40 focus-within:shadow-[0_0_20px_rgba(124,58,237,0.15)] transition-all"
+                        className="w-full bg-white/90 dark:bg-[#09090b]/80 border border-zinc-200 dark:border-white/10 p-2.5 rounded-2xl flex items-center gap-3 backdrop-blur-md focus-within:border-purple-500/40 focus-within:shadow-[0_0_20px_rgba(124,58,237,0.15)] transition-all shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-none"
                     >
                         <div className="flex items-center gap-2 flex-grow pl-3">
-                            <Search className="w-5 h-5 text-zinc-500 shrink-0" />
+                            <Search className="w-5 h-5 text-zinc-400 dark:text-zinc-500 shrink-0" />
                             <input
                                 type="text"
                                 placeholder="Search prompts by title, tags, or AI tool..."
@@ -141,7 +141,7 @@ const Banner = () => {
                                     setShowSuggestions(true);
                                 }}
                                 onFocus={() => setShowSuggestions(true)}
-                                className="w-full bg-transparent text-white text-sm focus:outline-none placeholder-zinc-500"
+                                className="w-full bg-transparent text-zinc-900 dark:text-white text-sm focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-500"
                             />
                             {loadingSuggestions && (
                                 <Loader2 className="w-4 h-4 text-purple-400 animate-spin shrink-0 mr-2" />
@@ -164,7 +164,7 @@ const Banner = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 10 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute top-full left-0 right-0 mt-2 bg-[#09090b]/95 border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] backdrop-blur-md overflow-hidden text-left"
+                                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#09090b]/95 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] backdrop-blur-md overflow-hidden text-left"
                             >
                                 {/* Empty query -> Show Quick Searches */}
                                 {!searchQuery.trim() && (
@@ -183,7 +183,7 @@ const Banner = () => {
                                                         setShowSuggestions(false);
                                                         router.push(`/all-prompts?search=${encodeURIComponent(item.query)}`);
                                                     }}
-                                                    className="flex items-center gap-2 p-3 bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-zinc-300 hover:text-white rounded-xl text-xs font-semibold text-left transition-all cursor-pointer"
+                                                    className="flex items-center gap-2 p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/50 dark:border-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 hover:border-zinc-300 dark:hover:border-white/10 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white rounded-xl text-xs font-semibold text-left transition-all cursor-pointer"
                                                 >
                                                     <Tag className="w-3 h-3 text-purple-400" />
                                                     <span>{item.label}</span>
@@ -209,13 +209,13 @@ const Banner = () => {
                                                         setShowSuggestions(false);
                                                         router.push(`/all-prompts?id=${prompt._id || prompt.id}`);
                                                     }}
-                                                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-all text-left group border-b border-white/[0.02] last:border-b-0 cursor-pointer"
+                                                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-zinc-50 dark:hover:bg-white/5 transition-all text-left group border-b border-zinc-100 dark:border-white/[0.02] last:border-b-0 cursor-pointer"
                                                 >
                                                     <div className="flex flex-col gap-0.5 truncate max-w-[70%]">
-                                                        <span className="text-sm font-bold text-white group-hover:text-purple-400 transition-colors truncate">
+                                                        <span className="text-sm font-bold text-zinc-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate">
                                                             {prompt.title}
                                                         </span>
-                                                        <span className="text-[10px] text-zinc-500 truncate">
+                                                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
                                                             {prompt.description}
                                                         </span>
                                                     </div>
@@ -280,7 +280,7 @@ const Banner = () => {
                             key={tag} 
                             type="button" 
                             onClick={() => handleTagClick(tag)} 
-                            className="bg-white/5 border border-white/5 hover:border-purple-500/30 text-zinc-400 hover:text-white px-3 py-1 rounded-lg transition-all text-xs font-semibold cursor-pointer active:scale-95"
+                            className="bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/5 hover:border-purple-500/30 text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white px-3 py-1 rounded-lg transition-all text-xs font-semibold cursor-pointer active:scale-95"
                         >
                             #{tag}
                         </button>
@@ -292,27 +292,27 @@ const Banner = () => {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.5 }}
-                    className="flex items-center justify-center gap-10 md:gap-16 pt-8 border-t border-white/5 w-full max-w-xl mx-auto"
+                    className="flex items-center justify-center gap-10 md:gap-16 pt-8 border-t border-zinc-200 dark:border-white/5 w-full max-w-xl mx-auto"
                 >
                     <div className="flex items-center gap-3 text-left">
-                        <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-xl">
+                        <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 rounded-xl">
                             <Users className="w-4 h-4" />
                         </div>
                         <div>
-                            <h4 className="text-xl font-black text-white">{stats.users}+</h4>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Creators</p>
+                            <h4 className="text-xl font-black text-zinc-900 dark:text-white">{stats.users}+</h4>
+                            <p className="text-[10px] text-zinc-550 dark:text-zinc-500 font-bold uppercase tracking-wider">Creators</p>
                         </div>
                     </div>
                     
-                    <div className="w-px h-8 bg-white/10" />
-
+                    <div className="w-px h-8 bg-zinc-200 dark:bg-white/10" />
+ 
                     <div className="flex items-center gap-3 text-left">
-                        <div className="p-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl">
+                        <div className="p-3 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl">
                             <FileText className="w-4 h-4" />
                         </div>
                         <div>
-                            <h4 className="text-xl font-black text-white">{stats.prompts}+</h4>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">AI Templates</p>
+                            <h4 className="text-xl font-black text-zinc-900 dark:text-white">{stats.prompts}+</h4>
+                            <p className="text-[10px] text-zinc-550 dark:text-zinc-500 font-bold uppercase tracking-wider">AI Templates</p>
                         </div>
                     </div>
                 </motion.div>

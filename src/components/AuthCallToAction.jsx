@@ -8,14 +8,20 @@ import { useSession } from '@/lib/auth-client';
 
 const AuthCallToAction = () => {
     const { data: session, isPending } = useSession();
+    const [mounted, setMounted] = React.useState(false);
 
-    // If session is loading or user is already logged in, do not render the CTA banner
-    if (isPending || session?.user) {
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Return null during SSR and initial client hydration to prevent mismatch.
+    // Once mounted, if session is loading or user is logged in, do not render the CTA banner.
+    if (!mounted || isPending || session?.user) {
         return null;
     }
 
     return (
-        <section className="relative w-full bg-[#030014] pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center">
+        <section className="relative w-full bg-slate-50 dark:bg-[#030014] pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center transition-colors duration-300">
             {/* Glowing background circles */}
             <div className="absolute top-[20%] left-1/4 w-[400px] h-[400px] bg-purple-600/10 blur-[130px] rounded-full pointer-events-none" />
             <div className="absolute bottom-[20%] right-1/4 w-[400px] h-[400px] bg-blue-600/10 blur-[130px] rounded-full pointer-events-none" />
@@ -25,7 +31,7 @@ const AuthCallToAction = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7 }}
-                    className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0c0d21]/90 to-[#070817]/95 border border-white/[0.08] hover:border-purple-500/20 p-8 md:p-12 shadow-[0_0_50px_rgba(0,0,0,0.5)] dark:shadow-[0_0_50px_rgba(124,58,237,0.06)] backdrop-blur-xl"
+                    className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white to-zinc-50 dark:from-[#0c0d21]/90 dark:to-[#070817]/95 border border-zinc-200 dark:border-white/[0.08] hover:border-purple-500/20 p-8 md:p-12 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_0_50px_rgba(124,58,237,0.06)] backdrop-blur-xl"
                 >
                     {/* Background grid pattern */}
                     <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
@@ -33,42 +39,42 @@ const AuthCallToAction = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
                         {/* Text Content */}
                         <div className="lg:col-span-7 space-y-6">
-                            <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-4 py-1.5 rounded-full text-xs text-purple-400 font-bold tracking-wide">
-                                <Sparkles className="w-3.5 h-3.5 animate-pulse text-purple-400" />
+                            <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-4 py-1.5 rounded-full text-xs text-purple-650 dark:text-purple-400 font-bold tracking-wide">
+                                <Sparkles className="w-3.5 h-3.5 animate-pulse text-purple-500 dark:text-purple-400" />
                                 <span>Unlock Premium AI Toolkit</span>
                             </div>
 
-                            <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-tight">
                                 Ready to Elevate Your <br />
                                 <span className="bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#38BDF8] bg-clip-text text-transparent">AI Prompt Engineering?</span>
                             </h2>
 
-                            <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl">
+                            <p className="text-zinc-600 dark:text-zinc-450 text-sm md:text-base leading-relaxed max-w-xl">
                                 Join PromptForge today and connect with thousands of creators. Access advanced, tested prompts for ChatGPT, Midjourney, Claude, and more.
                             </p>
 
                             {/* Features list */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                                <div className="flex items-center gap-3 text-zinc-300">
-                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                                <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-350">
+                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
                                         <Zap className="w-4 h-4" />
                                     </div>
                                     <span className="text-xs md:text-sm font-semibold">100+ Pro Templates</span>
                                 </div>
-                                <div className="flex items-center gap-3 text-zinc-300">
-                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                                <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-350">
+                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
                                         <Lock className="w-4 h-4" />
                                     </div>
                                     <span className="text-xs md:text-sm font-semibold">Unlock Premium Prompts</span>
                                 </div>
-                                <div className="flex items-center gap-3 text-zinc-300">
-                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                                <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-350">
+                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
                                         <Globe className="w-4 h-4" />
                                     </div>
                                     <span className="text-xs md:text-sm font-semibold">Creator Community</span>
                                 </div>
-                                <div className="flex items-center gap-3 text-zinc-300">
-                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                                <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-350">
+                                    <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
                                         <Sparkles className="w-4 h-4" />
                                     </div>
                                     <span className="text-xs md:text-sm font-semibold">Create & Share Prompts</span>
@@ -87,7 +93,7 @@ const AuthCallToAction = () => {
                             </Link>
 
                             <Link href="/auth/signin" className="w-full sm:w-auto lg:w-full">
-                                <button className="w-full bg-white/5 border border-white/10 hover:border-purple-550 text-zinc-300 hover:text-white py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 hover:bg-white/10 cursor-pointer">
+                                <button className="w-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:border-purple-500 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 hover:bg-zinc-200 dark:hover:bg-white/10 cursor-pointer">
                                     <span>Already have an account? Sign In</span>
                                 </button>
                             </Link>

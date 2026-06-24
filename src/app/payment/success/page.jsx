@@ -70,53 +70,53 @@ export default async function SuccessPage({ searchParams }) {
     }
 
     return (
-        <div className="relative min-h-screen bg-[#030014] text-white flex items-center justify-center pt-24 pb-20 px-4 sm:px-6 overflow-hidden">
+        <div className="relative min-h-screen bg-slate-50 dark:bg-[#030014] text-zinc-900 dark:text-white flex items-center justify-center pt-24 pb-20 px-4 sm:px-6 overflow-hidden transition-colors duration-300">
             {/* Glowing background circles */}
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-1/4 left-1/3 w-[300px] h-[300px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-purple-600/[0.03] dark:bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-1/4 left-1/3 w-[300px] h-[300px] bg-blue-600/[0.03] dark:bg-blue-600/5 blur-[100px] rounded-full pointer-events-none" />
 
-            <div className="max-w-md w-full bg-[#090a16]/80 border border-white/[0.08] rounded-3xl p-8 sm:p-10 text-center backdrop-blur-md shadow-2xl relative z-10 space-y-6">
+            <div className="max-w-md w-full bg-white dark:bg-[#090a16]/80 border border-zinc-200 dark:border-white/[0.08] rounded-3xl p-8 sm:p-10 text-center backdrop-blur-md shadow-sm dark:shadow-2xl relative z-10 space-y-6">
                 
                 {success ? (
                     <>
                         {/* Success Icon */}
-                        <div className="mx-auto w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                        <div className="mx-auto w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                             <CheckCircle2 className="w-8 h-8" />
                         </div>
 
                         {/* Title */}
                         <div className="space-y-2">
-                            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
                                 Payment Successful!
                             </h1>
-                            <p className="text-xs text-emerald-400 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5">
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5">
                                 <Sparkles className="w-3.5 h-3.5" />
                                 <span>Aiverse Pro Activated</span>
                             </p>
                         </div>
 
                         {/* Success details */}
-                        <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl text-left space-y-2.5">
-                            <div className="flex justify-between text-xs text-zinc-400">
+                        <div className="p-4 bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl text-left space-y-2.5">
+                            <div className="flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
                                 <span>Plan Type:</span>
-                                <span className="font-semibold text-white">Lifetime Pro</span>
+                                <span className="font-semibold text-zinc-800 dark:text-white">Lifetime Pro</span>
                             </div>
                             {customerEmail && (
-                                <div className="flex justify-between text-xs text-zinc-400">
+                                <div className="flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
                                     <span>Billing Email:</span>
-                                    <span className="font-semibold text-white truncate max-w-[180px]">{customerEmail}</span>
+                                    <span className="font-semibold text-zinc-800 dark:text-white truncate max-w-[180px]">{customerEmail}</span>
                                 </div>
                             )}
-                            <div className="flex justify-between text-xs text-zinc-400">
+                            <div className="flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
                                 <span>Status:</span>
-                                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
                                     Active
                                 </span>
                             </div>
                         </div>
 
                         {/* Success description message */}
-                        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-zinc-650 dark:text-zinc-400 leading-relaxed">
                             Thank you for upgrading! Your account has been upgraded to **Aiverse Pro Access**. You now have unlimited access to premium prompt templates and dashboard privileges.
                         </p>
 
@@ -139,18 +139,18 @@ export default async function SuccessPage({ searchParams }) {
 
                         {/* Title */}
                         <div className="space-y-2">
-                            <h1 className="text-2xl font-extrabold text-white tracking-tight">
+                            <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
                                 Verification Failed
                             </h1>
-                            <p className="text-xs text-rose-500 font-bold uppercase tracking-wider">
+                            <p className="text-xs text-rose-600 dark:text-rose-500 font-bold uppercase tracking-wider">
                                 Payment Verification Error
                             </p>
                         </div>
 
                         {/* Error Description details */}
                         <div className="p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl text-left">
-                            <p className="text-xs font-semibold text-rose-400 tracking-wide mb-1">Details:</p>
-                            <p className="text-[11px] text-zinc-400 font-mono leading-relaxed break-words">
+                            <p className="text-xs font-semibold text-rose-600 dark:text-rose-400 tracking-wide mb-1">Details:</p>
+                            <p className="text-[11px] text-zinc-600 dark:text-zinc-400 font-mono leading-relaxed break-words">
                                 {errorMessage}
                             </p>
                         </div>
@@ -162,7 +162,7 @@ export default async function SuccessPage({ searchParams }) {
                                     <span>Try Payment Again</span>
                                 </button>
                             </Link>
-                            <Link href="/dashboard/user" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors font-medium">
+                            <Link href="/dashboard/user" className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors font-medium">
                                 Back to Dashboard
                             </Link>
                         </div>

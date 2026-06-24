@@ -166,27 +166,27 @@ export default function MyPrompts() {
     }
 
     return (
-        <div className="bg-[#030014] text-white transition-colors duration-200 min-h-screen p-4 sm:p-6 md:p-8 relative">
+        <div className="bg-transparent text-zinc-900 dark:text-white transition-colors duration-200 min-h-screen p-4 sm:p-6 md:p-8 relative">
             {/* Glowing background highlights */}
-            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-600/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-650/5 blur-[100px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto relative z-10 space-y-8">
                 {/* Header block */}
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-white">
+                    <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
                         My Prompt Templates
                     </h1>
-                    <p className="text-sm text-zinc-400 font-medium">
+                    <p className="text-sm text-zinc-550 dark:text-zinc-400 font-medium">
                         Review approval status, manage details, and track template analytics.
                     </p>
                 </div>
 
                 {/* Table container */}
-                <div className="w-full border border-white/5 rounded-2xl overflow-hidden bg-[#090a16]/80 backdrop-blur-md">
+                <div className="w-full border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden bg-white dark:bg-[#090a16]/80 backdrop-blur-md shadow-sm dark:shadow-none">
                     <div className="overflow-x-auto w-full">
-                        <table className="w-full border-collapse text-left text-sm text-zinc-300">
+                        <table className="w-full border-collapse text-left text-sm text-zinc-705 dark:text-zinc-300">
                             <thead>
-                                <tr className="border-b border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-950/50">
+                                <tr className="border-b border-zinc-200 dark:border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-950/50">
                                     <th className="py-4 px-6 min-w-[200px]">Title & Category</th>
                                     <th className="py-4 px-4">AI Engine</th>
                                     <th className="py-4 px-4">Visibility</th>
@@ -196,10 +196,10 @@ export default function MyPrompts() {
                                 </tr>
                             </thead>
                             
-                            <tbody className="divide-y divide-white/5">
+                            <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
                                 {prompts.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-500">
+                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-500 dark:text-zinc-550">
                                             No prompts found! Let's submit your first template.
                                         </td>
                                     </tr>
@@ -208,26 +208,26 @@ export default function MyPrompts() {
                                         const isApproved = p.status?.toLowerCase() === 'approved';
                                         
                                         return (
-                                            <tr key={p._id} className="hover:bg-white/[0.01] transition-colors duration-200">
+                                            <tr key={p._id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors duration-200">
                                                 {/* Title & Category */}
                                                 <td className="py-4 px-6">
-                                                    <div className="font-bold text-sm text-white truncate max-w-[250px]" title={p.title}>
+                                                    <div className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-[250px]" title={p.title}>
                                                         {p.title}
                                                     </div>
-                                                    <div className="text-[10px] text-zinc-550 mt-1 uppercase tracking-wide font-bold">
+                                                    <div className="text-[10px] text-purple-600 dark:text-zinc-400 mt-1 uppercase tracking-wide font-bold">
                                                         #{p.category}
                                                     </div>
                                                 </td>
 
                                                 {/* AI Engine */}
                                                 <td className="py-4 px-4">
-                                                    <span className="bg-zinc-900 text-zinc-300 border border-white/5 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
+                                                    <span className="bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-250 dark:border-white/5 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
                                                         {p.aiTool || "ChatGPT"}
                                                     </span>
                                                 </td>
 
                                                 {/* Visibility */}
-                                                <td className="py-4 px-4 text-xs font-semibold text-zinc-400 capitalize">
+                                                <td className="py-4 px-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400 capitalize">
                                                     {p.visibility || "Public"}
                                                 </td>
 
@@ -235,8 +235,8 @@ export default function MyPrompts() {
                                                 <td className="py-4 px-4">
                                                     <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
                                                         isApproved 
-                                                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                                                            : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                                            ? 'bg-emerald-500/10 text-emerald-605 dark:text-emerald-400 border-emerald-500/20' 
+                                                            : 'bg-amber-500/10 text-amber-605 dark:text-amber-400 border-amber-500/20'
                                                     }`}>
                                                         <span className={`w-1.5 h-1.5 rounded-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                                                         {p.status || "PENDING"}
@@ -244,30 +244,30 @@ export default function MyPrompts() {
                                                 </td>
 
                                                 {/* Copies */}
-                                                <td className="py-4 px-4 text-xs font-semibold text-white">
+                                                <td className="py-4 px-4 text-xs font-semibold text-zinc-800 dark:text-white">
                                                     {p.copyCount || 0}
                                                 </td>
 
                                                 {/* Action buttons */}
                                                 <td className="py-4 px-6 text-right">
-                                                    <div className="flex gap-1 justify-end text-zinc-500">
+                                                    <div className="flex gap-1 justify-end text-zinc-400 dark:text-zinc-550">
                                                         <Link 
                                                             href={`/all-prompts/${p._id}`}
-                                                            className="p-2 hover:bg-white/5 hover:text-white rounded-lg transition"
+                                                            className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition"
                                                             title="View Details"
                                                         >
                                                             <Eye size={16} />
                                                         </Link>
                                                         <button 
                                                             onClick={() => handleEditClick(p)}
-                                                            className="p-2 hover:bg-white/5 hover:text-white rounded-lg transition cursor-pointer"
+                                                            className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
                                                             title="Edit Details"
                                                         >
                                                             <Pencil size={16} />
                                                         </button>
                                                         <button 
                                                             onClick={() => handleDeleteClick(p._id)}
-                                                            className="p-2 hover:bg-rose-500/10 hover:text-rose-500 rounded-lg transition cursor-pointer"
+                                                            className="p-2 hover:bg-rose-500/10 hover:text-rose-550 rounded-lg transition cursor-pointer"
                                                             title="Delete Template"
                                                         >
                                                             <Trash2 size={16} />
@@ -287,17 +287,17 @@ export default function MyPrompts() {
             {/* Edit Modal (Glassmorphism Overlay) */}
             {editingPrompt && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
-                    <div className="bg-[#0a0d26] border border-[#13193e] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative p-6 sm:p-8 space-y-6">
+                    <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative p-6 sm:p-8 space-y-6 shadow-2xl text-zinc-900 dark:text-white">
                         
                         {/* Modal Header */}
-                        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/5 pb-4">
                             <div>
-                                <h3 className="text-lg font-bold text-white">Edit Prompt Template</h3>
-                                <p className="text-xs text-zinc-400">Modify information below and re-submit for admin verification.</p>
+                                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Edit Prompt Template</h3>
+                                <p className="text-xs text-zinc-550 dark:text-zinc-400">Modify information below and re-submit for admin verification.</p>
                             </div>
                             <button 
                                 onClick={() => setEditingPrompt(null)}
-                                className="p-1.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-lg transition cursor-pointer"
+                                className="p-1.5 bg-zinc-150 dark:bg-white/5 hover:bg-zinc-250 dark:hover:bg-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
                             >
                                 <X size={18} />
                             </button>
@@ -308,41 +308,41 @@ export default function MyPrompts() {
                             
                             {/* Title */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                     Prompt Title *
                                 </label>
                                 <input
                                     type="text"
                                     value={editForm.title}
                                     onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
-                                    className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all placeholder-slate-650"
+                                    className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all placeholder-zinc-450 dark:placeholder-slate-650"
                                     required
                                 />
                             </div>
 
                             {/* Short Description */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                     Short Description *
                                 </label>
                                 <input
                                     type="text"
                                     value={editForm.description}
                                     onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
-                                    className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all placeholder-slate-650"
+                                    className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all placeholder-zinc-450 dark:placeholder-slate-650"
                                     required
                                 />
                             </div>
 
                             {/* Content Textarea */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                     Prompt Content Template *
                                 </label>
                                 <textarea
                                     value={editForm.content}
                                     onChange={(e) => setEditForm(prev => ({ ...prev, content: e.target.value }))}
-                                    className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all h-36 resize-y leading-relaxed"
+                                    className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all h-36 resize-y leading-relaxed"
                                     required
                                 />
                             </div>
@@ -350,18 +350,18 @@ export default function MyPrompts() {
                             {/* Category & AI Tool */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                         Category *
                                     </label>
                                     <select
                                         value={editForm.category}
                                         onChange={(e) => setEditForm(prev => ({ ...prev, category: e.target.value }))}
-                                        className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
                                         required
                                     >
-                                        <option value="">Select Category</option>
+                                        <option value="" className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">Select Category</option>
                                         {categories.map((item) => (
-                                            <option key={item} value={item} className="bg-zinc-950">
+                                            <option key={item} value={item} className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
                                                 {item}
                                             </option>
                                         ))}
@@ -369,18 +369,18 @@ export default function MyPrompts() {
                                 </div>
 
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                         AI Engine *
                                     </label>
                                     <select
                                         value={editForm.aiTool}
                                         onChange={(e) => setEditForm(prev => ({ ...prev, aiTool: e.target.value }))}
-                                        className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
                                         required
                                     >
-                                        <option value="">Select AI Tool</option>
+                                        <option value="" className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">Select AI Tool</option>
                                         {aiTools.map((item) => (
-                                            <option key={item} value={item} className="bg-zinc-950">
+                                            <option key={item} value={item} className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
                                                 {item}
                                             </option>
                                         ))}
@@ -391,45 +391,45 @@ export default function MyPrompts() {
                             {/* Difficulty & Visibility */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                         Difficulty Level *
                                     </label>
                                     <select
                                         value={editForm.difficulty}
                                         onChange={(e) => setEditForm(prev => ({ ...prev, difficulty: e.target.value }))}
-                                        className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
                                         required
                                     >
-                                        <option value="Beginner">Beginner</option>
-                                        <option value="Intermediate">Intermediate</option>
-                                        <option value="Pro">Pro</option>
+                                        <option value="Beginner" className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">Beginner</option>
+                                        <option value="Intermediate" className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">Intermediate</option>
+                                        <option value="Pro" className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">Pro</option>
                                     </select>
                                 </div>
 
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                         Visibility Status *
                                     </label>
                                     <div className="flex items-center gap-5 mt-2.5">
-                                        <label className="flex items-center gap-2 text-xs text-slate-200 cursor-pointer select-none">
+                                        <label className="flex items-center gap-2 text-xs text-zinc-750 dark:text-slate-200 cursor-pointer select-none">
                                             <input
                                                 type="radio"
                                                 name="visibility"
                                                 value="Public"
                                                 checked={editForm.visibility === "Public"}
                                                 onChange={() => setEditForm(prev => ({ ...prev, visibility: "Public" }))}
-                                                className="w-4 h-4 text-purple-600 bg-[#040614] border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
+                                                className="w-4 h-4 text-purple-650 bg-zinc-50 dark:bg-[#040614] border-zinc-200 dark:border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
                                             />
                                             <span>Public</span>
                                         </label>
-                                        <label className="flex items-center gap-2 text-xs text-slate-200 cursor-pointer select-none">
+                                        <label className="flex items-center gap-2 text-xs text-zinc-750 dark:text-slate-200 cursor-pointer select-none">
                                             <input
                                                 type="radio"
                                                 name="visibility"
                                                 value="Private"
                                                 checked={editForm.visibility === "Private"}
                                                 onChange={() => setEditForm(prev => ({ ...prev, visibility: "Private" }))}
-                                                className="w-4 h-4 text-purple-600 bg-[#040614] border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
+                                                className="w-4 h-4 text-purple-650 bg-zinc-50 dark:bg-[#040614] border-zinc-200 dark:border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
                                             />
                                             <span>Private</span>
                                         </label>
@@ -439,7 +439,7 @@ export default function MyPrompts() {
 
                             {/* Tags */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                     Tags (Comma-Separated)
                                 </label>
                                 <input
@@ -447,16 +447,16 @@ export default function MyPrompts() {
                                     value={editForm.tags}
                                     onChange={(e) => setEditForm(prev => ({ ...prev, tags: e.target.value }))}
                                     placeholder="e.g. tailwind, card, component"
-                                    className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all"
+                                    className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500/50 transition-all"
                                 />
                             </div>
 
                             {/* Thumbnail image upload */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
                                     Thumbnail Image
                                 </label>
-                                <div className="relative border border-dashed border-[#1d2456] rounded-lg bg-[#040614] hover:bg-[#040614]/70 transition-all min-h-[120px] flex items-center justify-center cursor-pointer">
+                                <div className="relative border border-dashed border-zinc-300 dark:border-[#1d2456] rounded-lg bg-zinc-50 dark:bg-[#040614] hover:bg-zinc-100 dark:hover:bg-[#040614]/70 transition-all min-h-[120px] flex items-center justify-center cursor-pointer">
                                     {thumbnailPreview ? (
                                         <div className="relative w-full h-[160px] group/preview">
                                             <img
@@ -477,7 +477,7 @@ export default function MyPrompts() {
                                                         const fileInput = document.getElementById("edit-thumbnail-input");
                                                         if (fileInput) fileInput.value = "";
                                                     }}
-                                                    className="px-4 py-2 rounded-lg bg-[#131735] text-zinc-300 hover:bg-[#1a204d] text-xs font-semibold transition-all border border-[#1e2554]"
+                                                    className="px-4 py-2 rounded-lg bg-zinc-200 hover:bg-zinc-300 text-zinc-800 dark:bg-[#131735] dark:text-zinc-300 dark:hover:bg-[#1a204d] text-xs font-semibold transition-all border border-zinc-300 dark:border-[#1e2554]"
                                                 >
                                                     Remove
                                                 </button>
@@ -485,8 +485,8 @@ export default function MyPrompts() {
                                         </div>
                                     ) : (
                                         <label htmlFor="edit-thumbnail-input" className="flex flex-col items-center justify-center p-6 w-full cursor-pointer h-full gap-2">
-                                            <UploadCloud className="w-5 h-5 text-slate-400" />
-                                            <p className="text-xs font-semibold text-slate-200">
+                                            <UploadCloud className="w-5 h-5 text-zinc-400 dark:text-slate-400" />
+                                            <p className="text-xs font-semibold text-zinc-700 dark:text-slate-200">
                                                 Click to upload a new thumbnail image
                                             </p>
                                         </label>
@@ -502,11 +502,11 @@ export default function MyPrompts() {
                             </div>
 
                             {/* Modal Footer / Submit */}
-                            <div className="pt-4 flex gap-3 justify-end border-t border-white/5">
+                            <div className="pt-4 flex gap-3 justify-end border-t border-zinc-200 dark:border-white/5">
                                 <button
                                     type="button"
                                     onClick={() => setEditingPrompt(null)}
-                                    className="px-5 py-2.5 rounded-lg text-xs font-bold bg-[#131735] hover:bg-[#1a204d] text-zinc-300 border border-[#1e2554] transition cursor-pointer"
+                                    className="px-5 py-2.5 rounded-lg text-xs font-bold bg-zinc-150 hover:bg-zinc-200 text-zinc-700 dark:bg-[#131735] dark:hover:bg-[#1a204d] dark:text-zinc-300 border border-zinc-250 dark:border-[#1e2554] transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>

@@ -39,7 +39,7 @@ const WhyChooseUs = () => {
     };
 
     return (
-        <section className="relative w-full bg-[#030014] pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center">
+        <section className="relative w-full bg-slate-50 dark:bg-[#030014] pb-24 px-6 md:px-12 overflow-hidden flex flex-col items-center transition-colors duration-300">
             {/* Glow effect */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-650/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -50,9 +50,9 @@ const WhyChooseUs = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default"
+                        className="inline-flex items-center gap-2 bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-655 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default"
                     >
-                        <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                        <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 animate-pulse" />
                         <span>Our Benefits</span>
                     </motion.div>
                     
@@ -60,7 +60,7 @@ const WhyChooseUs = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight"
+                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight"
                     >
                         Why Choose <span className="bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#38BDF8] bg-clip-text text-transparent">PromptForge?</span>
                     </motion.h2>
@@ -69,7 +69,7 @@ const WhyChooseUs = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
+                        className="text-zinc-650 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
                     >
                         We build the bridge between simple AI queries and high-yield prompt engineering templates.
                     </motion.p>
@@ -87,15 +87,15 @@ const WhyChooseUs = () => {
                         <motion.div 
                             key={idx}
                             variants={cardVariants}
-                            className="group flex flex-col gap-5 bg-[#090a16]/40 border border-white/[0.05] hover:border-purple-500/20 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-md hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(124,58,237,0.05)] text-left"
+                            className="group flex flex-col gap-5 bg-white dark:bg-[#090a16]/40 border border-zinc-200 dark:border-white/[0.05] hover:border-purple-500/20 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-md hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(124,58,237,0.05)] text-left"
                         >
-                            <div className="p-3.5 w-fit rounded-xl bg-white/5 border border-white/5 group-hover:bg-white/10 transition-colors">
+                            <div className="p-3.5 w-fit rounded-xl bg-zinc-150 dark:bg-white/5 border border-zinc-250 dark:border-white/5 group-hover:bg-zinc-200 dark:group-hover:bg-white/10 transition-colors">
                                 {item.icon}
                             </div>
-                            <h3 className="text-lg font-bold text-white tracking-tight">
+                            <h3 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">
                                 {item.title}
                             </h3>
-                            <p className="text-zinc-400 text-sm leading-relaxed">
+                            <p className="text-zinc-650 dark:text-zinc-400 text-sm leading-relaxed">
                                 {item.description}
                             </p>
                         </motion.div>

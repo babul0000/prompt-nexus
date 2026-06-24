@@ -24,7 +24,7 @@ export default function DashboardIndexPage() {
   }, [status, session, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#030014] text-white">
+    <div className="min-h-screen flex items-center justify-center bg-transparent text-zinc-900 dark:text-white">
       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
     </div>
   );

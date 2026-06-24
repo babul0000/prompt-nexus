@@ -1,19 +1,21 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
-import { Button, Input } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Link from "next/link";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
   
-  // সাধারণ স্টেট দিয়ে ইনপুট ডাটা ট্র্যাক করা হচ্ছে
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => setShowPassword(!showPassword);
 
   const handleSigninSubmit = async (e) => {
     e.preventDefault();
@@ -28,14 +30,12 @@ export default function SignInPage() {
     console.log("Attempting sign-in with credentials:", { email });
 
     try {
-      // Better-Auth ক্লায়েন্ট মেথড দিয়ে লগইন রিকোয়েস্ট পাঠানো
       const response = await authClient.signIn.email(credentials);
 
       if (response?.error) {
         setErrorMessage(response.error.message || "Invalid email or password.");
       } else {
         console.log("Signin Successful!", response);
-        // সফলভাবে লগইন হলে ইউজারকে হোমপেজে পাঠিয়ে দেওয়া হবে
         router.push("/");
       }
     } catch (error) {
@@ -47,20 +47,19 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#030014] px-4 py-12">
-      {/* ব্যাকগ্রাউন্ড নিয়ন ইফেক্ট */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[350px] h-[350px] bg-[#38BDF8]/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#030014] text-zinc-900 dark:text-white px-4 py-28 relative transition-colors duration-300">
+      {/* Background neon blur glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[350px] h-[350px] bg-[#38BDF8]/5 dark:bg-[#38BDF8]/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="w-full max-w-md bg-[#09090b] border border-white/5 rounded-2xl p-8 shadow-2xl z-10">
+      <div className="w-full max-w-md bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-white/5 rounded-2xl p-8 shadow-sm dark:shadow-2xl z-10 transition-colors">
         
         <div className="text-center mb-6">
-          <h2 className="text-white text-2xl font-bold tracking-tight">Welcome Back</h2>
-          <p className="text-gray-400 text-xs mt-1">Sign in to your PromptNexus account</p>
+          <h2 className="text-zinc-900 dark:text-white text-2xl font-bold tracking-tight">Welcome Back</h2>
+          <p className="text-zinc-550 dark:text-zinc-400 text-xs mt-1">Sign in to your PromptNexus account</p>
         </div>
 
-        {/* এরর মেসেজ অ্যালার্ট শো করার জায়গা */}
         {errorMessage && (
-          <div className="mb-4 p-3 text-xs rounded-xl bg-red-500/15 border border-red-500/20 text-red-400">
+          <div className="mb-4 p-3 text-xs rounded-xl bg-red-500/15 border border-red-500/20 text-red-655 dark:text-red-400">
             {errorMessage}
           </div>
         )}
@@ -68,54 +67,61 @@ export default function SignInPage() {
         <form onSubmit={handleSigninSubmit} className="space-y-4">
           
           {/* Email Input */}
-          <div className="space-y-1">
-            <label className="text-gray-400 text-xs font-medium">Email Address</label>
-            <Input
-              required
-              type="email"
-              placeholder="john@example.com"
-              variant="bordered"
-              // 🛠️ এখানে className এর পরিবর্তে হিরোইউআই স্ট্যান্ডার্ড className (শেষে s সহ) করা হয়েছে
-              className={{ 
-                inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-[#38BDF8] bg-transparent", 
-                input: "text-white" 
-              }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <div className="space-y-1 text-left">
+            <label className="text-zinc-550 dark:text-zinc-400 text-xs font-bold uppercase tracking-wider block">Email Address</label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+              <input
+                required
+                type="email"
+                placeholder="john@example.com"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-transparent text-zinc-900 dark:text-white text-sm outline-none focus:border-[#38BDF8] dark:focus:border-[#38BDF8] transition-all placeholder-zinc-400 dark:placeholder-zinc-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Password Input */}
-          <div className="space-y-1">
-            <label className="text-gray-400 text-xs font-medium">Password</label>
-            <Input
-              required
-              type="password"
-              placeholder="••••••••"
-              variant="bordered"
-              // 🛠️ এখানে className এর পরিবর্তে হিরোইউআই স্ট্যান্ডার্ড className (শেষে s সহ) করা হয়েছে
-              className={{ 
-                inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-[#38BDF8] bg-transparent", 
-                input: "text-white" 
-              }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="space-y-1 text-left">
+            <label className="text-zinc-550 dark:text-zinc-400 text-xs font-bold uppercase tracking-wider block">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-transparent text-zinc-900 dark:text-white text-sm outline-none focus:border-[#38BDF8] dark:focus:border-[#38BDF8] transition-all placeholder-zinc-400 dark:placeholder-zinc-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button 
+                className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none cursor-pointer" 
+                type="button" 
+                onClick={toggleShowPassword}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+                ) : (
+                  <Eye className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}
           <Button
             type="submit"
             isLoading={isLoading}
-            className="w-full bg-gradient-to-r from-[#38BDF8] to-[#7C3AED] text-white font-semibold rounded-xl py-6 mt-6 shadow-[0_0_15px_rgba(56,189,248,0.15)] transition-transform active:scale-[0.99]"
+            className="w-full bg-gradient-to-r from-[#38BDF8] to-[#7C3AED] text-white font-bold rounded-xl py-6 mt-6 shadow-[0_0_15px_rgba(56,189,248,0.15)] transition-transform active:scale-[0.99] cursor-pointer"
           >
             Sign In
           </Button>
         </form>
 
-        <p className="text-center text-xs text-gray-500 mt-5">
-          Don t have an account?{" "}
-          <Link href="/auth/signup" className="text-[#7C3AED] hover:underline font-medium">
+        <p className="text-center text-xs text-zinc-550 dark:text-zinc-400 mt-5">
+          Don't have an account?{" "}
+          <Link href="/auth/signup" className="text-[#7C3AED] hover:underline font-bold">
             Sign up
           </Link>
         </p>

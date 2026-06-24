@@ -80,49 +80,49 @@ export default function ReportedPromptsPage() {
 
     if (sessionPending || loading) {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4">
+            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4 text-zinc-900 dark:text-white bg-transparent">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-                <p className="text-sm text-zinc-400 font-medium">Loading reported content...</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Loading reported content...</p>
             </div>
         );
     }
 
     if (!user || user.role?.toLowerCase() !== "admin") {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4 text-white">
+            <div className="flex flex-col items-center justify-center p-20 text-center space-y-4 text-zinc-900 dark:text-white bg-transparent">
                 <Shield className="w-10 h-10 text-rose-500" />
                 <h3 className="text-lg font-bold">Access Denied</h3>
-                <p className="text-sm text-zinc-400 font-medium">This page is restricted to administrators only.</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">This page is restricted to administrators only.</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#030014] text-white p-4 sm:p-6 md:p-8 relative">
+        <div className="min-h-screen bg-transparent text-zinc-900 dark:text-white p-4 sm:p-6 md:p-8 relative">
             {/* Background decorative glows */}
-            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-rose-600/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-rose-650/5 blur-[100px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto relative z-10 space-y-8">
                 {/* Header section */}
                 <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-rose-500">
+                    <div className="flex items-center gap-2 text-rose-505 dark:text-rose-500">
                         <Shield className="w-5 h-5" />
                         <span className="text-[10px] font-bold tracking-wider uppercase">Content moderation</span>
                     </div>
-                    <h1 className="text-3xl font-extrabold tracking-tight text-white">
+                    <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
                         Reported Prompts Panel
                     </h1>
-                    <p className="text-sm text-zinc-400 font-medium">
+                    <p className="text-sm text-zinc-550 dark:text-zinc-400 font-medium">
                         Moderate reported templates, review reports, and take disciplinary actions.
                     </p>
                 </div>
 
                 {/* Reports table container */}
-                <div className="w-full border border-white/5 rounded-2xl overflow-hidden bg-[#090a16]/80 backdrop-blur-md">
+                <div className="w-full border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden bg-white dark:bg-[#090a16]/80 backdrop-blur-md shadow-sm dark:shadow-none">
                     <div className="overflow-x-auto w-full">
-                        <table className="w-full border-collapse text-left text-sm text-zinc-300">
+                        <table className="w-full border-collapse text-left text-sm text-zinc-700 dark:text-zinc-300">
                             <thead>
-                                <tr className="border-b border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-950/50">
+                                <tr className="border-b border-zinc-200 dark:border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-950/50">
                                     <th className="py-4 px-6 min-w-[200px]">Prompt Title</th>
                                     <th className="py-4 px-4">Reason</th>
                                     <th className="py-4 px-4 min-w-[200px]">Details</th>
@@ -132,23 +132,23 @@ export default function ReportedPromptsPage() {
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-white/5">
+                            <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
                                 {reports.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-550">
+                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-500 font-medium">
                                             No reported templates in queue! All content is clean.
                                         </td>
                                     </tr>
                                 ) : (
                                     reports.map((report) => (
-                                        <tr key={report._id} className="hover:bg-white/[0.01] transition-colors duration-200">
+                                        <tr key={report._id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors duration-200">
                                             {/* Prompt Title */}
                                             <td className="py-4 px-6">
                                                 {report.promptExists ? (
                                                     <Link 
                                                         href={`/all-prompts/${report.promptId}`}
                                                         target="_blank"
-                                                        className="font-bold text-sm text-white hover:text-purple-400 flex items-center gap-1.5 transition"
+                                                        className="font-bold text-sm text-zinc-900 dark:text-white hover:text-purple-650 dark:hover:text-purple-400 flex items-center gap-1.5 transition"
                                                     >
                                                         <span>{report.promptTitle}</span>
                                                         <ExternalLink className="w-3.5 h-3.5" />
@@ -162,23 +162,23 @@ export default function ReportedPromptsPage() {
 
                                             {/* Reason badge */}
                                             <td className="py-4 px-4">
-                                                <span className="bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
+                                                <span className="bg-rose-500/10 text-rose-600 dark:text-rose-500 border border-rose-500/20 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
                                                     {report.reason}
                                                 </span>
                                             </td>
 
                                             {/* Description details */}
-                                            <td className="py-4 px-4 text-xs text-zinc-400 max-w-xs break-words">
-                                                {report.description || <span className="text-zinc-600 italic">No extra details</span>}
+                                            <td className="py-4 px-4 text-xs text-zinc-550 dark:text-zinc-400 max-w-xs break-words">
+                                                {report.description || <span className="text-zinc-500 dark:text-zinc-650 italic">No extra details</span>}
                                             </td>
 
                                             {/* Reporter */}
-                                            <td className="py-4 px-4 text-xs text-zinc-400 font-semibold truncate max-w-[120px]" title={report.userId}>
+                                            <td className="py-4 px-4 text-xs text-zinc-500 dark:text-zinc-400 font-semibold truncate max-w-[120px]" title={report.userId}>
                                                 {report.userId}
                                             </td>
 
                                             {/* Date */}
-                                            <td className="py-4 px-4 text-xs text-zinc-400">
+                                            <td className="py-4 px-4 text-xs text-zinc-500 dark:text-zinc-400">
                                                 {new Date(report.reportedAt).toLocaleDateString()}
                                             </td>
 
@@ -187,7 +187,7 @@ export default function ReportedPromptsPage() {
                                                 <div className="flex gap-2 justify-end">
                                                     <button
                                                         onClick={() => handleDismissReport(report._id)}
-                                                        className="px-3 py-1.5 bg-[#131735] hover:bg-[#1a204d] text-emerald-400 text-xs font-bold rounded-lg border border-[#1e2554] transition cursor-pointer flex items-center gap-1"
+                                                        className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-emerald-600 dark:bg-[#131735] dark:hover:bg-[#1a204d] dark:text-emerald-400 text-xs font-bold rounded-lg border border-zinc-200 dark:border-[#1e2554] transition cursor-pointer flex items-center gap-1"
                                                         title="Dismiss Report (Approve Prompt)"
                                                     >
                                                         <Check size={14} />
@@ -197,7 +197,7 @@ export default function ReportedPromptsPage() {
                                                     {report.promptExists && (
                                                         <button
                                                             onClick={() => handleDeletePrompt(report.promptId, report._id)}
-                                                            className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1"
+                                                            className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-605 text-rose-550 hover:text-white text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1"
                                                             title="Delete Violated Prompt"
                                                         >
                                                             <Trash2 size={14} />

@@ -112,14 +112,14 @@ export default function SubscriptionPaymentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-[#030014]">
+      <div className="min-h-screen flex items-center justify-center text-zinc-900 dark:text-white bg-transparent">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen bg-[#030014] text-white pt-6 pb-20 px-4 sm:px-6 overflow-hidden">
+    <div className="relative min-h-screen bg-transparent text-zinc-900 dark:text-white pt-6 pb-20 px-4 sm:px-6 overflow-hidden">
       {/* Background glowing decorations */}
       <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-650/5 blur-[100px] rounded-full pointer-events-none" />
       <div className="absolute top-[25%] right-1/4 translate-x-1/2 w-[400px] h-[250px] bg-blue-650/5 blur-[100px] rounded-full pointer-events-none" />
@@ -127,10 +127,10 @@ export default function SubscriptionPaymentsPage() {
       <div className="max-w-7xl mx-auto relative z-10 space-y-8">
         {/* Header Block */}
         <div className="space-y-1 text-left">
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-white to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-950 via-zinc-900 to-purple-600 dark:from-white dark:via-white dark:to-purple-400 bg-clip-text text-transparent">
             Subscription & Payments
           </h1>
-          <p className="text-zinc-400 text-sm">
+          <p className="text-zinc-550 dark:text-zinc-400 text-sm">
             Monitor transaction streams, search financial metrics, and manage user premium refunds.
           </p>
         </div>

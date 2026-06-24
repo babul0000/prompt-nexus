@@ -3,6 +3,7 @@ import ThemeInitializer from "@/components/ThemeInitializer";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
   title: "Create Next App",

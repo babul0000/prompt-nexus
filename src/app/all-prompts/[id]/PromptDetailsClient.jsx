@@ -269,7 +269,7 @@ const PromptDetailsClient = ({ promptId }) => {
         if (eng.includes('gemini')) return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20';
         if (eng.includes('claude')) return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
         if (eng.includes('midjourney')) return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20';
-        return 'bg-zinc-500/10 text-zinc-655 dark:text-zinc-400 border border-zinc-550/20';
+        return 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-500/20';
     };
 
     // Format date string helper
@@ -306,14 +306,21 @@ const PromptDetailsClient = ({ promptId }) => {
         );
     }
 
+    // Plan checks: Admins and Pro tier users have full premium access
+    const isPro = session?.user?.plan?.toLowerCase() === "pro" || session?.user?.role?.toLowerCase() === "admin";
+
     // Logic: Determine if prompt is Premium/Private
     const isPrivate = 
         (prompt.visibility && prompt.visibility.toLowerCase() === 'private') || 
         prompt.title?.toLowerCase().includes('premium');
+
+    // Premium tools include Claude and Midjourney
+    const isPremiumTool = 
+        prompt.aiTool?.toLowerCase().includes('claude') || 
+        prompt.aiTool?.toLowerCase().includes('midjourney');
         
     // Logic: Check if locked for the current logged-in user
-    // Disabled as per user request to bypass subscription/plan locks for now
-    const isLocked = false;
+    const isLocked = !isPro && (isPrivate || isPremiumTool);
 
     const displayCategory = prompt.category ? prompt.category.toUpperCase() : "GENERAL";
     const displayDifficulty = prompt.difficulty ? prompt.difficulty.toUpperCase() : "BEGINNER";
@@ -362,12 +369,12 @@ const PromptDetailsClient = ({ promptId }) => {
                             <span className="text-[10px] font-black tracking-wider px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border border-cyan-500/20 uppercase">
                                 {displayCategory}
                             </span>
-                            <span className="text-[10px] font-black tracking-wider px-3 py-1 rounded-full bg-zinc-100 dark:bg-white/5 text-zinc-650 dark:text-zinc-300 border border-zinc-200 dark:border-white/10 uppercase">
+                            <span className="text-[10px] font-black tracking-wider px-3 py-1 rounded-full bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-white/10 uppercase">
                                 {displayDifficulty}
                             </span>
                             <span className={`text-[10px] font-black tracking-wider px-3 py-1 rounded-full uppercase ${
                                 prompt.visibility?.toLowerCase() === 'private'
-                                    ? 'bg-rose-500/10 text-rose-555 border border-rose-500/20'
+                                    ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
                                     : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
                             }`}>
                                 {displayVisibility}
@@ -435,7 +442,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                     <button 
                                         onClick={handleCopyTemplate}
                                         disabled={isLocked}
-                                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-[#131735]/60 hover:bg-zinc-200 dark:hover:bg-[#131735] text-zinc-655 dark:text-slate-300 border border-zinc-200 dark:border-[#1e2554] text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-[#131735]/60 hover:bg-zinc-200 dark:hover:bg-[#131735] text-zinc-600 dark:text-slate-300 border border-zinc-200 dark:border-[#1e2554] text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                     >
                                         {copied ? <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                                         <span>{copied ? "Copied" : "Copy"}</span>
@@ -444,13 +451,18 @@ const PromptDetailsClient = ({ promptId }) => {
 
                                 {/* Premium Blur Lock Logic */}
                                 {isLocked ? (
-                                    <div className="relative bg-zinc-950 dark:bg-[#040614] border border-zinc-200 dark:border-[#13183d] rounded-xl p-5 overflow-hidden select-none pointer-events-none min-h-[160px] flex flex-col justify-center items-center">
+                                    <div className="relative bg-zinc-50 dark:bg-[#040614] border border-zinc-200 dark:border-[#13183d] rounded-xl p-5 overflow-hidden select-none pointer-events-none min-h-[180px] flex flex-col justify-center items-center">
                                         <div className="absolute inset-0 bg-white/95 dark:bg-[#040614]/90 backdrop-blur-md z-15 flex flex-col items-center justify-center p-6 text-center space-y-4 pointer-events-auto">
                                             <Lock className="w-8 h-8 text-rose-500 animate-bounce" />
                                             <div className="space-y-1">
-                                                <p className="text-sm font-bold text-zinc-900 dark:text-white">This prompt is for Premium users only</p>
-                                                <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">
-                                                    Unlock access to all private prompt templates, parameter sets, and community reviews.
+                                                <p className="text-sm font-bold text-zinc-900 dark:text-white">
+                                                    {isPremiumTool ? "Premium AI Engine Access Required" : "Premium Prompt Access Required"}
+                                                </p>
+                                                <p className="text-xs text-zinc-550 dark:text-zinc-400 max-w-sm leading-relaxed">
+                                                    {isPremiumTool 
+                                                        ? `Prompts utilizing premium tools like ${prompt.aiTool || 'Claude/Midjourney'} require a Pro tier account to copy and use.`
+                                                        : "This prompt template has been set as Private/Premium by the author and is only available to Pro tier members."
+                                                    }
                                                 </p>
                                             </div>
                                             <Link href={session?.user ? `/dashboard/${session.user.role?.toLowerCase() || 'user'}/profile` : "/profile"}>
@@ -465,7 +477,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="bg-zinc-950 dark:bg-[#040614] border border-zinc-200 dark:border-[#13183d] p-5 rounded-lg font-mono text-xs sm:text-sm text-purple-650 dark:text-[#a78bfa] select-all leading-relaxed whitespace-pre-wrap max-h-[300px] overflow-y-auto">
+                                    <div className="bg-zinc-50 dark:bg-[#040614] border border-zinc-200 dark:border-[#13183d] p-5 rounded-lg font-mono text-xs sm:text-sm text-purple-800 dark:text-[#a78bfa] select-all leading-relaxed whitespace-pre-wrap max-h-[300px] overflow-y-auto">
                                         {prompt.content}
                                     </div>
                                 )}
@@ -476,7 +488,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                 <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white tracking-wide">
                                     Description
                                 </h3>
-                                <p className="text-xs sm:text-sm text-zinc-650 dark:text-zinc-400 leading-relaxed font-medium">
+                                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
                                     {prompt.description}
                                 </p>
                             </div>
@@ -555,7 +567,7 @@ const PromptDetailsClient = ({ promptId }) => {
                             
                             <div className="flex items-center gap-3">
                                 <div className="relative shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] p-[2px]">
-                                    <div className="w-full h-full bg-[#040614] rounded-full flex items-center justify-center overflow-hidden">
+                                    <div className="w-full h-full bg-zinc-200 dark:bg-[#040614] rounded-full flex items-center justify-center overflow-hidden">
                                         {prompt.creatorImage ? (
                                             <img 
                                                 src={prompt.creatorImage} 
@@ -563,7 +575,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                                 className="w-full h-full object-cover" 
                                             />
                                         ) : (
-                                            <span className="text-sm font-black text-white">
+                                            <span className="text-sm font-black text-zinc-800 dark:text-white">
                                                 {getDisplayName().charAt(0).toUpperCase()}
                                             </span>
                                         )}
@@ -573,14 +585,14 @@ const PromptDetailsClient = ({ promptId }) => {
                                     <p className="text-sm font-bold text-zinc-800 dark:text-white truncate" title={getDisplayName()}>
                                         {getDisplayName()}
                                     </p>
-                                    <p className="text-[11px] text-zinc-400 dark:text-slate-500 truncate" title={prompt.creatorEmail}>
+                                    <p className="text-[11px] text-zinc-500 dark:text-slate-400 truncate" title={prompt.creatorEmail}>
                                         {prompt.creatorEmail || "No email listed"}
                                     </p>
                                 </div>
                             </div>
 
-                            <p className="text-[11px] text-zinc-400 dark:text-slate-400 leading-relaxed">
-                                AI Engineering enthusiast and verified prompt designer specialized in building context-rich templates.
+                            <p className="text-[11px] text-zinc-600 dark:text-slate-400 leading-relaxed">
+                                {getDisplayName()} is a verified prompt creator on AIverse, specialized in designing templates for {prompt.aiTool || 'AI engines'}.
                             </p>
                         </div>
                     </div>
@@ -679,14 +691,24 @@ const PromptDetailsClient = ({ promptId }) => {
                                             {/* Review Header card */}
                                             <div className="flex items-center justify-between border-b border-zinc-100 dark:border-[#13193e]/50 pb-2.5">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-[#131735]/60 border border-zinc-200 dark:border-[#1e2554] flex items-center justify-center text-zinc-400 dark:text-slate-400">
-                                                        <User className="w-4 h-4" />
+                                                    <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-[#131735]/60 border border-zinc-200 dark:border-[#1e2554] flex items-center justify-center overflow-hidden text-zinc-400 dark:text-slate-400 shrink-0">
+                                                        {review.userImage ? (
+                                                            <img 
+                                                                src={review.userImage} 
+                                                                alt={review.userName} 
+                                                                className="w-full h-full object-cover" 
+                                                            />
+                                                        ) : (
+                                                            <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                                                                {review.userName?.charAt(0).toUpperCase() || "U"}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div>
                                                         <div className="text-xs font-bold text-zinc-800 dark:text-white truncate max-w-[150px]">
                                                             {review.userName}
                                                         </div>
-                                                        <div className="text-[9px] text-zinc-400 dark:text-slate-500 font-medium mt-0.5">
+                                                        <div className="text-[9px] text-zinc-550 dark:text-slate-500 font-medium mt-0.5">
                                                             {formatDate(review.createdAt)}
                                                         </div>
                                                     </div>
@@ -708,7 +730,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                             </div>
 
                                             {/* Review text */}
-                                            <p className="text-sm text-zinc-655 dark:text-slate-350 leading-relaxed font-medium">
+                                            <p className="text-sm text-zinc-700 dark:text-slate-300 leading-relaxed font-medium">
                                                 "{review.comment}"
                                             </p>
                                         </div>
@@ -723,19 +745,19 @@ const PromptDetailsClient = ({ promptId }) => {
             {/* Report Dialog Modal */}
             {reportModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
-                    <div className="bg-[#0a0d26] border border-[#13193e] rounded-2xl w-full max-w-md relative p-6 sm:p-8 space-y-6 text-left">
+                    <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] rounded-2xl w-full max-w-md relative p-6 sm:p-8 space-y-6 text-left shadow-2xl transition-colors duration-300">
                         {/* Modal Header */}
-                        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                        <div className="flex items-center justify-between border-b border-zinc-100 dark:border-white/5 pb-4">
                             <div>
-                                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                                <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2">
                                     <Flag className="w-4 h-4 text-rose-500" />
                                     <span>Report Prompt Template</span>
                                 </h3>
-                                <p className="text-xs text-zinc-400 font-medium">Report this template if it violates community guidelines.</p>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Report this template if it violates community guidelines.</p>
                             </div>
                             <button 
                                 onClick={() => setReportModalOpen(false)}
-                                className="p-1.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-lg transition cursor-pointer"
+                                className="p-1.5 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -745,26 +767,26 @@ const PromptDetailsClient = ({ promptId }) => {
                         <form onSubmit={handleReportSubmit} className="space-y-4">
                             {/* Reason selection */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Select Reason *
                                 </label>
                                 <select
                                     value={reportReason}
                                     onChange={(e) => setReportReason(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-lg border border-[#151b3d] bg-[#040614] text-white text-sm outline-none focus:border-purple-500/50 transition-all cursor-pointer"
+                                    className="w-full px-4 py-3 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-zinc-900 dark:text-white text-sm outline-none focus:border-purple-500 transition-all cursor-pointer"
                                     required
                                 >
-                                    <option value="Spam">Spam (unrelated keywords/ads)</option>
-                                    <option value="Inappropriate">Inappropriate content (hate, adult, violence)</option>
-                                    <option value="Copyright">Copyright Violation (plagiarized prompt)</option>
-                                    <option value="Inaccurate Content">Inaccurate / Broken prompt (does not run)</option>
-                                    <option value="Other">Other reason (please detail below)</option>
+                                    <option value="Spam" className="bg-white dark:bg-[#040614] text-zinc-900 dark:text-white">Spam (unrelated keywords/ads)</option>
+                                    <option value="Inappropriate" className="bg-white dark:bg-[#040614] text-zinc-900 dark:text-white">Inappropriate content (hate, adult, violence)</option>
+                                    <option value="Copyright" className="bg-white dark:bg-[#040614] text-zinc-900 dark:text-white">Copyright Violation (plagiarized prompt)</option>
+                                    <option value="Inaccurate Content" className="bg-white dark:bg-[#040614] text-zinc-900 dark:text-white">Inaccurate / Broken prompt (does not run)</option>
+                                    <option value="Other" className="bg-white dark:bg-[#040614] text-zinc-900 dark:text-white">Other reason (please detail below)</option>
                                 </select>
                             </div>
 
                             {/* Additional description */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Additional details (optional)
                                 </label>
                                 <textarea
@@ -772,16 +794,16 @@ const PromptDetailsClient = ({ promptId }) => {
                                     value={reportDescription}
                                     onChange={(e) => setReportDescription(e.target.value)}
                                     placeholder="Explain why you are reporting this template..."
-                                    className="w-full p-3.5 rounded-lg border border-[#151b3d] bg-[#040614] text-sm text-white focus:outline-none focus:border-purple-500/40 placeholder-zinc-600 leading-relaxed"
+                                    className="w-full p-3.5 rounded-lg border border-zinc-200 dark:border-[#151b3d] bg-zinc-50 dark:bg-[#040614] text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-purple-500 placeholder-zinc-400 dark:placeholder-zinc-600 leading-relaxed"
                                 />
                             </div>
 
                             {/* Modal Footer buttons */}
-                            <div className="pt-4 flex gap-3 justify-end border-t border-white/5">
+                            <div className="pt-4 flex gap-3 justify-end border-t border-zinc-100 dark:border-white/5">
                                 <button
                                     type="button"
                                     onClick={() => setReportModalOpen(false)}
-                                    className="px-4 py-2 bg-transparent hover:bg-white/5 text-zinc-400 hover:text-white rounded-lg text-xs font-bold transition cursor-pointer"
+                                    className="px-4 py-2 bg-transparent hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-550 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg text-xs font-bold transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>

@@ -84,7 +84,7 @@ export async function DashboardSidebar() {
     const navItems = navLinksMap[role] || userNavLinks;
 
     const navContent = (
-        <div className="flex flex-col justify-between h-full py-4 text-white">
+        <div className="flex flex-col justify-between h-full py-4 text-zinc-900 dark:text-white">
             <div className="space-y-8">
                 {/* Branding Block */}
                 <div className="px-3">
@@ -93,7 +93,7 @@ export async function DashboardSidebar() {
                             <span className="text-sm font-black text-white px-1">PF</span>
                         </div>
                         <div className="flex flex-col gap-0">
-                            <span className="font-extrabold text-lg tracking-wide bg-gradient-to-r from-white via-white to-purple-400 bg-clip-text text-transparent">
+                            <span className="font-extrabold text-lg tracking-wide bg-gradient-to-r from-zinc-900 via-zinc-800 to-purple-650 dark:from-white dark:via-white dark:to-purple-400 bg-clip-text text-transparent">
                                 PromptForge
                             </span>
                             <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-none">
@@ -108,10 +108,10 @@ export async function DashboardSidebar() {
                     {navItems.map((item) => (
                         <Link
                             key={item.label}
-                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-wider text-zinc-400 transition-all hover:text-white hover:bg-white/5 border border-transparent"
+                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400 transition-all hover:text-zinc-905 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-white/5 border border-transparent group"
                             href={item.href}
                         >
-                            <item.icon className="size-4 text-zinc-500 group-hover:text-white" />
+                            <item.icon className="size-4 text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-850 dark:group-hover:text-white" />
                             <span>{item.label}</span>
                         </Link>
                     ))}
@@ -139,20 +139,20 @@ export async function DashboardSidebar() {
     return (
         <>
             {/* Desktop layout Sidebar */}
-            <aside className="hidden w-64 shrink-0 border-r border-white/5 p-5 lg:block bg-[#090a16]/60 backdrop-blur-md sticky top-0 h-screen">
+            <aside className="hidden w-64 shrink-0 border-r border-zinc-200 dark:border-white/5 p-5 lg:block bg-white/80 dark:bg-[#090a16]/60 backdrop-blur-md sticky top-0 h-screen transition-colors duration-300">
                 {navContent}
             </aside>
 
             {/* Mobile layout Sidebar Menu Trigger */}
-            <div className="lg:hidden w-full flex items-center justify-between p-4 bg-[#090a16]/80 border-b border-white/5 absolute top-0 left-0 z-30">
-                <Link href="/" className="font-extrabold tracking-wide text-white">PromptForge</Link>
+            <div className="lg:hidden w-full flex items-center justify-between p-4 bg-white/90 dark:bg-[#090a16]/80 border-b border-zinc-200 dark:border-b-white/5 absolute top-0 left-0 z-30 transition-colors duration-300">
+                <Link href="/" className="font-extrabold tracking-wide text-zinc-900 dark:text-white">PromptForge</Link>
                 <Drawer>
                     <Button className="bg-white/5 border border-white/10 text-white flex items-center gap-2 py-1 px-3 rounded-lg text-xs font-bold cursor-pointer" variant="secondary">
                         <LayoutSideContentLeft className="w-4 h-4" />
                         <span>Menu</span>
                     </Button>
                     <Drawer.Backdrop>
-                        <Drawer.Content placement="left" className="bg-[#030014] border-r border-white/10 p-5 w-64">
+                        <Drawer.Content placement="left" className="bg-white dark:bg-[#030014] border-r border-zinc-200 dark:border-white/10 p-5 w-64">
                             <Drawer.Dialog>
                                 <Drawer.CloseTrigger className="absolute top-4 right-4 text-zinc-400 hover:text-white" />
                                 <Drawer.Header className="pb-4">

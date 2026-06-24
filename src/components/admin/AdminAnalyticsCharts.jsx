@@ -24,11 +24,11 @@ export default function AdminAnalyticsCharts({ charts }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* 30-Day User Growth Area Chart */}
-      <div className="bg-[#0a0d26] border border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-lg relative overflow-hidden lg:col-span-2">
+      <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-sm dark:shadow-none relative overflow-hidden lg:col-span-2">
         <div className="absolute top-0 right-0 w-[200px] h-[100px] bg-purple-500/5 blur-[50px] rounded-full pointer-events-none" />
-        <div className="flex items-center gap-2 border-b border-white/5 pb-4 text-left">
+        <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-white/5 pb-4 text-left">
           <TrendingUp className="w-4.5 h-4.5 text-purple-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">30-Day User Growth</h3>
+          <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider">30-Day User Growth</h3>
         </div>
         <div className="h-[300px] w-full mt-2">
           <ResponsiveContainer width="100%" height="100%">
@@ -60,11 +60,11 @@ export default function AdminAnalyticsCharts({ charts }) {
       </div>
 
       {/* Prompt Categories Bar Chart */}
-      <div className="bg-[#0a0d26] border border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-lg relative overflow-hidden lg:col-span-1">
+      <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-sm dark:shadow-none relative overflow-hidden lg:col-span-1">
         <div className="absolute top-0 right-0 w-[200px] h-[100px] bg-blue-500/5 blur-[50px] rounded-full pointer-events-none" />
-        <div className="flex items-center gap-2 border-b border-white/5 pb-4 text-left">
+        <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-white/5 pb-4 text-left">
           <BarChart2 className="w-4.5 h-4.5 text-blue-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">Category Distribution</h3>
+          <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Category Distribution</h3>
         </div>
 
         {categories.length === 0 ? (

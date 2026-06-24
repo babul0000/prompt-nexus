@@ -10,7 +10,7 @@ import Testimonials from "@/components/Testimonials";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#030014]">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#030014] text-zinc-900 dark:text-white transition-colors duration-300">
       <Banner />
       <FeaturedPrompts />
       <AuthCallToAction />

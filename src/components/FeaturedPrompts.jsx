@@ -51,7 +51,7 @@ const FeaturedPrompts = () => {
     };
 
     return (
-        <section className="relative w-full bg-[#030014] pb-28 px-6 md:px-12 overflow-hidden flex flex-col items-center">
+        <section className="relative w-full bg-slate-50 dark:bg-[#030014] pb-28 px-6 md:px-12 overflow-hidden flex flex-col items-center transition-colors duration-300">
             {/* Glowing background mesh gradients */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-purple-600/5 blur-[130px] rounded-full pointer-events-none" />
             <div className="absolute bottom-0 right-[10%] w-[300px] h-[300px] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
@@ -63,7 +63,7 @@ const FeaturedPrompts = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default animate-fadeIn"
+                        className="inline-flex items-center gap-2 bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-600 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default animate-fadeIn"
                     >
                         <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-pulse" />
                         <span>Featured Highlights</span>
@@ -73,7 +73,7 @@ const FeaturedPrompts = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight"
+                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight"
                     >
                         Top-Performing <span className="bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#38BDF8] bg-clip-text text-transparent">AI Prompts</span>
                     </motion.h2>
@@ -82,7 +82,7 @@ const FeaturedPrompts = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
+                        className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
                     >
                         Explore our handpicked collection of highly-rated, premium templates designed to optimize your creative and technical workflows.
                     </motion.p>

@@ -24,11 +24,11 @@ export default function AdminVisualAnalytics({ charts }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* User Growth Line Chart */}
-      <div className="bg-[#0a0d26] border border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-lg relative overflow-hidden">
+      <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-sm dark:shadow-none relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[200px] h-[100px] bg-purple-500/5 blur-[50px] rounded-full pointer-events-none" />
-        <div className="flex items-center gap-2 border-b border-white/5 pb-4 text-left">
+        <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-white/5 pb-4 text-left">
           <TrendingUp className="w-4.5 h-4.5 text-purple-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">User Growth Trend</h3>
+          <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider">User Growth Trend</h3>
         </div>
         <div className="h-[250px] w-full mt-2">
           <ResponsiveContainer width="100%" height="100%">
@@ -60,11 +60,11 @@ export default function AdminVisualAnalytics({ charts }) {
       </div>
 
       {/* Prompt Categories Pie Chart */}
-      <div className="bg-[#0a0d26] border border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-lg relative overflow-hidden">
+      <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] p-6 rounded-2xl flex flex-col gap-4 shadow-sm dark:shadow-none relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[200px] h-[100px] bg-blue-500/5 blur-[50px] rounded-full pointer-events-none" />
-        <div className="flex items-center gap-2 border-b border-white/5 pb-4 text-left">
+        <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-white/5 pb-4 text-left">
           <PieIcon className="w-4.5 h-4.5 text-blue-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">Prompt Categories</h3>
+          <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Prompt Categories</h3>
         </div>
         
         {categories.length === 0 ? (
@@ -105,12 +105,12 @@ export default function AdminVisualAnalytics({ charts }) {
             
             <div className="flex-1 flex flex-col gap-2 max-h-[180px] overflow-y-auto w-full px-2 scrollbar-thin scrollbar-thumb-zinc-800">
               {categories.map((entry, index) => (
-                <div key={entry.name} className="flex items-center justify-between text-[11px] border-b border-white/5 pb-1 text-left">
+                <div key={entry.name} className="flex items-center justify-between text-[11px] border-b border-zinc-200 dark:border-white/5 pb-1 text-left">
                   <div className="flex items-center gap-1.5 truncate">
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                    <span className="text-zinc-300 font-medium truncate max-w-[120px]">{entry.name}</span>
+                    <span className="text-zinc-600 dark:text-zinc-300 font-medium truncate max-w-[120px]">{entry.name}</span>
                   </div>
-                  <span className="font-bold text-white shrink-0">{entry.value}</span>
+                  <span className="font-bold text-zinc-900 dark:text-white shrink-0">{entry.value}</span>
                 </div>
               ))}
             </div>
