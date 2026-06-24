@@ -9,8 +9,16 @@ import { toast } from 'react-toastify';
 
 const PromptDetailsClient = ({ promptId }) => {
     const router = useRouter();
-    const { data: session } = authClient.useSession();
+    const { data: session, isPending } = authClient.useSession();
     const user = session?.user;
+
+    // Guard: Redirect guests (unauthenticated users) to the signin page
+    useEffect(() => {
+        if (!isPending && !session?.user) {
+            toast.info("Please sign in to view prompt details", { theme: "dark" });
+            router.replace("/auth/signin");
+        }
+    }, [session, isPending, router]);
 
     const [prompt, setPrompt] = useState(null);
     const [promptLoading, setPromptLoading] = useState(true);
@@ -271,13 +279,17 @@ const PromptDetailsClient = ({ promptId }) => {
         return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
     };
 
-    if (promptLoading) {
+    if (promptLoading || isPending) {
         return (
             <div className="min-h-screen bg-[#030014] text-zinc-550 flex flex-col items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
                 <p className="mt-4 text-sm font-medium">Loading details...</p>
             </div>
         );
+    }
+
+    if (!session?.user) {
+        return null;
     }
 
     if (promptError || !prompt) {

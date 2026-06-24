@@ -64,6 +64,41 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
     const [selectedPrompt, setSelectedPrompt] = useState(null);
     const [modalCopied, setModalCopied] = useState(false);
 
+    // Helper to close modal and remove 'id' search parameter cleanly
+    const closeModal = () => {
+        setSelectedPrompt(null);
+        if (searchParams.get('id')) {
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete('id');
+            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        }
+    };
+
+    // Open prompt details modal automatically if 'id' parameter is present in URL
+    useEffect(() => {
+        const promptId = searchParams.get('id');
+        if (promptId) {
+            const found = prompts.find(p => (p.id || p._id) === promptId);
+            if (found) {
+                setSelectedPrompt(found);
+            } else {
+                const fetchSinglePrompt = async () => {
+                    try {
+                        const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+                        const res = await fetch(`${baseUrl}/api/prompts/${promptId}`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            setSelectedPrompt(data);
+                        }
+                    } catch (err) {
+                        console.error("Failed to fetch prompt details by ID:", err);
+                    }
+                };
+                fetchSinglePrompt();
+            }
+        }
+    }, [searchParams, prompts]);
+
     // Sync search input state with URL parameter (e.g. from Home banner search redirects)
     useEffect(() => {
         const currentSearch = searchParams.get('search') || "";
@@ -160,7 +195,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
     // Close details modal on Escape key press
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'Escape') setSelectedPrompt(null);
+            if (e.key === 'Escape') closeModal();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
@@ -412,7 +447,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
             {selectedPrompt && (
                 <div 
                     className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/75 backdrop-blur-md transition-opacity duration-300 animate-fadeIn"
-                    onClick={() => setSelectedPrompt(null)}
+                    onClick={closeModal}
                 >
                     <div 
                         className="bg-white dark:bg-[#090a16]/95 border border-zinc-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col gap-6 relative shadow-[0_10px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(124,58,237,0.25)] scrollbar-hide animate-scaleIn"
@@ -420,7 +455,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                     >
                         {/* Close button */}
                         <button 
-                            onClick={() => setSelectedPrompt(null)}
+                            onClick={closeModal}
                             className="absolute top-4 right-4 p-2 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white transition-all cursor-pointer"
                         >
                             <X className="w-4 h-4" />
@@ -522,7 +557,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                         {/* Footer button */}
                         <div className="border-t border-zinc-100 dark:border-white/5 pt-4 flex justify-end">
                             <button
-                                onClick={() => setSelectedPrompt(null)}
+                                onClick={closeModal}
                                 className="px-5 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-800 dark:text-white font-semibold text-xs transition-all cursor-pointer"
                             >
                                 Close Details
