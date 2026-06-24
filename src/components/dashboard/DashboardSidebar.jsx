@@ -16,6 +16,7 @@ import { Button, Drawer, Avatar } from "@heroui/react";
 import Link from "next/link";
 import React from "react";
 import { LayoutDashboard, Users, FileCheck, AlertTriangle, BarChart3 } from "lucide-react";
+import UserProfileCard from "./UserProfileCard";
 
 export async function DashboardSidebar() {
     const user = await getUserSession();
@@ -130,26 +131,7 @@ export async function DashboardSidebar() {
                 </Link>
 
                 {/* User card profile */}
-                {user && (
-                    <div className="p-3.5 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center gap-3">
-                        <div className="p-[1.5px] bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] rounded-full">
-                            <Avatar size="sm" className="bg-transparent border-0">
-                                <Avatar.Image src={user.image} alt={user.name} />
-                                <Avatar.Fallback className="bg-zinc-950 text-white font-bold text-xs">
-                                    {user.name?.charAt(0).toUpperCase() || 'U'}
-                                </Avatar.Fallback>
-                            </Avatar>
-                        </div>
-                        <div className="flex flex-col gap-0.5 overflow-hidden">
-                            <p className="text-xs font-bold truncate leading-tight text-white">
-                                {user.name}
-                            </p>
-                            <p className="text-[10px] text-zinc-500 truncate leading-none">
-                                {user.email}
-                            </p>
-                        </div>
-                    </div>
-                )}
+                <UserProfileCard user={user} />
             </div>
         </div>
     );

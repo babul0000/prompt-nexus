@@ -189,7 +189,7 @@ const Navbar = () => {
                       </Dropdown.Item>
 
                       <Dropdown.Item id="profile" textValue="Profile" className="rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors">
-                        <Link className="flex items-center gap-2.5 w-full h-full text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-white px-2 py-1.5 text-xs font-semibold" href="/profile">
+                        <Link className="flex items-center gap-2.5 w-full h-full text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-white px-2 py-1.5 text-xs font-semibold" href={user ? `/dashboard/${user.role?.toLowerCase() || 'user'}/profile` : "/profile"}>
                           <Person size={16} className="text-[#7C3AED]" />
                           <span>Profile</span>
                         </Link>
@@ -273,7 +273,7 @@ const Navbar = () => {
                       <span>Dashboard</span>
                     </Link>
                     <Link
-                      href="/profile"
+                      href={user ? `/dashboard/${user.role?.toLowerCase() || 'user'}/profile` : "/profile"}
                       className="flex items-center gap-3 py-2.5 px-4 text-sm font-semibold text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl"
                       onClick={() => setIsMenuOpen(false)}
                     >

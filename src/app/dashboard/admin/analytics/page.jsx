@@ -5,8 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Import modular subcomponents
-import AdminAnalyticsMetrics from "@/components/AdminAnalyticsMetrics";
-import AdminAnalyticsCharts from "@/components/AdminAnalyticsCharts";
+import AdminAnalyticsMetrics from "@/components/admin/AdminAnalyticsMetrics";
+import AdminAnalyticsCharts from "@/components/admin/AdminAnalyticsCharts";
 
 export default function SystemAnalyticsPage() {
   const [loading, setLoading] = useState(true);

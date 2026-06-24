@@ -5,9 +5,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Import modular subcomponents
-import AdminPaymentMetrics from "@/components/AdminPaymentMetrics";
-import AdminPaymentControls from "@/components/AdminPaymentControls";
-import AdminPaymentTable from "@/components/AdminPaymentTable";
+import AdminPaymentMetrics from "@/components/admin/AdminPaymentMetrics";
+import AdminPaymentControls from "@/components/admin/AdminPaymentControls";
+import AdminPaymentTable from "@/components/admin/AdminPaymentTable";
 
 export default function SubscriptionPaymentsPage() {
   const [loading, setLoading] = useState(true);

@@ -8,9 +8,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Modular Sub-components imported from components folder
-import AdminMetricsCard from "@/components/AdminMetricsCard";
-import AdminVisualAnalytics from "@/components/AdminVisualAnalytics";
-import AdminRecentActivity from "@/components/AdminRecentActivity";
+import AdminMetricsCard from "@/components/admin/AdminMetricsCard";
+import AdminVisualAnalytics from "@/components/admin/AdminVisualAnalytics";
+import AdminRecentActivity from "@/components/admin/AdminRecentActivity";
 
 export default function OverviewPage() {
   const { data: session, status } = useSession();

@@ -453,7 +453,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                                     Unlock access to all private prompt templates, parameter sets, and community reviews.
                                                 </p>
                                             </div>
-                                            <Link href="/dashboard/creator/profile">
+                                            <Link href={session?.user ? `/dashboard/${session.user.role?.toLowerCase() || 'user'}/profile` : "/profile"}>
                                                 <button className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black text-xs font-extrabold rounded-xl shadow-lg cursor-pointer">
                                                     Subscribe to access
                                                 </button>
