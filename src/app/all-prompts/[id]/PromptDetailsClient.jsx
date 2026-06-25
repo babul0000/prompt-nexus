@@ -6,19 +6,12 @@ import { useRouter } from 'next/navigation';
 import { authClient } from "@/lib/auth-client";
 import { ArrowLeft, Copy, Check, Bookmark, Flag, Send, Star, User, MessageSquare, Lock, Sparkles, Gem, X } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { toggleBookmark, checkBookmarkStatus, fetchReviews, submitReview, submitReport } from "@/lib/actions/prompt";
 
 const PromptDetailsClient = ({ promptId }) => {
     const router = useRouter();
     const { data: session, isPending } = authClient.useSession();
     const user = session?.user;
-
-    const getSessionToken = () => {
-        if (typeof document === 'undefined') return null;
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; better-auth.session_token=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    };
 
     // Guard: Redirect guests (unauthenticated users) to the signin page
     useEffect(() => {
@@ -79,42 +72,34 @@ const PromptDetailsClient = ({ promptId }) => {
 
     // Check if the current prompt is bookmarked
     useEffect(() => {
-        const checkBookmarkStatus = async () => {
+        const checkStatus = async () => {
             if (!prompt || !user?.id) return;
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-                const res = await fetch(`${baseUrl}/api/bookmarks/check?userId=${user.id}&promptId=${prompt._id || prompt.id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setIsBookmarked(data.bookmarked);
-                }
+                const data = await checkBookmarkStatus(prompt._id || prompt.id);
+                setIsBookmarked(data.bookmarked);
             } catch (err) {
                 console.error("Error checking bookmark status:", err);
             } finally {
                 setCheckingBookmark(false);
             }
         };
-        checkBookmarkStatus();
+        checkStatus();
     }, [prompt, user]);
 
     // Fetch reviews for the prompt on mount
     useEffect(() => {
-        const fetchReviews = async () => {
+        const loadReviews = async () => {
             if (!prompt) return;
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-                const res = await fetch(`${baseUrl}/api/prompts/${prompt._id || prompt.id}/reviews`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setReviews(data || []);
-                }
+                const data = await fetchReviews(prompt._id || prompt.id);
+                setReviews(data || []);
             } catch (err) {
                 console.error("Failed to fetch reviews:", err);
             } finally {
                 setReviewsLoading(false);
             }
         };
-        fetchReviews();
+        loadReviews();
     }, [prompt]);
 
     // Handle bookmark click toggling
@@ -124,31 +109,15 @@ const PromptDetailsClient = ({ promptId }) => {
             return;
         }
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-            const token = getSessionToken();
-            const headers = { "Content-Type": "application/json" };
-            if (token) {
-                headers["Authorization"] = `Bearer ${token}`;
-            }
-            const res = await fetch(`${baseUrl}/api/bookmarks`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify({
-                    userId: user.id,
-                    promptId: prompt._id || prompt.id
-                })
-            });
-            if (res.ok) {
-                const data = await res.json();
-                if (data.status === 'added') {
-                    setIsBookmarked(true);
-                    setPrompt(prev => ({ ...prev, bookmarkCount: (prev.bookmarkCount || 0) + 1 }));
-                    toast.success("Added to saved bookmarks!", { theme: "dark" });
-                } else if (data.status === 'removed') {
-                    setIsBookmarked(false);
-                    setPrompt(prev => ({ ...prev, bookmarkCount: Math.max((prev.bookmarkCount || 0) - 1, 0) }));
-                    toast.success("Removed from saved bookmarks.", { theme: "dark" });
-                }
+            const data = await toggleBookmark(prompt._id || prompt.id);
+            if (data.status === 'added') {
+                setIsBookmarked(true);
+                setPrompt(prev => ({ ...prev, bookmarkCount: (prev.bookmarkCount || 0) + 1 }));
+                toast.success("Added to saved bookmarks!", { theme: "dark" });
+            } else if (data.status === 'removed') {
+                setIsBookmarked(false);
+                setPrompt(prev => ({ ...prev, bookmarkCount: Math.max((prev.bookmarkCount || 0) - 1, 0) }));
+                toast.success("Removed from saved bookmarks.", { theme: "dark" });
             }
         } catch (err) {
             console.error("Error toggling bookmark:", err);
@@ -165,30 +134,11 @@ const PromptDetailsClient = ({ promptId }) => {
         }
         setSubmittingReport(true);
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-            const token = getSessionToken();
-            const headers = { "Content-Type": "application/json" };
-            if (token) {
-                headers["Authorization"] = `Bearer ${token}`;
-            }
-            const res = await fetch(`${baseUrl}/api/reports`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify({
-                    userId: user?.id || "Anonymous",
-                    promptId: prompt._id || prompt.id,
-                    reason: reportReason,
-                    description: reportDescription
-                })
-            });
-            if (res.ok) {
-                toast.success("Report submitted successfully. Community moderators will review this prompt.", { theme: "dark" });
-                setReportModalOpen(false);
-                setReportReason("Spam");
-                setReportDescription("");
-            } else {
-                toast.error("Failed to submit report.");
-            }
+            await submitReport(prompt._id || prompt.id, reportReason, reportDescription);
+            toast.success("Report submitted successfully. Community moderators will review this prompt.", { theme: "dark" });
+            setReportModalOpen(false);
+            setReportReason("Spam");
+            setReportDescription("");
         } catch (err) {
             console.error("Error submitting report:", err);
             toast.error("An error occurred. Please try again.");
@@ -233,47 +183,24 @@ const PromptDetailsClient = ({ promptId }) => {
 
         setSubmittingReview(true);
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-            const reviewPayload = {
-                rating: ratingInput,
-                comment: commentInput,
-                userName: user?.name || "Anonymous User",
-                userEmail: user?.email || "",
-                userImage: user?.image || ""
-            };
-
-            const token = getSessionToken();
-            const headers = { "Content-Type": "application/json" };
-            if (token) {
-                headers["Authorization"] = `Bearer ${token}`;
-            }
-            const res = await fetch(`${baseUrl}/api/prompts/${prompt._id || prompt.id}/reviews`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify(reviewPayload)
+            const newReview = await submitReview(prompt._id || prompt.id, ratingInput, commentInput);
+            
+            // Prepend new review to local list
+            setReviews(prev => [newReview, ...prev]);
+            setCommentInput("");
+            setRatingInput(5);
+            toast.success("Review submitted successfully!", {
+                position: "bottom-right",
+                autoClose: 2000,
+                theme: "dark"
             });
 
-            if (res.ok) {
-                const newReview = await res.json();
-                
-                // Prepend new review to local list
-                setReviews(prev => [newReview, ...prev]);
-                setCommentInput("");
-                setRatingInput(5);
-                toast.success("Review submitted successfully!", {
-                    position: "bottom-right",
-                    autoClose: 2000,
-                    theme: "dark"
-                });
-
-                // Fetch updated prompt details to reflect new ratings/statistics
-                const promptRes = await fetch(`${baseUrl}/api/prompts/${prompt._id || prompt.id}`, { cache: 'no-store' });
-                if (promptRes.ok) {
-                    const updatedPrompt = await promptRes.json();
-                    setPrompt(updatedPrompt);
-                }
-            } else {
-                toast.error("Failed to submit review.");
+            // Fetch updated prompt details to reflect new ratings/statistics
+            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+            const promptRes = await fetch(`${baseUrl}/api/prompts/${prompt._id || prompt.id}`, { cache: 'no-store' });
+            if (promptRes.ok) {
+                const updatedPrompt = await promptRes.json();
+                setPrompt(updatedPrompt);
             }
         } catch (err) {
             console.error("Error submitting review:", err);
