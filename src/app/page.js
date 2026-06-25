@@ -8,6 +8,11 @@ import TopCreators from "@/components/TopCreators";
 import EngineCompatibility from "@/components/EngineCompatibility";
 import Testimonials from "@/components/Testimonials";
 
+export const metadata = {
+  title: "PromptForge | Forging Ideas, Crafting Reality",
+  description: "Discover, buy, and sell premium AI prompts for ChatGPT, Midjourney, Stable Diffusion, and other leading AI platforms.",
+};
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-[#030014] text-zinc-900 dark:text-white transition-colors duration-300">

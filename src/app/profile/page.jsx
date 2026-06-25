@@ -9,6 +9,10 @@ export default function ProfileRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
+    document.title = "Profile | PromptForge";
+  }, []);
+
+  useEffect(() => {
     if (!isPending) {
       if (!session?.user) {
         router.replace('/auth/signin');

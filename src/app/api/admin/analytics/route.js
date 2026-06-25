@@ -1,8 +1,14 @@
 import db from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { getUserSession } from '@/lib/core/session';
 
 export async function GET() {
   try {
+    const sessionUser = await getUserSession();
+    if (!sessionUser || sessionUser.role?.toLowerCase() !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     // 1. Compute Main Metrics
     const totalUsers = await db.collection('user').countDocuments();
     const activePrompts = await db.collection('prompts').countDocuments({

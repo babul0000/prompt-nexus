@@ -1,10 +1,16 @@
 import db from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
+import { getUserSession } from '@/lib/core/session';
 
 // GET: Fetch payment overview metrics and transaction list
 export async function GET() {
   try {
+    const sessionUser = await getUserSession();
+    if (!sessionUser || sessionUser.role?.toLowerCase() !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const proUsers = await db.collection('user')
       .find({ plan: { $regex: '^pro$', $options: 'i' } })
       .sort({ updatedAt: -1 })
@@ -58,6 +64,11 @@ export async function GET() {
 // PATCH: Process refund (downgrade plan to "free")
 export async function PATCH(req) {
   try {
+    const sessionUser = await getUserSession();
+    if (!sessionUser || sessionUser.role?.toLowerCase() !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const body = await req.json();
     const { id } = body;
 

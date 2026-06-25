@@ -4,6 +4,11 @@ import ExplorePromptsClient from './ExplorePromptsClient';
 
 export const dynamic = 'force-dynamic';
 
+export const metadata = {
+    title: "Explore Prompts",
+    description: "Browse and discover premium AI prompts for ChatGPT, Midjourney, Stable Diffusion, and more on PromptForge.",
+};
+
 const AllPromptsPage = async (props) => {
     // Fetch all prompts from DB/Server
     const prompts = await getPrompts();

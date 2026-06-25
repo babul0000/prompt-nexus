@@ -3,6 +3,28 @@ import PromptDetailsClient from './PromptDetailsClient';
 
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata(props) {
+    const params = await props.params;
+    const { id } = params;
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+        const res = await fetch(`${baseUrl}/api/prompts/${id}`);
+        if (res.ok) {
+            const data = await res.json();
+            return {
+                title: data.title,
+                description: data.description || "Discover this premium AI prompt on PromptForge.",
+            };
+        }
+    } catch (e) {
+        // ignore and fallback
+    }
+    return {
+        title: "Prompt Details",
+        description: "Discover this premium AI prompt on PromptForge.",
+    };
+}
+
 const PromptDetailsPage = async (props) => {
     const params = await props.params;
     const { id } = params;
