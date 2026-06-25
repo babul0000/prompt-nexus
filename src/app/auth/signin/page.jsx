@@ -2,12 +2,16 @@
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
+
+  useEffect(() => {
+    document.title = "Sign In | PromptForge";
+  }, []);
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
