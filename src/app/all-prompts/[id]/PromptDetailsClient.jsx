@@ -12,6 +12,14 @@ const PromptDetailsClient = ({ promptId }) => {
     const { data: session, isPending } = authClient.useSession();
     const user = session?.user;
 
+    const getSessionToken = () => {
+        if (typeof document === 'undefined') return null;
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; better-auth.session_token=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    };
+
     // Guard: Redirect guests (unauthenticated users) to the signin page
     useEffect(() => {
         if (!isPending && !session?.user) {
@@ -117,9 +125,14 @@ const PromptDetailsClient = ({ promptId }) => {
         }
         try {
             const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+            const token = getSessionToken();
+            const headers = { "Content-Type": "application/json" };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
             const res = await fetch(`${baseUrl}/api/bookmarks`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({
                     userId: user.id,
                     promptId: prompt._id || prompt.id
@@ -153,9 +166,14 @@ const PromptDetailsClient = ({ promptId }) => {
         setSubmittingReport(true);
         try {
             const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+            const token = getSessionToken();
+            const headers = { "Content-Type": "application/json" };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
             const res = await fetch(`${baseUrl}/api/reports`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({
                     userId: user?.id || "Anonymous",
                     promptId: prompt._id || prompt.id,
@@ -224,11 +242,15 @@ const PromptDetailsClient = ({ promptId }) => {
                 userImage: user?.image || ""
             };
 
+            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+            const token = getSessionToken();
+            const headers = { "Content-Type": "application/json" };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
             const res = await fetch(`${baseUrl}/api/prompts/${prompt._id || prompt.id}/reviews`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers,
                 body: JSON.stringify(reviewPayload)
             });
 
