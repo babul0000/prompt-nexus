@@ -242,7 +242,6 @@ const PromptDetailsClient = ({ promptId }) => {
                 userImage: user?.image || ""
             };
 
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
             const token = getSessionToken();
             const headers = { "Content-Type": "application/json" };
             if (token) {
