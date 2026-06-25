@@ -16,7 +16,7 @@ const Footer = () => {
         <footer className="w-full bg-slate-50 dark:bg-[#030014] text-zinc-600 dark:text-gray-400 py-12 px-6 md:px-12 border-t border-zinc-200 dark:border-white/5 mt-auto transition-colors duration-300">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
                 
-                {/* 🌌 Column 1: Brand & About (AIverse) */}
+                {/* 🌌 Column 1: Brand & About (PromptForge) */}
                 <div className="space-y-4">
                     <Link href="/" className="flex items-center gap-2 group">
                         {/* স্পার্ক/স্টার লোগো */}
@@ -32,10 +32,10 @@ const Footer = () => {
                             <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z" />
                         </svg>
                         <span className="text-zinc-900 dark:text-white text-2xl font-bold tracking-tight">
-                            AI<span className="text-[#38BDF8]">verse</span>
+                            Prompt<span className="bg-gradient-to-r from-[#7C3AED] to-[#38BDF8] bg-clip-text text-transparent">Forge</span>
                         </span>
                     </Link>
-                    <p className="text-sm text-zinc-500 dark:text-gray-505 leading-relaxed">
+                    <p className="text-sm text-zinc-500 dark:text-gray-400 leading-relaxed">
                         Discover, create, and share premium AI prompts for ChatGPT, Midjourney, Claude, and more. Elevate your AI productivity.
                     </p>
                 </div>
@@ -101,7 +101,7 @@ const Footer = () => {
 
             {/* 📝 Bottom Bar (Copyright) */}
             <div className="max-w-7xl mx-auto border-t border-zinc-200 dark:border-white/5 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-zinc-500 dark:text-gray-600 gap-4">
-                <p>© {new Date().getFullYear()} AIverse. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} PromptForge. All rights reserved.</p>
                 <p>Designed for AI Creators & Professionals</p>
             </div>
         </footer>

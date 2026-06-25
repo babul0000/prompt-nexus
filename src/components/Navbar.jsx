@@ -42,7 +42,7 @@ const Navbar = () => {
       document.documentElement.classList.remove("dark");
     }
   };
-  
+
   // Hide navbar on dashboard views
   if (pathname.includes("dashboard")) {
     return null;
@@ -56,7 +56,7 @@ const Navbar = () => {
     <div className="sticky top-0 z-50 w-full">
       <nav className="w-full border-b border-zinc-200/50 dark:border-white/[0.06] bg-white/80 dark:bg-[#030014]/75 backdrop-blur-md transition-all duration-300 shadow-[0_4px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
         <header className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          
+
           {/* LEFT SIDE: LOGO & BRAND NAME */}
           <div className="flex items-center gap-4">
             <button
@@ -67,21 +67,21 @@ const Navbar = () => {
             >
               {isMenuOpen ? <Xmark size={20} /> : <Bars size={20} />}
             </button>
-            
-            <Link href={"/"} className="group flex items-center gap-3">
-              <div className="relative p-[1.5px] bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] rounded-xl shadow-[0_0_15px_rgba(124,58,237,0.25)] group-hover:scale-105 transition-transform duration-300">
+
+            <Link href={"/"} className="group flex items-center gap-2.5">
+              <div className="relative p-[1.5px] bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] rounded-xl shadow-[0_0_15px_rgba(124,58,237,0.2)] group-hover:scale-105 transition-transform duration-300">
                 <Image
-                  height={32}
-                  width={32}
+                  height={36}
+                  width={36}
                   loading="eager"
-                  src="/logo.webp"
+                  src="/logo.png"
                   alt="PromptForge Logo"
                   className="rounded-[10px]"
                 />
               </div>
-              <p className="font-extrabold text-xl tracking-wide bg-gradient-to-r from-zinc-900 via-zinc-800 to-purple-600 dark:from-white dark:via-white dark:to-purple-400 bg-clip-text text-transparent transition-all duration-300">
-                PromptForge
-              </p>
+              <span className="text-zinc-900 dark:text-white text-lg font-black tracking-tight select-none">
+                Prompt<span className="bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#38BDF8] bg-clip-text text-transparent">Forge</span>
+              </span>
             </Link>
           </div>
 
@@ -90,11 +90,10 @@ const Navbar = () => {
             <li>
               <Link
                 href="/"
-                className={`relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg hover:text-purple-600 dark:hover:text-white ${
-                  pathname === "/" 
-                    ? "text-purple-600 dark:text-purple-400 bg-purple-500/10 border border-purple-500/20 shadow-[0_0_15px_rgba(124,58,237,0.15)]" 
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 border border-transparent"
-                }`}
+                className={`relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg hover:text-purple-600 dark:hover:text-white ${pathname === "/"
+                  ? "text-purple-600 dark:text-purple-400 bg-purple-500/10 border border-purple-500/20 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 border border-transparent"
+                  }`}
               >
                 Home
               </Link>
@@ -102,11 +101,10 @@ const Navbar = () => {
             <li>
               <Link
                 href="/all-prompts"
-                className={`relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg hover:text-purple-600 dark:hover:text-white ${
-                  pathname === "/all-prompts" 
-                    ? "text-purple-600 dark:text-purple-400 bg-purple-500/10 border border-purple-500/20 shadow-[0_0_15px_rgba(124,58,237,0.15)]" 
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 border border-transparent"
-                }`}
+                className={`relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-lg hover:text-purple-600 dark:hover:text-white ${pathname === "/all-prompts"
+                  ? "text-purple-600 dark:text-purple-400 bg-purple-500/10 border border-purple-500/20 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 border border-transparent"
+                  }`}
               >
                 All Prompts
               </Link>
@@ -153,7 +151,7 @@ const Navbar = () => {
                       </Avatar>
                     </div>
                   </Dropdown.Trigger>
-                  
+
                   <Dropdown.Popover className="bg-white dark:bg-[#090a16]/95 border border-zinc-200 dark:border-white/10 rounded-2xl p-1.5 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
                     <div className="px-4 py-3.5 border-b border-zinc-100 dark:border-white/5 min-w-[220px]">
                       <div className="flex items-center gap-3">
@@ -175,7 +173,7 @@ const Navbar = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <Dropdown.Menu aria-label="User Actions" className="p-1.5 flex flex-col gap-1">
                       {/* Role Based Dynamic Dashboard Route */}
                       <Dropdown.Item id="dashboard" textValue="Dashboard" className="rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors">
@@ -222,11 +220,10 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/"
-                  className={`block py-2.5 px-4 rounded-xl text-sm font-semibold transition-all ${
-                    pathname === "/" 
-                      ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20" 
-                      : "text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white"
-                  }`}
+                  className={`block py-2.5 px-4 rounded-xl text-sm font-semibold transition-all ${pathname === "/"
+                    ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
+                    : "text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white"
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Home
@@ -235,17 +232,16 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/all-prompts"
-                  className={`block py-2.5 px-4 rounded-xl text-sm font-semibold transition-all ${
-                    pathname === "/all-prompts" 
-                      ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20" 
-                      : "text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white"
-                  }`}
+                  className={`block py-2.5 px-4 rounded-xl text-sm font-semibold transition-all ${pathname === "/all-prompts"
+                    ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
+                    : "text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white"
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   All Prompts
                 </Link>
               </li>
-              
+
               <li className="mt-2 flex flex-col gap-2.5 border-t border-zinc-200/50 dark:border-white/5 pt-4">
                 {!user ? (
                   <>
@@ -269,7 +265,7 @@ const Navbar = () => {
                       className="flex items-center gap-3 py-2.5 px-4 text-sm font-semibold text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <LayoutTabs size={16} className="text-[#7C3AED]" /> 
+                      <LayoutTabs size={16} className="text-[#7C3AED]" />
                       <span>Dashboard</span>
                     </Link>
                     <Link
@@ -277,7 +273,7 @@ const Navbar = () => {
                       className="flex items-center gap-3 py-2.5 px-4 text-sm font-semibold text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <Person size={16} className="text-[#7C3AED]" /> 
+                      <Person size={16} className="text-[#7C3AED]" />
                       <span>Profile</span>
                     </Link>
                     <button
@@ -287,7 +283,7 @@ const Navbar = () => {
                       }}
                       className="flex items-center gap-3 py-2.5 px-4 text-sm font-semibold text-rose-500 hover:text-rose-400 hover:bg-rose-500/5 rounded-xl text-left w-full cursor-pointer"
                     >
-                      <ArrowRightToSquare size={16} className="text-rose-500" /> 
+                      <ArrowRightToSquare size={16} className="text-rose-500" />
                       <span>Logout</span>
                     </button>
                   </>
