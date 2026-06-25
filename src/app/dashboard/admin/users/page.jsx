@@ -16,6 +16,10 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   // Edit Modal States
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -45,6 +49,36 @@ export default function AdminUsersPage() {
     user.name.toLowerCase().includes(search.toLowerCase()) || 
     user.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Reset page when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm("Are you sure you want to permanently delete this user? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/users?id=${id}`, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        setUsers(users.filter(u => u.id !== id));
+      } else {
+        const errData = await res.json();
+        console.error("Failed to delete user:", errData.error);
+      }
+    } catch (err) {
+      console.error("Error deleting user:", err);
+    }
+  };
+
 
   const toggleUserStatus = async (id) => {
     const userToUpdate = users.find(u => u.id === id);
@@ -193,7 +227,7 @@ export default function AdminUsersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
-            {filteredUsers.map((user) => (
+            {paginatedUsers.map((user) => (
               <tr key={user.id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors">
                 <td className="p-4">
                   <div className="flex items-center gap-3">
@@ -242,12 +276,21 @@ export default function AdminUsersPage() {
                       color={user.status === "active" ? "warning" : "success"}
                       className={`text-xs font-bold cursor-pointer rounded-xl ${
                         user.status === "active" 
-                          ? "bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400" 
+                          ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400" 
                           : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                       }`}
                       onClick={() => toggleUserStatus(user.id)}
                     >
                       {user.status === "active" ? "Suspend" : "Activate"}
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="flat" 
+                      color="danger"
+                      className="text-xs font-bold cursor-pointer rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-450 animate-none"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      Delete
                     </Button>
                   </div>
                 </td>
@@ -262,6 +305,45 @@ export default function AdminUsersPage() {
             )}
           </tbody>
         </table>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 py-4 border-t border-zinc-200 dark:border-white/5 select-none">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-650 dark:text-slate-300 hover:bg-zinc-100 dark:hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold transition-all cursor-pointer"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+              const isActive = currentPage === pageNum;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`w-8 h-8 rounded-xl text-xs font-bold flex items-center justify-center border transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-gradient-to-r from-[#7C3AED] to-[#9333EA] text-white border-transparent'
+                      : 'bg-white dark:bg-white/5 border-zinc-200 dark:border-white/10 text-zinc-650 dark:text-slate-350 hover:bg-zinc-100 dark:hover:bg-white/15'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-650 dark:text-slate-300 hover:bg-zinc-100 dark:hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold transition-all cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
       </div>
 
       {/* Edit Role Modal */}
