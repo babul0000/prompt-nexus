@@ -53,6 +53,25 @@ export default function SignUpPage() {
         }
     };
 
+    const handleGoogleSignUp = async () => {
+        setErrorMessage("");
+        setIsLoading(true);
+
+        try {
+            await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/",
+                additionalData: {
+                    role: role,
+                },
+            });
+        } catch (error) {
+            console.error("Google Signup Failed with Error:", error);
+            setErrorMessage("Google signup failed. Please try again.");
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#030014] text-zinc-900 dark:text-white px-4 py-28 relative transition-colors duration-300">
             {/* Background neon blur glows */}
@@ -183,6 +202,35 @@ export default function SignUpPage() {
                         Sign Up
                     </Button>
                 </form>
+
+                <div className="relative my-5">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-zinc-200 dark:border-white/10"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-white dark:bg-[#09090b] px-2 text-zinc-550 dark:text-zinc-400">
+                            Or sign up with
+                        </span>
+                    </div>
+                </div>
+
+                <Button
+                    type="button"
+                    onClick={handleGoogleSignUp}
+                    isLoading={isLoading}
+                    className="w-full bg-transparent border border-zinc-200 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-white/5 text-zinc-900 dark:text-white font-semibold rounded-xl py-6 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300"
+                >
+                    <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="matrix(1, 0, 0, 1, 0, 0)">
+                            <path d="M21.35,11.1H12v2.7h5.38c-0.24,1.28 -0.96,2.37 -2.04,3.1v2.6h3.28c1.92,-1.78 3.02,-4.4 3.02,-7.4c0,-0.68 -0.06,-1.33 -0.17,-2z" fill="#4285F4" />
+                            <path d="M12,20.6c2.6,0 4.78,-0.86 6.38,-2.3l-3.28,-2.6c-0.9,0.6 -2.06,0.97 -3.1,0.97 -2.39,0 -4.41,-1.61 -5.14,-3.78H3.34v2.68C4.94,18.73 8.24,20.6 12,20.6z" fill="#34A853" />
+                            <path d="M6.86,12.89c-0.18,-0.55 -0.29,-1.13 -0.29,-1.74s0.1,-1.19 0.29,-1.74V6.73H3.34C2.7,8.01 2.33,9.46 2.33,11s0.37,2.99 1.01,4.27l3.52,-2.74z" fill="#FBBC05" />
+                            <path d="M12,5.7c1.41,0 2.68,0.49 3.68,1.44l2.76,-2.76C16.78,2.78 14.6,1.9 12,1.9 8.24,1.9 4.94,3.77 3.34,6.73l3.52,2.74C7.59,7.31 9.61,5.7 12,5.7z" fill="#EA4335" />
+                        </g>
+                    </svg>
+                    Google
+                </Button>
+
 
                 <p className="text-center text-xs text-zinc-550 dark:text-zinc-400 mt-5">
                     Already have an account?{" "}
