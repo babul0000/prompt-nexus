@@ -93,4 +93,36 @@ export const submitReport = async (promptId, reason, description) => {
         reason,
         description
     });
+}
+
+// increment copy count Server Action
+export const incrementCopyCount = async (promptId) => {
+    return serverMutation(`/api/prompts/${promptId}/copy`, {}, "PATCH");
+}
+
+// Fetch all reports (Admin only)
+export const fetchAllReports = async () => {
+    const user = await getUserSession();
+    if (!user || user.role?.toLowerCase() !== 'admin') {
+        throw new Error("Unauthorized");
+    }
+    return serverFetch('/api/reports');
+}
+
+// Delete / Dismiss a report (Admin only)
+export const dismissReport = async (reportId) => {
+    const user = await getUserSession();
+    if (!user || user.role?.toLowerCase() !== 'admin') {
+        throw new Error("Unauthorized");
+    }
+    return serverMutation(`/api/reports/${reportId}`, {}, "DELETE");
+}
+
+// Fetch all prompts for admin panel
+export const fetchAdminPrompts = async () => {
+    const user = await getUserSession();
+    if (!user || user.role?.toLowerCase() !== 'admin') {
+        throw new Error("Unauthorized");
+    }
+    return serverFetch('/api/admin/prompts');
 }

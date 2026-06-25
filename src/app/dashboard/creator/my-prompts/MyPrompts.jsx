@@ -37,6 +37,10 @@ export default function MyPrompts() {
     const [saving, setSaving] = useState(false);
     const [thumbnail, setThumbnail] = useState(null);
     const [thumbnailPreview, setThumbnailPreview] = useState(null);
+
+    // Delete Confirmation Modal State
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
     const [editForm, setEditForm] = useState({
         title: "",
         description: "",
@@ -143,16 +147,27 @@ export default function MyPrompts() {
         }
     };
 
-    const handleDeleteClick = async (id) => {
-        if (confirm("Are you sure you want to delete this prompt template? This action cannot be undone.")) {
-            try {
-                await deletePrompt(id);
-                toast.success("Prompt deleted successfully!");
-                setPrompts(prev => prev.filter(p => p._id !== id));
-            } catch (err) {
-                console.error("Delete error:", err);
-                toast.error(err.message || "Failed to delete prompt");
-            }
+    const handleDeleteClick = (id) => {
+        setDeleteTargetId(id);
+        setDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteTargetId) return;
+        setDeleteModalOpen(false);
+        try {
+            await deletePrompt(deleteTargetId);
+            toast.success("Prompt deleted successfully!", {
+                position: "top-center",
+                autoClose: 2000,
+                theme: "dark"
+            });
+            setPrompts(prev => prev.filter(p => p._id !== deleteTargetId));
+        } catch (err) {
+            console.error("Delete error:", err);
+            toast.error(err.message || "Failed to delete prompt", { theme: "dark" });
+        } finally {
+            setDeleteTargetId(null);
         }
     };
 
@@ -168,7 +183,7 @@ export default function MyPrompts() {
     return (
         <div className="bg-transparent text-zinc-900 dark:text-white transition-colors duration-200 min-h-screen p-4 sm:p-6 md:p-8 relative">
             {/* Glowing background highlights */}
-            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-650/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-[5%] left-1/4 -translate-x-1/2 w-[400px] h-[250px] bg-purple-600/5 blur-[100px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto relative z-10 space-y-8">
                 {/* Header block */}
@@ -176,7 +191,7 @@ export default function MyPrompts() {
                     <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
                         My Prompt Templates
                     </h1>
-                    <p className="text-sm text-zinc-550 dark:text-zinc-400 font-medium">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
                         Review approval status, manage details, and track template analytics.
                     </p>
                 </div>
@@ -184,7 +199,7 @@ export default function MyPrompts() {
                 {/* Table container */}
                 <div className="w-full border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden bg-white dark:bg-[#090a16]/80 backdrop-blur-md shadow-sm dark:shadow-none">
                     <div className="overflow-x-auto w-full">
-                        <table className="w-full border-collapse text-left text-sm text-zinc-705 dark:text-zinc-300">
+                        <table className="w-full border-collapse text-left text-sm text-zinc-700 dark:text-zinc-300">
                             <thead>
                                 <tr className="border-b border-zinc-200 dark:border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-950/50">
                                     <th className="py-4 px-6 min-w-[200px]">Title & Category</th>
@@ -199,7 +214,7 @@ export default function MyPrompts() {
                             <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
                                 {prompts.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-500 dark:text-zinc-550">
+                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-500 dark:text-zinc-500">
                                             No prompts found! Let's submit your first template.
                                         </td>
                                     </tr>
@@ -221,7 +236,7 @@ export default function MyPrompts() {
 
                                                 {/* AI Engine */}
                                                 <td className="py-4 px-4">
-                                                    <span className="bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-250 dark:border-white/5 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
+                                                    <span className="bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-white/5 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
                                                         {p.aiTool || "ChatGPT"}
                                                     </span>
                                                 </td>
@@ -250,7 +265,7 @@ export default function MyPrompts() {
 
                                                 {/* Action buttons */}
                                                 <td className="py-4 px-6 text-right">
-                                                    <div className="flex gap-1 justify-end text-zinc-400 dark:text-zinc-550">
+                                                    <div className="flex gap-1 justify-end text-zinc-400 dark:text-zinc-500">
                                                         <Link 
                                                             href={`/all-prompts/${p._id}`}
                                                             className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition"
@@ -267,7 +282,7 @@ export default function MyPrompts() {
                                                         </button>
                                                         <button 
                                                             onClick={() => handleDeleteClick(p._id)}
-                                                            className="p-2 hover:bg-rose-500/10 hover:text-rose-550 rounded-lg transition cursor-pointer"
+                                                            className="p-2 hover:bg-rose-500/10 hover:text-rose-600 rounded-lg transition cursor-pointer"
                                                             title="Delete Template"
                                                         >
                                                             <Trash2 size={16} />
@@ -293,11 +308,11 @@ export default function MyPrompts() {
                         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/5 pb-4">
                             <div>
                                 <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Edit Prompt Template</h3>
-                                <p className="text-xs text-zinc-550 dark:text-zinc-400">Modify information below and re-submit for admin verification.</p>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400">Modify information below and re-submit for admin verification.</p>
                             </div>
                             <button 
                                 onClick={() => setEditingPrompt(null)}
-                                className="p-1.5 bg-zinc-150 dark:bg-white/5 hover:bg-zinc-250 dark:hover:bg-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
+                                className="p-1.5 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
                             >
                                 <X size={18} />
                             </button>
@@ -308,7 +323,7 @@ export default function MyPrompts() {
                             
                             {/* Title */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Prompt Title *
                                 </label>
                                 <input
@@ -322,7 +337,7 @@ export default function MyPrompts() {
 
                             {/* Short Description */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Short Description *
                                 </label>
                                 <input
@@ -336,7 +351,7 @@ export default function MyPrompts() {
 
                             {/* Content Textarea */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Prompt Content Template *
                                 </label>
                                 <textarea
@@ -350,7 +365,7 @@ export default function MyPrompts() {
                             {/* Category & AI Tool */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                         Category *
                                     </label>
                                     <select
@@ -369,7 +384,7 @@ export default function MyPrompts() {
                                 </div>
 
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                         AI Engine *
                                     </label>
                                     <select
@@ -391,7 +406,7 @@ export default function MyPrompts() {
                             {/* Difficulty & Visibility */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                         Difficulty Level *
                                     </label>
                                     <select
@@ -407,29 +422,29 @@ export default function MyPrompts() {
                                 </div>
 
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                    <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                         Visibility Status *
                                     </label>
                                     <div className="flex items-center gap-5 mt-2.5">
-                                        <label className="flex items-center gap-2 text-xs text-zinc-750 dark:text-slate-200 cursor-pointer select-none">
+                                        <label className="flex items-center gap-2 text-xs text-zinc-700 dark:text-slate-200 cursor-pointer select-none">
                                             <input
                                                 type="radio"
                                                 name="visibility"
                                                 value="Public"
                                                 checked={editForm.visibility === "Public"}
                                                 onChange={() => setEditForm(prev => ({ ...prev, visibility: "Public" }))}
-                                                className="w-4 h-4 text-purple-650 bg-zinc-50 dark:bg-[#040614] border-zinc-200 dark:border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
+                                                className="w-4 h-4 text-purple-600 bg-zinc-50 dark:bg-[#040614] border-zinc-200 dark:border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
                                             />
                                             <span>Public</span>
                                         </label>
-                                        <label className="flex items-center gap-2 text-xs text-zinc-750 dark:text-slate-200 cursor-pointer select-none">
+                                        <label className="flex items-center gap-2 text-xs text-zinc-700 dark:text-slate-200 cursor-pointer select-none">
                                             <input
                                                 type="radio"
                                                 name="visibility"
                                                 value="Private"
                                                 checked={editForm.visibility === "Private"}
                                                 onChange={() => setEditForm(prev => ({ ...prev, visibility: "Private" }))}
-                                                className="w-4 h-4 text-purple-650 bg-zinc-50 dark:bg-[#040614] border-zinc-200 dark:border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
+                                                className="w-4 h-4 text-purple-600 bg-zinc-50 dark:bg-[#040614] border-zinc-200 dark:border-[#151b3d] focus:ring-purple-500/30 cursor-pointer"
                                             />
                                             <span>Private</span>
                                         </label>
@@ -439,7 +454,7 @@ export default function MyPrompts() {
 
                             {/* Tags */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Tags (Comma-Separated)
                                 </label>
                                 <input
@@ -453,7 +468,7 @@ export default function MyPrompts() {
 
                             {/* Thumbnail image upload */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-zinc-550 dark:text-slate-400 tracking-widest uppercase">
+                                <label className="text-[10px] font-bold text-zinc-500 dark:text-slate-400 tracking-widest uppercase">
                                     Thumbnail Image
                                 </label>
                                 <div className="relative border border-dashed border-zinc-300 dark:border-[#1d2456] rounded-lg bg-zinc-50 dark:bg-[#040614] hover:bg-zinc-100 dark:hover:bg-[#040614]/70 transition-all min-h-[120px] flex items-center justify-center cursor-pointer">
@@ -506,7 +521,7 @@ export default function MyPrompts() {
                                 <button
                                     type="button"
                                     onClick={() => setEditingPrompt(null)}
-                                    className="px-5 py-2.5 rounded-lg text-xs font-bold bg-zinc-150 hover:bg-zinc-200 text-zinc-700 dark:bg-[#131735] dark:hover:bg-[#1a204d] dark:text-zinc-300 border border-zinc-250 dark:border-[#1e2554] transition cursor-pointer"
+                                    className="px-5 py-2.5 rounded-lg text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-[#131735] dark:hover:bg-[#1a204d] dark:text-zinc-300 border border-zinc-200 dark:border-[#1e2554] transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
@@ -521,6 +536,47 @@ export default function MyPrompts() {
                             </div>
 
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal (Premium Glassmorphism Overlay) */}
+            {deleteModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
+                    <div className="bg-white dark:bg-[#0a0d26] border border-zinc-200 dark:border-[#13193e] rounded-2xl w-full max-w-md relative p-6 sm:p-8 space-y-6 shadow-2xl text-center text-zinc-900 dark:text-white animate-in fade-in zoom-in-95 duration-200">
+                        {/* Modal Header Icon */}
+                        <div className="mx-auto w-14 h-14 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(239,68,68,0.15)] mb-2">
+                            <Trash2 className="w-6 h-6 animate-pulse" />
+                        </div>
+
+                        {/* Title & Message */}
+                        <div className="space-y-2">
+                            <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Delete Prompt Template?</h3>
+                            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-sm mx-auto">
+                                Are you sure you want to delete this prompt template from the marketplace? This action is permanent and cannot be undone.
+                            </p>
+                        </div>
+
+                        {/* Modal Actions Footer */}
+                        <div className="pt-2 flex gap-3 justify-center">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setDeleteModalOpen(false);
+                                    setDeleteTargetId(null);
+                                }}
+                                className="px-5 py-2.5 rounded-lg text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-[#131735] dark:hover:bg-[#1a204d] dark:text-zinc-300 border border-zinc-200 dark:border-[#1e2554] transition cursor-pointer flex-grow"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDelete}
+                                className="px-5 py-2.5 rounded-lg text-xs font-bold bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white transition cursor-pointer flex-grow shadow-[0_4px_12px_rgba(239,68,68,0.2)] hover:shadow-[0_4px_20px_rgba(239,68,68,0.35)]"
+                            >
+                                Delete Template
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

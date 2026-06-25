@@ -4,6 +4,7 @@ import db from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import Link from 'next/link';
 import { CheckCircle2, XCircle, ArrowRight, Sparkles, Gem } from 'lucide-react';
+import SuccessClientSync from './SuccessClientSync';
 
 export default async function SuccessPage({ searchParams }) {
     const params = await searchParams;
@@ -79,6 +80,7 @@ export default async function SuccessPage({ searchParams }) {
                 
                 {success ? (
                     <>
+                        <SuccessClientSync />
                         {/* Success Icon */}
                         <div className="mx-auto w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                             <CheckCircle2 className="w-8 h-8" />

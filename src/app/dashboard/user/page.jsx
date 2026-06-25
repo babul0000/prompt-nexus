@@ -3,14 +3,44 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { Bookmark, Star, ShieldAlert, Compass, User, CreditCard, Sparkles, LayoutGrid } from 'lucide-react';
+import db from '@/lib/db';
+import { ObjectId } from 'mongodb';
 
 const UserPage = async () => {
     const { user } = await auth.api.getSession({ headers: await headers() });
 
-    // Mock calculations or standard data for user dashboard stats
-    const savedCount = 0;
-    const reviewsCount = 0;
-    const currentPlan = user?.plan || "Free Tier";
+    let savedCount = 0;
+    let reviewsCount = 0;
+
+    if (user) {
+        try {
+            let userIdQuery = { userId: user.id };
+            try {
+                userIdQuery = {
+                    $or: [
+                        { userId: user.id },
+                        { userId: new ObjectId(user.id) }
+                    ]
+                };
+            } catch (e) {}
+            savedCount = await db.collection("bookmarks").countDocuments(userIdQuery);
+        } catch (e) {
+            console.error("Failed to count user bookmarks:", e);
+        }
+
+        try {
+            if (user.email) {
+                reviewsCount = await db.collection("reviews").countDocuments({ userEmail: user.email });
+            }
+        } catch (e) {
+            console.error("Failed to count user reviews:", e);
+        }
+    }
+
+    const isPro = user?.plan?.toLowerCase() === "pro" || user?.role?.toLowerCase() === "pro" || user?.role?.toLowerCase() === "admin";
+    const currentPlan = isPro 
+        ? (user?.role?.toLowerCase() === "admin" ? "Admin Privileges" : "Pro Tier") 
+        : "Free Tier";
 
     return (
         <div className="relative min-h-screen bg-transparent text-zinc-900 dark:text-white pt-10 pb-20 px-4 sm:px-6 transition-colors duration-300">

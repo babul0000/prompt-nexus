@@ -95,6 +95,17 @@ export default function PaymentPage() {
                         theme: "dark"
                     });
                     
+                    // Force refresh session on client side before redirecting
+                    try {
+                        await authClient.getSession({
+                            query: {
+                                disableCookieCache: true
+                            }
+                        });
+                    } catch (e) {
+                        console.error("Session sync error during simulation:", e);
+                    }
+                    
                     setTimeout(() => {
                         window.location.href = "/dashboard/user";
                     }, 1000);

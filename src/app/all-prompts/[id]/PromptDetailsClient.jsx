@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authClient } from "@/lib/auth-client";
 import { ArrowLeft, Copy, Check, Bookmark, Flag, Send, Star, User, MessageSquare, Lock, Sparkles, Gem, X } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { toggleBookmark, checkBookmarkStatus, fetchReviews, submitReview, submitReport } from "@/lib/actions/prompt";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { toggleBookmark, checkBookmarkStatus, fetchReviews, submitReview, submitReport, incrementCopyCount } from "@/lib/actions/prompt";
 
 const PromptDetailsClient = ({ promptId }) => {
     const router = useRouter();
@@ -166,6 +167,14 @@ const PromptDetailsClient = ({ promptId }) => {
                 theme: "dark"
             });
             setTimeout(() => setCopied(false), 2000);
+
+            // Increment copy count in database & update local state
+            try {
+                await incrementCopyCount(prompt._id || prompt.id);
+                setPrompt(prev => ({ ...prev, copyCount: (prev.copyCount || 0) + 1 }));
+            } catch (err) {
+                console.error("Failed to increment copy count:", err);
+            }
         } catch (err) {
             console.error("Failed to copy template", err);
             toast.error("Failed to copy template.");
@@ -254,8 +263,7 @@ const PromptDetailsClient = ({ promptId }) => {
         );
     }
 
-    // Plan checks: Admins and Pro tier users have full premium access
-    const isPro = session?.user?.plan?.toLowerCase() === "pro" || session?.user?.role?.toLowerCase() === "admin";
+    const isPro = session?.user?.plan?.toLowerCase() === "pro" || session?.user?.role?.toLowerCase() === "pro" || session?.user?.role?.toLowerCase() === "admin";
 
     // Logic: Determine if prompt is Premium/Private
     const isPrivate = 
@@ -413,7 +421,7 @@ const PromptDetailsClient = ({ promptId }) => {
                                                     }
                                                 </p>
                                             </div>
-                                            <Link href={session?.user ? `/dashboard/${session.user.role?.toLowerCase() || 'user'}/profile` : "/profile"}>
+                                            <Link href="/payment">
                                                 <button className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black text-xs font-extrabold rounded-xl shadow-lg cursor-pointer">
                                                     Subscribe to access
                                                 </button>
@@ -767,6 +775,9 @@ const PromptDetailsClient = ({ promptId }) => {
                     </div>
                 </div>
             )}
+            
+            {/* Toast Notifications */}
+            <ToastContainer position="top-center" hideProgressBar newestOnTop />
         </div>
     );
 };

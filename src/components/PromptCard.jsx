@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Copy, Check, Sparkles, Star, Eye, Lock, User } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { incrementCopyCount } from "@/lib/actions/prompt";
+import { authClient } from "@/lib/auth-client";
 
 const PromptCard = ({ prompt, onViewDetails }) => {
     const [copied, setCopied] = useState(false);
@@ -50,10 +52,22 @@ const PromptCard = ({ prompt, onViewDetails }) => {
     // Map difficulty: "Advanced" to "PRO"
     const displayDifficulty = difficulty.toLowerCase() === 'advanced' ? 'PRO' : difficulty;
 
+    // Fetch session client side
+    const { data: session } = authClient.useSession();
+    const user = session?.user;
+    const isPro = user?.plan?.toLowerCase() === "pro" || user?.role?.toLowerCase() === "pro" || user?.role?.toLowerCase() === "admin";
+
     // Check if the prompt is premium based on title OR visibility
-    const isPremium = 
+    const isPrivate = 
         (prompt.visibility && prompt.visibility.toLowerCase() === 'private') || 
-        title.toLowerCase().includes('premium');
+        title?.toLowerCase().includes('premium');
+
+    const isPremiumTool = 
+        aiTool?.toLowerCase().includes('claude') || 
+        aiTool?.toLowerCase().includes('midjourney');
+
+    const isLocked = !isPro && (isPrivate || isPremiumTool);
+    const isPremium = isPrivate || isPremiumTool;
 
     // Make creator name look like Mr.Creator if it is "creator" or default to creatorEmail prefix
     const getDisplayName = () => {
@@ -88,6 +102,13 @@ const PromptCard = ({ prompt, onViewDetails }) => {
                 theme: "dark"
             });
             setTimeout(() => setCopied(false), 2000);
+
+            // Increment copy count in database
+            try {
+                await incrementCopyCount(prompt._id || prompt.id);
+            } catch (err) {
+                console.error("Failed to increment copy count:", err);
+            }
         } catch (err) {
             console.error("Failed to copy text: ", err);
             toast.error("Failed to copy to clipboard.");
@@ -95,10 +116,34 @@ const PromptCard = ({ prompt, onViewDetails }) => {
     };
 
     return (
-        <div className="group relative flex flex-col gap-4 bg-white/70 dark:bg-[#070817]/70 border border-zinc-200/60 dark:border-white/[0.05] hover:border-purple-500/35 p-5 rounded-2.5xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-[0_15px_45px_rgba(124,58,237,0.08)] backdrop-blur-xl">
+        <div className="group relative flex flex-col gap-4 bg-white/70 dark:bg-[#070817]/70 border border-zinc-200/60 dark:border-white/[0.05] hover:border-purple-500/35 p-5 rounded-2.5xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-[0_15px_45px_rgba(124,58,237,0.08)] backdrop-blur-xl overflow-hidden">
             
+            {/* Locked / Premium Upgrade Overlay */}
+            {isLocked && (
+                <Link 
+                    href="/payment"
+                    className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/95 dark:bg-[#030014]/90 backdrop-blur-md rounded-2.5xl p-5 text-center transition-all duration-300 cursor-pointer pointer-events-auto"
+                >
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-650 dark:text-purple-400 rounded-2xl mb-2.5 shadow-[0_0_20px_rgba(168,85,247,0.15)] animate-pulse">
+                        <Lock className="w-5.5 h-5.5" />
+                    </div>
+                    <h4 className="text-xs font-black text-zinc-900 dark:text-white tracking-wider uppercase flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                        <span>Premium Lock</span>
+                    </h4>
+                    <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold max-w-[170px] mt-1 mb-4 leading-relaxed">
+                        Upgrade to Pro to view and copy this premium template.
+                    </p>
+                    <span className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-650 text-white text-[10px] font-black uppercase tracking-wider rounded-xl shadow-lg active:scale-[0.98] transition-all">
+                        Upgrade to Unlock
+                    </span>
+                </Link>
+            )}
+
             {/* Soft backdrop radial glow on card hover */}
             <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-500/[0.01] dark:to-purple-500/[0.02] rounded-2.5xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+            <div className={`flex flex-col gap-4 flex-grow transition-all duration-300 ${isLocked ? 'blur-[3px] opacity-35 select-none pointer-events-none' : ''}`}>
 
             {/* Image / Thumbnail Container */}
             <div className="relative w-full h-44 overflow-hidden rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-150 dark:from-[#0a071c] dark:to-[#170a2b] border border-zinc-200/50 dark:border-white/5 flex items-center justify-center">
@@ -198,6 +243,7 @@ const PromptCard = ({ prompt, onViewDetails }) => {
                         <Copy className="w-3.5 h-3.5" />
                     )}
                 </button>
+            </div>
             </div>
         </div>
     );

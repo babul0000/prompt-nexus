@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
-import { updatePromptStatus, togglePromptFeatured, deletePrompt } from "@/lib/actions/prompt";
+import { updatePromptStatus, togglePromptFeatured, deletePrompt, fetchAdminPrompts } from "@/lib/actions/prompt";
 import { Shield, Eye, Check, X, Trash2, Star, Sparkles, FileText } from "lucide-react";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -23,12 +23,8 @@ export default function AdminPromptsPage() {
 
     const fetchAllPrompts = async () => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-            const res = await fetch(`${baseUrl}/api/admin/prompts`, { cache: "no-store" });
-            if (res.ok) {
-                const data = await res.json();
-                setPrompts(data || []);
-            }
+            const data = await fetchAdminPrompts();
+            setPrompts(data || []);
         } catch (err) {
             console.error("Failed to load prompts:", err);
             toast.error("Failed to load prompt templates.");

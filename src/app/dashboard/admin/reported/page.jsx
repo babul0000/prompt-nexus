@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
-import { deletePrompt } from "@/lib/actions/prompt";
+import { deletePrompt, fetchAllReports, dismissReport } from "@/lib/actions/prompt";
 import { Shield, Trash2, Check, ExternalLink } from "lucide-react";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -16,14 +16,11 @@ export default function ReportedPromptsPage() {
 
     const fetchReports = async () => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-            const res = await fetch(`${baseUrl}/api/reports`, { cache: "no-store" });
-            if (res.ok) {
-                const data = await res.json();
-                setReports(data || []);
-            }
+            const data = await fetchAllReports();
+            setReports(data || []);
         } catch (err) {
             console.error("Failed to load reported prompts:", err);
+            toast.error("Failed to load reports.");
         } finally {
             setLoading(false);
         }
@@ -41,14 +38,9 @@ export default function ReportedPromptsPage() {
     const handleDismissReport = async (reportId) => {
         if (confirm("Are you sure you want to dismiss this report? The prompt will remain public.")) {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-                const res = await fetch(`${baseUrl}/api/reports/${reportId}`, {
-                    method: "DELETE"
-                });
-                if (res.ok) {
-                    toast.success("Report dismissed successfully.");
-                    setReports(prev => prev.filter(r => r._id !== reportId));
-                }
+                await dismissReport(reportId);
+                toast.success("Report dismissed successfully.");
+                setReports(prev => prev.filter(r => r._id !== reportId));
             } catch (err) {
                 console.error("Failed to dismiss report:", err);
                 toast.error("Failed to dismiss report.");
@@ -64,10 +56,7 @@ export default function ReportedPromptsPage() {
                 await deletePrompt(promptId);
                 
                 // Remove report entry
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-                await fetch(`${baseUrl}/api/reports/${reportId}`, {
-                    method: "DELETE"
-                });
+                await dismissReport(reportId);
 
                 toast.success("Violating prompt deleted from platform.");
                 setReports(prev => prev.filter(r => r._id !== reportId));

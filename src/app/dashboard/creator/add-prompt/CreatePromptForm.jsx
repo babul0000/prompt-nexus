@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { UploadCloud, Send, Lock } from "lucide-react";
 import { createPrompt } from "@/lib/actions/prompt";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "@/lib/auth-client";
 import Link from "next/link";
 import { getMyPrompts } from "@/lib/api/prompt";
@@ -139,8 +140,12 @@ export default function CreatePromptPage() {
 
         try {
             const res = await createPrompt(promptData);
-            if (res.insertedId) {
-                toast.success("Prompt created successfully! Redirecting...");
+            if (res && (res.insertedId || res.acknowledged)) {
+                toast.success("Prompt template added successfully!", {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark"
+                });
                 e.target.reset();
                 setThumbnail(null);
                 setThumbnailPreview(null);
@@ -152,7 +157,7 @@ export default function CreatePromptPage() {
                     router.push(`/dashboard/${targetDashboard}/my-prompts`);
                 }, 1500);
             } else {
-                toast.error("Failed to create prompt");
+                toast.error("Failed to create prompt template.", { theme: "dark" });
             }
         } catch (error) {
             console.error("Submission error:", error);
@@ -440,6 +445,9 @@ export default function CreatePromptPage() {
                     </form>
                 </div>
             </div>
+            
+            {/* Toast Notifications */}
+            <ToastContainer position="top-center" hideProgressBar newestOnTop />
         </div>
     );
 }
