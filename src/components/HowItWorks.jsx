@@ -8,19 +8,19 @@ const HowItWorks = () => {
     const steps = [
         {
             number: "01",
-            icon: <Search className="w-6 h-6 text-purple-400" />,
+            icon: <Search className="w-5 h-5 text-purple-550 dark:text-purple-400" />,
             title: "Explore Prompts",
             description: "Browse our extensive catalog of tested, high-quality AI prompt templates optimized for diverse categories and AI tools."
         },
         {
             number: "02",
-            icon: <Copy className="w-6 h-6 text-blue-400" />,
+            icon: <Copy className="w-5 h-5 text-blue-550 dark:text-blue-400" />,
             title: "Copy & Use",
             description: "Easily copy prompt contents with a single click, customize placeholders, and inject them directly into your favorite AI tool."
         },
         {
             number: "03",
-            icon: <Share2 className="w-6 h-6 text-[#38bdf8]" />,
+            icon: <Share2 className="w-5 h-5 text-[#38bdf8]" />,
             title: "Share Your Prompts",
             description: "Publish your own customized prompts, build your creator portfolio, gain copy metrics, and monetise premium templates."
         }
@@ -37,23 +37,24 @@ const HowItWorks = () => {
     };
 
     const cardVariants = {
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 25 },
         show: { 
             opacity: 1, 
             y: 0, 
             transition: { 
                 type: "spring", 
-                stiffness: 100,
-                damping: 15
+                stiffness: 90,
+                damping: 14
             } 
         }
     };
 
     return (
         <section className="relative w-full bg-slate-50 dark:bg-[#030014] pb-28 px-6 md:px-12 overflow-hidden flex flex-col items-center transition-colors duration-300">
+            
             {/* Glowing background mesh gradients */}
-            <div className="absolute top-[30%] right-[10%] w-[350px] h-[350px] bg-purple-650/5 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[10%] left-[10%] w-[350px] h-[350px] bg-blue-650/5 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute top-[30%] right-[10%] w-[400px] h-[400px] bg-[#7C3AED]/5 dark:bg-[#7C3AED]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+            <div className="absolute bottom-[10%] left-[10%] w-[400px] h-[400px] bg-blue-500/5 dark:bg-blue-650/10 blur-[130px] rounded-full pointer-events-none -z-10 animate-pulse-slow" />
 
             <div className="max-w-7xl w-full mx-auto relative z-10 flex flex-col items-center">
                 {/* Section Header */}
@@ -62,7 +63,7 @@ const HowItWorks = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-600 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:bg-white/10 transition-all cursor-default"
+                        className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-4.5 py-1.5 rounded-full text-xs text-purple-650 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.06)] hover:bg-white/10 transition-all cursor-default"
                     >
                         <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 animate-pulse" />
                         <span>Workflow Guide</span>
@@ -81,7 +82,7 @@ const HowItWorks = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-zinc-650 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
+                        className="text-zinc-650 dark:text-zinc-400 text-sm md:text-base font-semibold max-w-xl mx-auto"
                     >
                         Master PromptForge in three effortless steps and jumpstart your AI engineering workflow today.
                     </motion.p>
@@ -95,31 +96,31 @@ const HowItWorks = () => {
                     viewport={{ once: true, margin: "-100px" }}
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full relative"
                 >
-                    {/* Connecting dashed line for large screens */}
-                    <div className="hidden md:block absolute top-[44%] left-[12%] right-[12%] h-[1.5px] border-t border-dashed border-zinc-300 dark:border-zinc-700/40 -z-10 pointer-events-none" />
+                    {/* Connecting premium gradient line for large screens */}
+                    <div className="hidden md:block absolute top-[44%] left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-[#7C3AED]/30 via-[#9333EA]/30 to-[#38BDF8]/30 -z-10 pointer-events-none" />
 
                     {steps.map((step, idx) => (
                         <motion.div 
                             key={idx}
                             variants={cardVariants}
-                            className="group relative flex flex-col gap-6 bg-white dark:bg-[#090a16]/40 border border-zinc-200 dark:border-white/[0.05] hover:border-purple-500/30 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-md hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_0_35px_rgba(124,58,237,0.06)]"
+                            className="group relative flex flex-col gap-6 bg-white/70 dark:bg-[#070817]/60 border border-zinc-200/60 dark:border-white/[0.05] hover:border-purple-500/35 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-xl hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-[0_15px_40px_rgba(124,58,237,0.08)]"
                         >
                             {/* Step Badge / Icon Row */}
                             <div className="flex items-center justify-between">
-                                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-white/5 border border-zinc-200/50 dark:border-white/5 group-hover:bg-purple-500/10 group-hover:border-purple-500/20 text-zinc-500 dark:text-zinc-450 group-hover:text-purple-600 group-hover:dark:text-purple-400 transition-all duration-300">
+                                <div className="p-3.5 rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200/50 dark:border-white/5 group-hover:bg-[#7C3AED]/10 group-hover:border-purple-500/25 text-zinc-550 dark:text-zinc-400 group-hover:text-[#7C3AED] group-hover:dark:text-purple-400 transition-all duration-300">
                                     {step.icon}
                                 </div>
-                                <span className="text-4xl font-black bg-gradient-to-r from-zinc-800 to-zinc-750 dark:from-white/10 dark:to-white/[0.02] bg-clip-text text-transparent group-hover:text-purple-500/20 transition-all duration-500 select-none">
+                                <span className="text-4xl font-black bg-gradient-to-r from-zinc-800 to-zinc-650 dark:from-white/10 dark:to-white/[0.02] bg-clip-text text-transparent group-hover:from-[#7C3AED] group-hover:to-[#38BDF8] group-hover:bg-clip-text group-hover:text-transparent transition-all duration-500 select-none">
                                     {step.number}
                                 </span>
                             </div>
 
                             {/* Card Content */}
                             <div className="space-y-3.5 text-left">
-                                <h3 className="text-lg font-bold text-zinc-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors tracking-tight">
+                                <h3 className="text-base font-extrabold text-zinc-900 dark:text-white group-hover:text-[#7C3AED] dark:group-hover:text-purple-400 transition-colors tracking-tight">
                                     {step.title}
                                 </h3>
-                                <p className="text-zinc-650 dark:text-zinc-400 text-sm leading-relaxed min-h-[80px]">
+                                <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed min-h-[72px]">
                                     {step.description}
                                 </p>
                             </div>
