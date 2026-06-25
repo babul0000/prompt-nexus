@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, MessageSquare } from 'lucide-react';
+import { Star, MessageSquare, Quote } from 'lucide-react';
 
 const Testimonials = () => {
     const list = [
@@ -43,8 +43,9 @@ const Testimonials = () => {
 
     return (
         <section className="relative w-full bg-slate-50 dark:bg-[#030014] pb-28 px-6 md:px-12 overflow-hidden flex flex-col items-center transition-colors duration-300">
+            
             {/* Background Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-purple-650/5 blur-[130px] rounded-full pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-650/5 dark:bg-purple-650/10 blur-[130px] rounded-full pointer-events-none -z-10 animate-pulse-slow" />
 
             <div className="max-w-7xl w-full mx-auto relative z-10 flex flex-col items-center">
                 {/* Header */}
@@ -53,9 +54,9 @@ const Testimonials = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 px-4.5 py-1.5 rounded-full text-xs text-purple-650 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.1)]"
+                        className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-4.5 py-1.5 rounded-full text-xs text-purple-655 dark:text-purple-400 font-bold tracking-wide backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.06)]"
                     >
-                        <MessageSquare className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                        <MessageSquare className="w-3.5 h-3.5 text-purple-650 dark:text-purple-400 animate-pulse" />
                         <span>Testimonials</span>
                     </motion.div>
                     
@@ -72,7 +73,7 @@ const Testimonials = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-zinc-650 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl mx-auto"
+                        className="text-zinc-655 dark:text-zinc-400 text-sm md:text-base font-semibold max-w-xl mx-auto"
                     >
                         Real feedback from designers, engineers, and creators who scale their output with us.
                     </motion.p>
@@ -90,32 +91,37 @@ const Testimonials = () => {
                         <motion.div 
                             key={idx}
                             variants={cardVariants}
-                            className="group flex flex-col justify-between bg-white dark:bg-[#090a16]/40 border border-zinc-200 dark:border-white/[0.05] hover:border-purple-500/20 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-md hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_10px_30px_rgba(124,58,237,0.05)] text-left"
+                            className="group relative flex flex-col justify-between bg-white/70 dark:bg-[#070817]/60 border border-zinc-200/60 dark:border-white/[0.05] hover:border-purple-500/35 p-8 rounded-2.5xl transition-all duration-300 backdrop-blur-xl hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-[0_15px_40px_rgba(124,58,237,0.08)] text-left overflow-hidden"
                         >
+                            {/* Decorative Quotation Mark in top-right */}
+                            <Quote className="absolute top-4 right-4 w-20 h-20 text-purple-500/[0.04] dark:text-purple-500/[0.03] pointer-events-none select-none" />
+
                             {/* Stars rating & Quote */}
-                            <div className="space-y-4">
+                            <div className="space-y-4 relative z-10">
                                 <div className="flex gap-1 text-amber-500">
                                     {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star key={s} className="w-4 h-4 fill-amber-500" />
+                                        <Star key={s} className="w-3.5 h-3.5 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-zinc-700 dark:text-zinc-350 text-sm leading-relaxed italic">
+                                <p className="text-zinc-655 dark:text-zinc-350 text-xs sm:text-sm leading-relaxed italic font-medium">
                                     "{item.quote}"
                                 </p>
                             </div>
 
                             {/* Author row */}
-                            <div className="flex items-center gap-3.5 pt-6 mt-6 border-t border-zinc-200 dark:border-white/5">
-                                <img 
-                                    src={item.image} 
-                                    alt={item.name} 
-                                    className="w-10 h-10 rounded-full object-cover border border-zinc-200 dark:border-white/10" 
-                                />
+                            <div className="flex items-center gap-3.5 pt-5 mt-5 border-t border-zinc-200/80 dark:border-white/5 relative z-10">
+                                <div className="p-[1.5px] bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#38BDF8] rounded-full">
+                                    <img 
+                                        src={item.image} 
+                                        alt={item.name} 
+                                        className="w-10 h-10 rounded-full object-cover border-2 border-white dark:border-[#070817]" 
+                                    />
+                                </div>
                                 <div>
-                                    <h4 className="text-sm font-extrabold text-zinc-900 dark:text-white">
+                                    <h4 className="text-sm font-extrabold text-zinc-900 dark:text-white leading-tight">
                                         {item.name}
                                     </h4>
-                                    <p className="text-[11px] text-zinc-500 font-semibold tracking-wide mt-0.5">
+                                    <p className="text-[10px] text-zinc-500 font-extrabold tracking-widest uppercase mt-0.5">
                                         {item.role}
                                     </p>
                                 </div>
