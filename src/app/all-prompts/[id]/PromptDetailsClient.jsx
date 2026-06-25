@@ -592,7 +592,7 @@ const PromptDetailsClient = ({ promptId }) => {
                             </div>
 
                             <p className="text-[11px] text-zinc-600 dark:text-slate-400 leading-relaxed">
-                                {getDisplayName()} is a verified prompt creator on AIverse, specialized in designing templates for {prompt.aiTool || 'AI engines'}.
+                                {getDisplayName()} is a verified prompt creator on PromptForge, specialized in designing templates for {prompt.aiTool || 'AI engines'}.
                             </p>
                         </div>
                     </div>

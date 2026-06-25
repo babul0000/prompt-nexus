@@ -13,6 +13,10 @@ export default function PaymentPage() {
     const { data: session, isPending: sessionPending } = authClient.useSession();
     const user = session?.user;
 
+    useEffect(() => {
+        document.title = "Upgrade to Pro | PromptForge";
+    }, []);
+
     const [cardNumber, setCardNumber] = useState("");
     const [isUpgrading, setIsUpgrading] = useState(false);
 
@@ -172,7 +176,7 @@ export default function PaymentPage() {
 
                             {/* Plan Title */}
                             <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-4">
-                                Aiverse Pro Access
+                                PromptForge Pro Access
                             </h2>
 
                             {/* Pricing Section */}

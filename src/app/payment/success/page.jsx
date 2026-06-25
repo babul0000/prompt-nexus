@@ -91,7 +91,7 @@ export default async function SuccessPage({ searchParams }) {
                             </h1>
                             <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5">
                                 <Sparkles className="w-3.5 h-3.5" />
-                                <span>Aiverse Pro Activated</span>
+                                <span>PromptForge Pro Activated</span>
                             </p>
                         </div>
 
@@ -117,7 +117,7 @@ export default async function SuccessPage({ searchParams }) {
 
                         {/* Success description message */}
                         <p className="text-xs sm:text-sm text-zinc-650 dark:text-zinc-400 leading-relaxed">
-                            Thank you for upgrading! Your account has been upgraded to **Aiverse Pro Access**. You now have unlimited access to premium prompt templates and dashboard privileges.
+                            Thank you for upgrading! Your account has been upgraded to **PromptForge Pro Access**. You now have unlimited access to premium prompt templates and dashboard privileges.
                         </p>
 
                         {/* Redirection button */}
