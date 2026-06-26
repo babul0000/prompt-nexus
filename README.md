@@ -5,8 +5,8 @@ Welcome to **PromptForge**, a recruiter-friendly, feature-packed SaaS community 
 ---
 
 ## Live URL
-- **Front-End Deployment**: [https://prompt-forge-nexus.vercel.app](https://prompt-forge-nexus.vercel.app)
-- **API Server Deployment**: [https://prompt-forge-server.onrender.com](https://prompt-forge-server.onrender.com)
+- **Front-End Deployment**: [ https://promt-nexus.vercel.app ]
+- **API Server Deployment**: [ https://promt-nexus-server.vercel.app ]
 
 ---
 
