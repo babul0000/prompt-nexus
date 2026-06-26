@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { getUserSession } from "./session";
 
-const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+import { baseUrl } from "./baseUrl";
 
 const resolveUrl = (path) => {
     if (path.startsWith("http")) return path;

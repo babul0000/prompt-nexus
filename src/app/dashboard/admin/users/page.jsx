@@ -152,7 +152,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 p-4 rounded-2xl flex items-center justify-between shadow-sm dark:shadow-none">
           <div>
             <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Total Users</p>
@@ -214,101 +214,198 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* Table block */}
-      <div className="bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-sm dark:shadow-2xl">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-white/[0.01]">
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">User</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Role</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Status</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Joined</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
-            {paginatedUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors">
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <Avatar src={user.image || null} size="sm" className="bg-purple-900 text-white font-bold">
-                      {user.name.charAt(0).toUpperCase()}
-                    </Avatar>
-                    <div>
-                      <div className="text-sm font-bold text-zinc-900 dark:text-white">{user.name}</div>
-                      <div className="text-xs text-zinc-550 dark:text-zinc-500">{user.email}</div>
+      {/* Table & Mobile List block */}
+      <div className="space-y-4">
+        {/* Desktop Table View */}
+        <div className="hidden md:block bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-sm dark:shadow-2xl">
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="border-b border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-white/[0.01]">
+                <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">User</th>
+                <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Role</th>
+                <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Status</th>
+                <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Joined</th>
+                <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
+              {paginatedUsers.map((user) => (
+                <tr key={user.id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <Avatar src={user.image || null} size="sm" className="bg-purple-900 text-white font-bold">
+                        {user.name.charAt(0).toUpperCase()}
+                      </Avatar>
+                      <div>
+                        <div className="text-sm font-bold text-zinc-900 dark:text-white">{user.name}</div>
+                        <div className="text-xs text-zinc-550 dark:text-zinc-500">{user.email}</div>
+                      </div>
                     </div>
+                  </td>
+                  <td className="p-4">
+                    <Chip 
+                      className="capitalize text-[10px] font-extrabold px-2.5 py-1" 
+                      color={user.role === "admin" ? "danger" : user.role === "creator" ? "secondary" : "default"}
+                      variant="flat"
+                    >
+                      {user.role}
+                    </Chip>
+                  </td>
+                  <td className="p-4">
+                    <Chip 
+                      className="capitalize text-[10px] font-extrabold px-2.5 py-1" 
+                      color={user.status === "active" ? "success" : "warning"}
+                      variant="flat"
+                    >
+                      {user.status}
+                    </Chip>
+                  </td>
+                  <td className="p-4 text-xs text-zinc-500 dark:text-zinc-400">{user.joined}</td>
+                  <td className="p-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="flat" 
+                        color="secondary"
+                        className="text-xs font-bold cursor-pointer rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 animate-none"
+                        onClick={() => openEditModal(user)}
+                      >
+                        Edit
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="flat" 
+                        color={user.status === "active" ? "warning" : "success"}
+                        className={`text-xs font-bold cursor-pointer rounded-xl ${
+                          user.status === "active" 
+                            ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400" 
+                            : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                        }`}
+                        onClick={() => toggleUserStatus(user.id)}
+                      >
+                        {user.status === "active" ? "Suspend" : "Activate"}
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="flat" 
+                        color="danger"
+                        className="text-xs font-bold cursor-pointer rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-450 animate-none"
+                        onClick={() => handleDeleteUser(user.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {filteredUsers.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="p-8 text-center text-zinc-500 text-sm">
+                    No users found matching filter criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card List View */}
+        <div className="md:hidden space-y-4">
+          {paginatedUsers.length === 0 ? (
+            <div className="py-12 text-center text-zinc-500 dark:text-zinc-400 bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl shadow-sm">
+              No users found matching filter criteria.
+            </div>
+          ) : (
+            paginatedUsers.map((user) => (
+              <div 
+                key={user.id}
+                className="bg-white dark:bg-[#090a16]/40 border border-zinc-200 dark:border-white/5 rounded-2xl p-5 space-y-4 shadow-sm dark:shadow-none backdrop-blur-md"
+              >
+                {/* User Profile Info */}
+                <div className="flex items-center gap-3 border-b border-zinc-100 dark:border-white/5 pb-3">
+                  <Avatar src={user.image || null} size="sm" className="bg-purple-900 text-white font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <div className="flex-1 min-w-0 text-left">
+                    <div className="text-sm font-bold text-zinc-900 dark:text-white truncate">{user.name}</div>
+                    <div className="text-xs text-zinc-550 truncate">{user.email}</div>
                   </div>
-                </td>
-                <td className="p-4">
-                  <Chip 
-                    className="capitalize text-[10px] font-extrabold px-2.5 py-1" 
-                    color={user.role === "admin" ? "danger" : user.role === "creator" ? "secondary" : "default"}
-                    variant="flat"
-                  >
-                    {user.role}
-                  </Chip>
-                </td>
-                <td className="p-4">
-                  <Chip 
-                    className="capitalize text-[10px] font-extrabold px-2.5 py-1" 
-                    color={user.status === "active" ? "success" : "warning"}
-                    variant="flat"
-                  >
-                    {user.status}
-                  </Chip>
-                </td>
-                <td className="p-4 text-xs text-zinc-500 dark:text-zinc-400">{user.joined}</td>
-                <td className="p-4 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="flat" 
-                      color="secondary"
-                      className="text-xs font-bold cursor-pointer rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 animate-none"
-                      onClick={() => openEditModal(user)}
+                </div>
+
+                {/* Attributes Grid */}
+                <div className="grid grid-cols-2 gap-4 text-xs text-left">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">Role</span>
+                    <Chip 
+                      className="capitalize text-[9px] font-extrabold px-2.5 py-0.5" 
+                      color={user.role === "admin" ? "danger" : user.role === "creator" ? "secondary" : "default"}
+                      variant="flat"
+                      size="sm"
                     >
-                      Edit
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="flat" 
-                      color={user.status === "active" ? "warning" : "success"}
-                      className={`text-xs font-bold cursor-pointer rounded-xl ${
-                        user.status === "active" 
-                          ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400" 
-                          : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-                      }`}
-                      onClick={() => toggleUserStatus(user.id)}
-                    >
-                      {user.status === "active" ? "Suspend" : "Activate"}
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="flat" 
-                      color="danger"
-                      className="text-xs font-bold cursor-pointer rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-450 animate-none"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      Delete
-                    </Button>
+                      {user.role}
+                    </Chip>
                   </div>
-                </td>
-              </tr>
-            ))}
-            {filteredUsers.length === 0 && (
-              <tr>
-                <td colSpan="5" className="p-8 text-center text-zinc-500 text-sm">
-                  No users found matching filter criteria.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">Status</span>
+                    <Chip 
+                      className="capitalize text-[9px] font-extrabold px-2.5 py-0.5" 
+                      color={user.status === "active" ? "success" : "warning"}
+                      variant="flat"
+                      size="sm"
+                    >
+                      {user.status}
+                    </Chip>
+                  </div>
+
+                  <div className="col-span-2 space-y-1">
+                    <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">Joined Date</span>
+                    <span className="font-semibold text-zinc-700 dark:text-zinc-300">{user.joined}</span>
+                  </div>
+                </div>
+
+                {/* Actions Row */}
+                <div className="flex items-center justify-end gap-2 border-t border-zinc-100 dark:border-white/5 pt-3">
+                  <Button 
+                    size="sm" 
+                    variant="flat" 
+                    color="secondary"
+                    className="text-xs font-bold cursor-pointer rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 px-3 py-1.5 animate-none min-w-0 h-auto"
+                    onClick={() => openEditModal(user)}
+                  >
+                    Edit
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="flat" 
+                    color={user.status === "active" ? "warning" : "success"}
+                    className={`text-xs font-bold cursor-pointer rounded-xl px-3 py-1.5 min-w-0 h-auto ${
+                      user.status === "active" 
+                        ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400" 
+                        : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                    }`}
+                    onClick={() => toggleUserStatus(user.id)}
+                  >
+                    {user.status === "active" ? "Suspend" : "Activate"}
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="flat" 
+                    color="danger"
+                    className="text-xs font-bold cursor-pointer rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 px-3 py-1.5 animate-none min-w-0 h-auto"
+                    onClick={() => handleDeleteUser(user.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 py-4 border-t border-zinc-200 dark:border-white/5 select-none">
+          <div className="flex items-center justify-center gap-2 py-4 border border-zinc-200 dark:border-white/5 bg-white dark:bg-white/[0.02] rounded-2xl shadow-sm dark:shadow-none select-none">
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -325,8 +422,8 @@ export default function AdminUsersPage() {
                   onClick={() => setCurrentPage(pageNum)}
                   className={`w-8 h-8 rounded-xl text-xs font-bold flex items-center justify-center border transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#7C3AED] to-[#9333EA] text-white border-transparent'
-                      : 'bg-white dark:bg-white/5 border-zinc-200 dark:border-white/10 text-zinc-650 dark:text-slate-350 hover:bg-zinc-100 dark:hover:bg-white/15'
+                      ? "bg-gradient-to-r from-[#7C3AED] to-[#9333EA] text-white border-transparent"
+                      : "bg-white dark:bg-white/5 border-zinc-200 dark:border-white/10 text-zinc-650 dark:text-slate-350 hover:bg-zinc-100 dark:hover:bg-white/15"
                   }`}
                 >
                   {pageNum}
@@ -343,7 +440,6 @@ export default function AdminUsersPage() {
             </button>
           </div>
         )}
-
       </div>
 
       {/* Edit Role Modal */}

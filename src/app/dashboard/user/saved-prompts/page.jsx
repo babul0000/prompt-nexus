@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import PromptCard from "@/components/PromptCard";
 import { Bookmark, Sparkles } from "lucide-react";
+import { baseUrl } from "@/lib/core/baseUrl";
 
 export default function SavedPromptsPage() {
     const { data: session, isPending: sessionPending } = useSession();
@@ -16,7 +17,6 @@ export default function SavedPromptsPage() {
         if (user?.id) {
             const fetchSavedPrompts = async () => {
                 try {
-                    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
                     const res = await fetch(`${baseUrl}/api/my-bookmarks?userId=${user.id}`, {
                         cache: "no-store"
                     });

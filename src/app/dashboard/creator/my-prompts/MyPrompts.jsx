@@ -197,104 +197,193 @@ export default function MyPrompts() {
                 </div>
 
                 {/* Table container */}
-                <div className="w-full border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden bg-white dark:bg-[#090a16]/80 backdrop-blur-md shadow-sm dark:shadow-none">
-                    <div className="overflow-x-auto w-full">
-                        <table className="w-full border-collapse text-left text-sm text-zinc-700 dark:text-zinc-300">
-                            <thead>
-                                <tr className="border-b border-zinc-200 dark:border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-950/50">
-                                    <th className="py-4 px-6 min-w-[200px]">Title & Category</th>
-                                    <th className="py-4 px-4">AI Engine</th>
-                                    <th className="py-4 px-4">Visibility</th>
-                                    <th className="py-4 px-4">Status</th>
-                                    <th className="py-4 px-4">Copies</th>
-                                    <th className="py-4 px-6 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            
-                            <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
-                                {prompts.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="py-12 px-6 text-center text-zinc-500 dark:text-zinc-500">
-                                            No prompts found! Let's submit your first template.
-                                        </td>
+                <div className="space-y-4">
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block w-full border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden bg-white dark:bg-[#090a16]/80 backdrop-blur-md shadow-sm dark:shadow-none">
+                        <div className="overflow-x-auto w-full">
+                            <table className="w-full border-collapse text-left text-sm text-zinc-700 dark:text-zinc-300">
+                                <thead>
+                                    <tr className="border-b border-zinc-200 dark:border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-55 dark:bg-zinc-950/50">
+                                        <th className="py-4 px-6 min-w-[200px]">Title & Category</th>
+                                        <th className="py-4 px-4">AI Engine</th>
+                                        <th className="py-4 px-4">Visibility</th>
+                                        <th className="py-4 px-4">Status</th>
+                                        <th className="py-4 px-4">Copies</th>
+                                        <th className="py-4 px-6 text-right">Actions</th>
                                     </tr>
-                                ) : (
-                                    prompts.map((p) => {
-                                        const isApproved = p.status?.toLowerCase() === 'approved';
-                                        
-                                        return (
-                                            <tr key={p._id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors duration-200">
-                                                {/* Title & Category */}
-                                                <td className="py-4 px-6">
-                                                    <div className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-[250px]" title={p.title}>
-                                                        {p.title}
-                                                    </div>
-                                                    <div className="text-[10px] text-purple-600 dark:text-zinc-400 mt-1 uppercase tracking-wide font-bold">
-                                                        #{p.category}
-                                                    </div>
-                                                </td>
+                                </thead>
+                                
+                                <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
+                                    {prompts.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="py-12 px-6 text-center text-zinc-500 dark:text-zinc-500">
+                                                No prompts found! Let&apos;s submit your first template.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        prompts.map((p) => {
+                                            const isApproved = p.status?.toLowerCase() === 'approved';
+                                            
+                                            return (
+                                                <tr key={p._id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors duration-200">
+                                                    {/* Title & Category */}
+                                                    <td className="py-4 px-6">
+                                                        <div className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-[250px]" title={p.title}>
+                                                            {p.title}
+                                                        </div>
+                                                        <div className="text-[10px] text-purple-650 mt-1 uppercase tracking-wide font-bold">
+                                                            #{p.category}
+                                                        </div>
+                                                    </td>
 
-                                                {/* AI Engine */}
-                                                <td className="py-4 px-4">
-                                                    <span className="bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-white/5 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
-                                                        {p.aiTool || "ChatGPT"}
-                                                    </span>
-                                                </td>
+                                                    {/* AI Engine */}
+                                                    <td className="py-4 px-4">
+                                                        <span className="bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-white/5 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
+                                                            {p.aiTool || "ChatGPT"}
+                                                        </span>
+                                                    </td>
 
-                                                {/* Visibility */}
-                                                <td className="py-4 px-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400 capitalize">
-                                                    {p.visibility || "Public"}
-                                                </td>
+                                                    {/* Visibility */}
+                                                    <td className="py-4 px-4 text-xs font-semibold text-zinc-550 dark:text-zinc-400 capitalize">
+                                                        {p.visibility || "Public"}
+                                                    </td>
 
-                                                {/* Status badge */}
-                                                <td className="py-4 px-4">
-                                                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                                                        isApproved 
-                                                            ? 'bg-emerald-500/10 text-emerald-605 dark:text-emerald-400 border-emerald-500/20' 
-                                                            : 'bg-amber-500/10 text-amber-605 dark:text-amber-400 border-amber-500/20'
-                                                    }`}>
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-                                                        {p.status || "PENDING"}
-                                                    </span>
-                                                </td>
+                                                    {/* Status badge */}
+                                                    <td className="py-4 px-4">
+                                                        <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+                                                            isApproved 
+                                                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                                                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                                        }`}>
+                                                            <span className={`w-1.5 h-1.5 rounded-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                                                            {p.status || "PENDING"}
+                                                        </span>
+                                                    </td>
 
-                                                {/* Copies */}
-                                                <td className="py-4 px-4 text-xs font-semibold text-zinc-800 dark:text-white">
-                                                    {p.copyCount || 0}
-                                                </td>
+                                                    {/* Copies */}
+                                                    <td className="py-4 px-4 text-xs font-semibold text-zinc-800 dark:text-white">
+                                                        {p.copyCount || 0}
+                                                    </td>
 
-                                                {/* Action buttons */}
-                                                <td className="py-4 px-6 text-right">
-                                                    <div className="flex gap-1 justify-end text-zinc-400 dark:text-zinc-500">
-                                                        <Link 
-                                                            href={`/all-prompts/${p._id}`}
-                                                            className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition"
-                                                            title="View Details"
-                                                        >
-                                                            <Eye size={16} />
-                                                        </Link>
-                                                        <button 
-                                                            onClick={() => handleEditClick(p)}
-                                                            className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
-                                                            title="Edit Details"
-                                                        >
-                                                            <Pencil size={16} />
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDeleteClick(p._id)}
-                                                            className="p-2 hover:bg-rose-500/10 hover:text-rose-600 rounded-lg transition cursor-pointer"
-                                                            title="Delete Template"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                )}
-                            </tbody>
-                        </table>
+                                                    {/* Action buttons */}
+                                                    <td className="py-4 px-6 text-right">
+                                                        <div className="flex gap-1 justify-end text-zinc-400 dark:text-zinc-500">
+                                                            <Link 
+                                                                href={`/all-prompts/${p._id}`}
+                                                                className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition"
+                                                                title="View Details"
+                                                            >
+                                                                <Eye size={16} />
+                                                            </Link>
+                                                            <button 
+                                                                onClick={() => handleEditClick(p)}
+                                                                className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer"
+                                                                title="Edit Details"
+                                                            >
+                                                                <Pencil size={16} />
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => handleDeleteClick(p._id)}
+                                                                className="p-2 hover:bg-rose-500/10 hover:text-rose-600 rounded-lg transition cursor-pointer"
+                                                                title="Delete Template"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Mobile Card List View */}
+                    <div className="md:hidden space-y-4">
+                        {prompts.length === 0 ? (
+                            <div className="py-12 text-center text-zinc-500 dark:text-zinc-400 bg-white dark:bg-[#090a16]/80 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-sm">
+                                No prompts found! Let&apos;s submit your first template.
+                            </div>
+                        ) : (
+                            prompts.map((p) => {
+                                const isApproved = p.status?.toLowerCase() === 'approved';
+
+                                return (
+                                    <div 
+                                        key={p._id}
+                                        className="bg-white dark:bg-[#090a16]/45 border border-zinc-200 dark:border-white/5 rounded-2xl p-5 space-y-4 shadow-sm dark:shadow-none backdrop-blur-md"
+                                    >
+                                        {/* Title & Category & Status */}
+                                        <div className="flex items-start justify-between gap-3 border-b border-zinc-100 dark:border-white/5 pb-3">
+                                            <div className="space-y-1 flex-1 min-w-0">
+                                                <h4 className="text-sm font-extrabold text-zinc-900 dark:text-white truncate" title={p.title}>
+                                                    {p.title}
+                                                </h4>
+                                                <div className="text-[10px] text-purple-650 dark:text-purple-400 uppercase tracking-wide font-bold">
+                                                    #{p.category}
+                                                </div>
+                                            </div>
+
+                                            <span className={`inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                                                isApproved 
+                                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                                                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                            }`}>
+                                                <span className={`w-1 h-1 rounded-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                                                {p.status || "PENDING"}
+                                            </span>
+                                        </div>
+
+                                        {/* Metrics Grid */}
+                                        <div className="grid grid-cols-3 gap-2 text-xs">
+                                            <div className="space-y-1">
+                                                <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">AI Engine</span>
+                                                <span className="inline-block bg-zinc-50 dark:bg-zinc-900/60 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-white/5 text-[9px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                                                    {p.aiTool || "ChatGPT"}
+                                                </span>
+                                            </div>
+
+                                            <div className="space-y-1">
+                                                <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Visibility</span>
+                                                <span className="font-semibold text-zinc-650 dark:text-zinc-300 capitalize">{p.visibility || "Public"}</span>
+                                            </div>
+
+                                            <div className="space-y-1">
+                                                <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Copies</span>
+                                                <span className="font-bold text-zinc-800 dark:text-white">{p.copyCount || 0}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Actions Row */}
+                                        <div className="flex items-center justify-end gap-2 border-t border-zinc-100 dark:border-white/5 pt-3">
+                                            <Link 
+                                                href={`/all-prompts/${p._id}`}
+                                                className="p-2 bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white rounded-xl transition text-zinc-500 dark:text-zinc-400"
+                                                title="View Details"
+                                            >
+                                                <Eye size={15} />
+                                            </Link>
+                                            <button 
+                                                onClick={() => handleEditClick(p)}
+                                                className="p-2 bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white rounded-xl transition cursor-pointer text-zinc-500 dark:text-zinc-400"
+                                                title="Edit Details"
+                                            >
+                                                <Pencil size={15} />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDeleteClick(p._id)}
+                                                className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-xl transition cursor-pointer"
+                                                title="Delete Template"
+                                            >
+                                                <Trash2 size={15} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
                     </div>
                 </div>
             </div>

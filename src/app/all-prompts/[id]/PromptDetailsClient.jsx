@@ -8,6 +8,7 @@ import { ArrowLeft, Copy, Check, Bookmark, Flag, Send, Star, User, MessageSquare
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toggleBookmark, checkBookmarkStatus, fetchReviews, submitReview, submitReport, incrementCopyCount } from "@/lib/actions/prompt";
+import { baseUrl } from '@/lib/core/baseUrl';
 
 const PromptDetailsClient = ({ promptId }) => {
     const router = useRouter();
@@ -53,7 +54,6 @@ const PromptDetailsClient = ({ promptId }) => {
             setPromptLoading(true);
             setPromptError(false);
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
                 const res = await fetch(`${baseUrl}/api/prompts/${promptId}`, { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
@@ -205,7 +205,6 @@ const PromptDetailsClient = ({ promptId }) => {
             });
 
             // Fetch updated prompt details to reflect new ratings/statistics
-            const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
             const promptRes = await fetch(`${baseUrl}/api/prompts/${prompt._id || prompt.id}`, { cache: 'no-store' });
             if (promptRes.ok) {
                 const updatedPrompt = await promptRes.json();

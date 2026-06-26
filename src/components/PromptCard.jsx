@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Copy, Check, Sparkles, Star, Eye, Lock, User } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -9,6 +9,12 @@ import { authClient } from "@/lib/auth-client";
 
 const PromptCard = ({ prompt, onViewDetails }) => {
     const [copied, setCopied] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMounted(true);
+    }, []);
 
     if (!prompt) return null;
 
@@ -41,7 +47,7 @@ const PromptCard = ({ prompt, onViewDetails }) => {
             return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
         }
         if (eng.includes('midjourney')) {
-            return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20';
+            return 'bg-purple-500/10 text-purple-650 dark:text-purple-400 border border-purple-500/20';
         }
         if (eng.includes('stable diffusion')) {
             return 'bg-pink-500/10 text-pink-650 dark:text-pink-400 border border-pink-500/20';
@@ -66,7 +72,7 @@ const PromptCard = ({ prompt, onViewDetails }) => {
         aiTool?.toLowerCase().includes('claude') || 
         aiTool?.toLowerCase().includes('midjourney');
 
-    const isLocked = !isPro && (isPrivate || isPremiumTool);
+    const isLocked = (!mounted || !isPro) && (isPrivate || isPremiumTool);
     const isPremium = isPrivate || isPremiumTool;
 
     // Make creator name look like Mr.Creator if it is "creator" or default to creatorEmail prefix
@@ -122,7 +128,7 @@ const PromptCard = ({ prompt, onViewDetails }) => {
             {isLocked && (
                 <Link 
                     href="/payment"
-                    className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/95 dark:bg-[#030014]/90 backdrop-blur-md rounded-2.5xl p-5 text-center transition-all duration-300 cursor-pointer pointer-events-auto"
+                    className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/40 dark:bg-[#030014]/40 backdrop-blur-[1px] rounded-2.5xl p-5 text-center transition-all duration-300 cursor-pointer pointer-events-auto"
                 >
                     <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-650 dark:text-purple-400 rounded-2xl mb-2.5 shadow-[0_0_20px_rgba(168,85,247,0.15)] animate-pulse">
                         <Lock className="w-5.5 h-5.5" />
@@ -143,7 +149,7 @@ const PromptCard = ({ prompt, onViewDetails }) => {
             {/* Soft backdrop radial glow on card hover */}
             <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-500/[0.01] dark:to-purple-500/[0.02] rounded-2.5xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-            <div className={`flex flex-col gap-4 flex-grow transition-all duration-300 ${isLocked ? 'blur-[3px] opacity-35 select-none pointer-events-none' : ''}`}>
+            <div className={`flex flex-col gap-4 flex-grow transition-all duration-300 ${isLocked ? 'blur-[1.2px] opacity-90 select-none pointer-events-none' : ''}`}>
 
             {/* Image / Thumbnail Container */}
             <div className="relative w-full h-44 overflow-hidden rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-150 dark:from-[#0a071c] dark:to-[#170a2b] border border-zinc-200/50 dark:border-white/5 flex items-center justify-center">

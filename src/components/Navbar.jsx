@@ -20,9 +20,9 @@ const Navbar = () => {
 
   const pathname = usePathname();
 
-  // Load theme from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "dark";
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(savedTheme);
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");

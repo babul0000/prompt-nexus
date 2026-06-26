@@ -5,6 +5,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, RotateCcw, Compass, Sparkles, X, Copy, Check, Star, User, Lock } from 'lucide-react';
 import PromptCard from '@/components/PromptCard';
 import { toast } from 'react-toastify';
+import { baseUrl } from '@/lib/core/baseUrl';
 
 const AI_ENGINES = [
     'All',
@@ -45,6 +46,25 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedDifficulty, setSelectedDifficulty] = useState('All');
     const [sortBy, setSortBy] = useState('Latest');
+    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+    // Active filters count helper
+    const activeFiltersCount = 
+        (selectedEngine !== 'All' ? 1 : 0) + 
+        (selectedCategory !== 'All' ? 1 : 0) + 
+        (selectedDifficulty !== 'All' ? 1 : 0);
+
+    // Lock body scroll when mobile filter is open
+    useEffect(() => {
+        if (isMobileFilterOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isMobileFilterOpen]);
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -84,7 +104,6 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
             } else {
                 const fetchSinglePrompt = async () => {
                     try {
-                        const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
                         const res = await fetch(`${baseUrl}/api/prompts/${promptId}`);
                         if (res.ok) {
                             const data = await res.json();
@@ -139,8 +158,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                 }
                 queryParams.set('sortBy', sortBy);
 
-                // Fetch from Express Server (resolving local URL if NEXT_PUBLIC_SERVER_URL is missing)
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+                // Fetch from Express Server
                 const res = await fetch(`${baseUrl}/api/prompts?${queryParams.toString()}`);
                 
                 if (res.ok) {
@@ -246,8 +264,8 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                 {/* Two-column catalog section */}
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     
-                    {/* Filters Sidebar */}
-                    <div className="lg:col-span-1 flex flex-col gap-6 bg-white dark:bg-[#090a16]/50 border border-zinc-200 dark:border-white/[0.06] p-6 rounded-2xl h-fit shadow-sm dark:shadow-none backdrop-blur-md">
+                    {/* Filters Sidebar (desktop only) */}
+                    <div className="hidden lg:flex lg:col-span-1 flex-col gap-6 bg-white dark:bg-[#090a16]/50 border border-zinc-200 dark:border-white/[0.06] p-6 rounded-2xl h-fit shadow-sm dark:shadow-none backdrop-blur-md">
                         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-white/5 pb-4">
                             <div className="flex items-center gap-2 text-sm font-bold text-zinc-800 dark:text-white uppercase tracking-wider">
                                 <SlidersHorizontal className="w-4 h-4 text-purple-500 dark:text-purple-400" />
@@ -342,28 +360,44 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                     <div className="lg:col-span-3 space-y-6">
                         
                         {/* Sort By section */}
-                        <div className="flex flex-wrap items-center gap-3 bg-zinc-100 dark:bg-[#090a16]/30 border border-zinc-200 dark:border-white/[0.06] p-3 rounded-2xl backdrop-blur-sm">
-                            <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 tracking-wider uppercase px-2">
-                                Sort By:
-                            </span>
-                            <div className="flex flex-wrap gap-2">
-                                {['Latest', 'Most Popular', 'Most Copied'].map((sortOption) => {
-                                    const isActive = sortBy === sortOption;
-                                    return (
-                                        <button
-                                            key={sortOption}
-                                            onClick={() => setSortBy(sortOption)}
-                                            className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                                                isActive
-                                                    ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
-                                                    : 'text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-white/[0.02]'
-                                            }`}
-                                        >
-                                            {sortOption}
-                                        </button>
-                                    );
-                                })}
+                        <div className="flex flex-wrap items-center justify-between gap-3 bg-zinc-100 dark:bg-[#090a16]/30 border border-zinc-200 dark:border-white/[0.06] p-3 rounded-2xl backdrop-blur-sm">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 tracking-wider uppercase px-2">
+                                    Sort By:
+                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                    {['Latest', 'Most Popular', 'Most Copied'].map((sortOption) => {
+                                        const isActive = sortBy === sortOption;
+                                        return (
+                                            <button
+                                                key={sortOption}
+                                                onClick={() => setSortBy(sortOption)}
+                                                className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                                    isActive
+                                                        ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+                                                        : 'text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-white/[0.02]'
+                                                }`}
+                                            >
+                                                {sortOption}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
+
+                            {/* Mobile Filters Toggle Button */}
+                            <button
+                                onClick={() => setIsMobileFilterOpen(true)}
+                                className="lg:hidden ml-auto flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition-all cursor-pointer"
+                            >
+                                <SlidersHorizontal className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
+                                <span>Filters</span>
+                                {activeFiltersCount > 0 && (
+                                    <span className="flex items-center justify-center bg-purple-600 dark:bg-purple-500 text-white text-[10px] font-bold w-4.5 h-4.5 rounded-full px-1">
+                                        {activeFiltersCount}
+                                    </span>
+                                )}
+                            </button>
                         </div>
 
                         {/* Cards Grid & Loading Indicator */}
@@ -378,7 +412,7 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                                 <div className="space-y-1">
                                     <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">No Prompts Found</h3>
                                     <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm">
-                                        We couldn't find any prompts matching your active filters. Try searching for something else or resetting the filters.
+                                        We couldn&apos;t find any prompts matching your active filters. Try searching for something else or resetting the filters.
                                     </p>
                                 </div>
                                 <button
@@ -566,6 +600,144 @@ const ExplorePromptsClient = ({ initialPrompts = [], initialSearch = "" }) => {
                     </div>
                 </div>
             )}
+
+            {/* Mobile Filters Drawer */}
+            <div 
+                className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ${
+                    isMobileFilterOpen 
+                        ? 'opacity-100 pointer-events-auto' 
+                        : 'opacity-0 pointer-events-none'
+                }`}
+            >
+                {/* Backdrop with dark blur */}
+                <div 
+                    className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+                    onClick={() => setIsMobileFilterOpen(false)}
+                />
+                
+                {/* Drawer Content */}
+                <div 
+                    className={`absolute top-0 right-0 bottom-0 w-full max-w-xs sm:max-w-sm bg-white dark:bg-[#030014]/95 border-l border-zinc-200 dark:border-white/10 p-6 flex flex-col gap-6 shadow-2xl transition-transform duration-300 ease-out ${
+                        isMobileFilterOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
+                >
+                    {/* Drawer Header */}
+                    <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/5 pb-4">
+                        <div className="flex items-center gap-2 text-sm font-bold text-zinc-800 dark:text-white uppercase tracking-wider">
+                            <SlidersHorizontal className="w-4 h-4 text-purple-500" />
+                            <span>Filters</span>
+                            {activeFiltersCount > 0 && (
+                                <span className="flex items-center justify-center bg-purple-500 text-white text-[10px] font-bold w-5 h-5 rounded-full">
+                                    {activeFiltersCount}
+                                </span>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={handleReset}
+                                className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:underline transition-colors cursor-pointer"
+                            >
+                                <RotateCcw className="w-3 h-3" />
+                                <span>Reset</span>
+                            </button>
+                            <button 
+                                onClick={() => setIsMobileFilterOpen(false)}
+                                className="p-1 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white cursor-pointer"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Scrollable Filters Body */}
+                    <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-6 custom-scrollbar">
+                        {/* AI Engine section */}
+                        <div className="flex flex-col gap-2">
+                            <h3 className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 tracking-wider uppercase mb-2">
+                                AI Engine
+                            </h3>
+                            <div className="grid grid-cols-2 gap-2">
+                                {AI_ENGINES.map((engine) => {
+                                    const isActive = selectedEngine === engine;
+                                    return (
+                                        <button
+                                            key={engine}
+                                            onClick={() => setSelectedEngine(engine)}
+                                            className={`text-center px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                                                isActive
+                                                    ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+                                                    : 'text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white bg-zinc-50 dark:bg-white/[0.01] hover:bg-zinc-100 dark:hover:bg-white/[0.02] border border-zinc-200/50 dark:border-white/[0.04]'
+                                            }`}
+                                        >
+                                            {engine}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Category section */}
+                        <div className="flex flex-col gap-2 border-t border-zinc-100 dark:border-white/5 pt-4">
+                            <h3 className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 tracking-wider uppercase mb-2">
+                                Category
+                            </h3>
+                            <div className="grid grid-cols-2 gap-2">
+                                {CATEGORIES.map((category) => {
+                                    const isActive = selectedCategory === category;
+                                    return (
+                                        <button
+                                            key={category}
+                                            onClick={() => setSelectedCategory(category)}
+                                            className={`text-center px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                                                isActive
+                                                    ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+                                                    : 'text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white bg-zinc-50 dark:bg-white/[0.01] hover:bg-zinc-100 dark:hover:bg-white/[0.02] border border-zinc-200/50 dark:border-white/[0.04]'
+                                            }`}
+                                        >
+                                            {category}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Difficulty section */}
+                        <div className="flex flex-col gap-2 border-t border-zinc-100 dark:border-white/5 pt-4">
+                            <h3 className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 tracking-wider uppercase mb-2">
+                                Difficulty
+                            </h3>
+                            <div className="grid grid-cols-2 gap-2">
+                                {DIFFICULTIES.map((diff) => {
+                                    const isActive = selectedDifficulty === diff;
+                                    return (
+                                        <button
+                                            key={diff}
+                                            onClick={() => setSelectedDifficulty(diff)}
+                                            className={`text-center px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                                                isActive
+                                                    ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+                                                    : 'text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white bg-zinc-50 dark:bg-white/[0.01] hover:bg-zinc-100 dark:hover:bg-white/[0.02] border border-zinc-200/50 dark:border-white/[0.04]'
+                                            }`}
+                                        >
+                                            {diff}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Drawer Footer CTA */}
+                    <div className="border-t border-zinc-200 dark:border-white/5 pt-4">
+                        <button
+                            onClick={() => setIsMobileFilterOpen(false)}
+                            className="w-full py-3 bg-gradient-to-r from-[#7C3AED] to-[#9333EA] text-white text-xs font-semibold rounded-xl hover:shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all cursor-pointer text-center"
+                        >
+                            Apply & View {prompts.length} Prompts
+                        </button>
+                    </div>
+                </div>
+            </div>
         </section>
     );
 };

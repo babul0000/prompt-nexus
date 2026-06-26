@@ -11,6 +11,8 @@ export const auth = betterAuth({
   }),
   trustedOrigins: [
     "http://localhost:3000",
+    "https://prompt-forge-nexus.vercel.app",
+    "https://promt-nexus.vercel.app"
   ],
   account: {
     accountLinking: {

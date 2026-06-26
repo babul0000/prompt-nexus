@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, User, FileText, Copy, Award } from 'lucide-react';
+import { baseUrl } from '@/lib/core/baseUrl';
 
 const TopCreators = () => {
     const [creators, setCreators] = useState([]);
@@ -44,7 +45,6 @@ const TopCreators = () => {
     useEffect(() => {
         const fetchCreatorsData = async () => {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
                 const res = await fetch(`${baseUrl}/api/prompts`);
                 if (res.ok) {
                     const prompts = await res.json();

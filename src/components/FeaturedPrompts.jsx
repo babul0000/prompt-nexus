@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Star, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import PromptCard from '@/components/PromptCard';
+import { baseUrl } from '@/lib/core/baseUrl';
 
 const FeaturedPrompts = () => {
     const [prompts, setPrompts] = useState([]);
@@ -14,7 +15,6 @@ const FeaturedPrompts = () => {
     useEffect(() => {
         const fetchFeaturedPrompts = async () => {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
                 const res = await fetch(`${baseUrl}/api/prompts?featured=true`);
                 if (res.ok) {
                     const data = await res.json();

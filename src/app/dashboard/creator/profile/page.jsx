@@ -91,13 +91,14 @@ export default function ProfilePage() {
         imageUrl = await uploadImageToImgbb(selectedFile);
       }
 
-      const { data, error } = await authClient.user.update({
+      const { data, error } = await authClient.updateUser({
         name: nameInput,
         image: imageUrl,
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to update profile");
+        console.error("Better Auth update error:", error);
+        throw new Error(error.message || error.statusText || "Failed to update profile");
       }
 
       toast.success("Profile updated successfully!");

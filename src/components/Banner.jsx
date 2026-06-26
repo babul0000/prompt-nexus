@@ -5,6 +5,7 @@ import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Search, Sparkles, Flame, Users, FileText, Loader2, Compass, Tag } from "lucide-react";
+import { baseUrl } from "@/lib/core/baseUrl";
 
 const Banner = () => {
     const router = useRouter();
@@ -60,7 +61,6 @@ const Banner = () => {
         const fetchSuggestions = async () => {
             setLoadingSuggestions(true);
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
                 const res = await fetch(`${baseUrl}/api/prompts?search=${encodeURIComponent(searchQuery.trim())}`);
                 if (res.ok) {
                     const data = await res.json();

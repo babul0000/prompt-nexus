@@ -107,58 +107,110 @@ export default function Page() {
             <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">You haven't posted any reviews yet.</p>
           </div>
         ) : (
-          <div className="bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-sm dark:shadow-2xl">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-white/[0.01]">
-                    <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Prompt Title</th>
-                    <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">AI Tool</th>
-                    <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Rating</th>
-                    <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Comments</th>
-                    <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Submitted Date</th>
-                    <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
-                  {reviews.map((rev) => (
-                    <tr key={rev._id || rev.id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors">
-                      <td className="p-4 text-sm font-bold text-zinc-900 dark:text-white max-w-[250px] truncate">
+          <div className="space-y-4">
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-sm dark:shadow-2xl">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr className="border-b border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-white/[0.01]">
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Prompt Title</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">AI Tool</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Rating</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Comments</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Submitted Date</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-550 dark:text-zinc-400">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
+                    {reviews.map((rev) => (
+                      <tr key={rev._id || rev.id} className="hover:bg-zinc-50 dark:hover:bg-white/[0.01] transition-colors">
+                        <td className="p-4 text-sm font-bold text-zinc-900 dark:text-white max-w-[250px] truncate">
+                          {rev.promptTitle || "Unknown Prompt"}
+                        </td>
+                        <td className="p-4">
+                          <span className={`inline-block text-[10px] font-extrabold tracking-wider px-2.5 py-0.5 rounded-full uppercase border ${getToolBadgeStyles(rev.aiTool)}`}>
+                            {rev.aiTool || "Other"}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-1 text-sm font-semibold text-amber-500">
+                            <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                            <span>{(rev.rating ?? 5).toFixed(1)}</span>
+                          </div>
+                        </td>
+                        <td className="p-4 text-sm text-zinc-700 dark:text-zinc-300 max-w-[200px] truncate" title={rev.comment}>
+                          "{rev.comment}"
+                        </td>
+                        <td className="p-4 text-xs text-zinc-500 dark:text-zinc-400">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                            <span>{formatDate(rev.createdAt)}</span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <Link
+                            href={`/all-prompts/${rev.promptId}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-zinc-800 dark:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-[#131735]/40 dark:hover:bg-[#131735]/60 border border-zinc-200 dark:border-[#1e2554] transition-all rounded-lg cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>View</span>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card List View */}
+            <div className="md:hidden space-y-4">
+              {reviews.map((rev) => (
+                <div 
+                  key={rev._id || rev.id}
+                  className="bg-white dark:bg-[#090a16]/40 border border-zinc-200 dark:border-white/5 rounded-2xl p-5 space-y-4 shadow-sm dark:shadow-none backdrop-blur-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h4 className="text-sm font-extrabold text-zinc-900 dark:text-white truncate">
                         {rev.promptTitle || "Unknown Prompt"}
-                      </td>
-                      <td className="p-4">
-                        <span className={`inline-block text-[10px] font-extrabold tracking-wider px-2.5 py-0.5 rounded-full uppercase border ${getToolBadgeStyles(rev.aiTool)}`}>
+                      </h4>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className={`inline-block text-[9px] font-extrabold tracking-wider px-2 py-0.5 rounded-full uppercase border ${getToolBadgeStyles(rev.aiTool)}`}>
                           {rev.aiTool || "Other"}
                         </span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-1 text-sm font-semibold text-amber-500">
+                        <div className="flex items-center gap-1 text-xs font-semibold text-amber-500">
                           <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
                           <span>{(rev.rating ?? 5).toFixed(1)}</span>
                         </div>
-                      </td>
-                      <td className="p-4 text-sm text-zinc-700 dark:text-zinc-300 max-w-[200px] truncate" title={rev.comment}>
-                        "{rev.comment}"
-                      </td>
-                      <td className="p-4 text-xs text-zinc-500 dark:text-zinc-400">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
-                          <span>{formatDate(rev.createdAt)}</span>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <Link
-                          href={`/all-prompts/${rev.promptId}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-zinc-800 dark:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-[#131735]/40 dark:hover:bg-[#131735]/60 border border-zinc-200 dark:border-[#1e2554] transition-all rounded-lg cursor-pointer"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>View</span>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                    
+                    <Link
+                      href={`/all-prompts/${rev.promptId}`}
+                      className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-zinc-800 dark:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-[#131735]/40 dark:hover:bg-[#131735]/60 border border-zinc-200 dark:border-[#1e2554] transition-all rounded-lg cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>View</span>
+                    </Link>
+                  </div>
+
+                  <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-100 dark:border-white/[0.04] p-3 rounded-xl">
+                    <p className="text-xs text-zinc-700 dark:text-zinc-300 italic leading-relaxed">
+                      &ldquo;{rev.comment}&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400 border-t border-zinc-100 dark:border-white/5 pt-3">
+                    <span className="font-semibold text-zinc-400 dark:text-zinc-500">Submitted:</span>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                      <span>{formatDate(rev.createdAt)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
